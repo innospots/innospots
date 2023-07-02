@@ -1,0 +1,105 @@
+{
+  "name": "Imap",
+  "icon": "/Imap.svg",
+  "order": 200,
+  "enabled": true,
+  "minder": "io.innospots.connector.imap.minder.ImapConnectionMinder",
+  "connectType": "GENERAL",
+  "overview": "IMAP代表Internet消息访问协议，接收来自邮件服务器的电子邮件",
+  "description": "请填入触发器连接鉴权的默认值，当控件“只读”被勾选中时，改字段在凭据创建时只展示不能修改。",
+  "configs": [
+    {
+      "code": "email-imap",
+      "defaults": {
+        "mail.imap.ssl.enable": "true",
+        "mail.imap.auth": "true",
+        "mail.store.protocol": "imap",
+        "mail.imap.port": "993"
+      },
+      "elements": [
+        {
+          "label": "名称",
+          "name": "schemaName",
+          "placeholder": "Imap名称",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "中文或英文有效字符，小于16个字符",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        },
+        {
+          "label": "Imap地址",
+          "name": "mail.imap.host",
+          "placeholder": "Imap Host",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Imap地址",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "端口号",
+          "name": "mail.imap.port",
+          "placeholder": "Imap端口号",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Imap端口号",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "用户名",
+          "name": "mail.user",
+          "placeholder": "用户名",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "邮件用户名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "密码",
+          "name": "mail.pass",
+          "placeholder": "密码",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "邮件密码",
+          "type": "PASSWORD",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "TLS/SSL",
+          "name": "description",
+          "placeholder": "SSL",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "是否开启加密",
+          "type": "TOGGLE",
+          "gridSize": 20,
+          "options": []
+        },
+        {
+          "label": "描述",
+          "name": "description",
+          "placeholder": "介绍描述",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "介绍描述，不超过50个字符",
+          "type": "TEXTAREA",
+          "expression": "",
+          "gridSize": 20,
+          "options": []
+        }
+      ]
+    }
+  ]
+}

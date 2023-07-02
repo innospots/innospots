@@ -1,0 +1,121 @@
+{
+  "name": "KAFKA",
+  "icon": "/Kafka.svg",
+  "order": 100,
+  "enabled": true,
+  "minder": "io.innospots.connector.kafka.minder.KafkaDataConnectionMinder",
+  "connectType": "QUEUE",
+  "appNodeType": "io.innospots.workflow.node.app.data.KafkaDataNode",
+  "overview": "",
+  "description": "",
+  "configs": [
+    {
+      "name": "基础配置",
+      "code": "kafka-basic",
+      "defaults": {
+        "classDriver": ""
+      },
+      "elements": [
+        {
+          "label": "Bootstrap集群",
+          "name": "bootstrap.servers",
+          "placeholder": "请输入Bootstrap集群地址 如: localhost:9092",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "集群地址",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        },
+        {
+          "label": "SSL",
+          "name": "ssl",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "是否开启加密",
+          "type": "SWITCH",
+          "gridSize": 8,
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "认证配置",
+      "code": "kafka-auth",
+      "defaults": {
+        "classDriver": ""
+      },
+      "elements": [
+        {
+          "label": "Bootstrap集群",
+          "name": "bootstrap.servers",
+          "placeholder": "请输入Bootstrap集群地址 如: localhost:9092",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "集群地址",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        },
+        {
+          "label": "SSL",
+          "name": "ssl",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "是否开启加密",
+          "type": "SWITCH",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "认证机制",
+          "name": "auth_mechanism",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "认证机制",
+          "type": "SELECT",
+          "gridSize": 8,
+          "options": [
+            {
+              "GSSAPI": "GSSAPI"
+            },
+            {
+              "PLAIN": "PLAIN"
+            },
+            {
+              "SCRAM-SHA-256": "SCRAM-SHA-256"
+            },
+            {
+              "SCRAM-SHA-512": "SCRAM-SHA-256"
+            }
+          ]
+        },
+        {
+          "label": "SASL用户名",
+          "name": "sasl_user_name",
+          "placeholder": "请输入SASL用户名",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "SASL用户名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        },
+        {
+          "label": "SASL密码",
+          "name": "sasl_password",
+          "placeholder": "请输入SASL密码",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "SASL密码",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        }
+      ]
+    }
+  ]
+}

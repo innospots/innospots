@@ -1,0 +1,90 @@
+{
+  "name": "MYSQL",
+  "icon": "/Mysql.svg",
+  "order": 200,
+  "enabled": true,
+  "minder": "io.innospots.connector.mysql.minder.MysqlDataConnectionMinder",
+  "connectType": "JDBC",
+  "appNodeType": "io.innospots.workflow.node.app.data.SqlDataNode",
+  "overview": "MySQL数据库连接",
+  "description": "请填入连接鉴权的默认值，当控件“只读”被勾选中时，改字段在凭据创建时只展示不能修改。",
+  "configs": [
+    {
+      "name": "TCP/IP",
+      "code": "mysql-jdbc",
+      "defaults": {
+        "classDriver": "com.mysql.cj.jdbc.Driver",
+        "maximumPoolSize": "10",
+        "minimumIdle": "1",
+        "maxLifetime": "60000",
+        "idleTimeout": "30000",
+        "connectionTimeout": "30000",
+        "validationTimeout": "3000",
+        "connectionTestQuery": "select 1",
+        "jdbcUrlPrefix": "jdbc:mysql://"
+      },
+      "elements": [
+        {
+          "label": "主机名",
+          "name": "server_ip",
+          "placeholder": "请输入主机名",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的主机名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "数据库",
+          "name": "database",
+          "placeholder": "请输入数据库",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的数据库名称",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "用户名",
+          "name": "user_name",
+          "placeholder": "请输入用户名",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "访问数据库用户名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "密码",
+          "name": "db_password",
+          "placeholder": "请输入密码",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "数据库密码",
+          "type": "PASSWORD",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "端口号",
+          "name": "port",
+          "placeholder": "3306",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的端口号",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        }
+      ]
+    }
+  ]
+}

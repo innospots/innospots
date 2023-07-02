@@ -1,0 +1,67 @@
+{
+  "name": "REDIS",
+  "icon": "/Redis.svg",
+  "order": 200,
+  "enabled": true,
+  "minder": "io.innospots.connector.redis.minder.RedisDataConnectionMinder",
+  "connectType": "KV",
+  "appNodeType": "io.innospots.workflow.node.app.data.RedisDataNode",
+  "overview": "",
+  "description": "",
+  "configs": [
+    {
+      "name": "基础配置",
+      "code": "redis-basic",
+      "defaults": {
+      },
+      "elements": [
+        {
+          "label": "服务器地址",
+          "name": "server_ip",
+          "placeholder": "请输入Redis服务器地址",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "集群地址",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        },
+        {
+          "label": "端口号",
+          "name": "port",
+          "placeholder": "请输入Redis端口号，如：6379",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "集群地址",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8
+        },
+        {
+          "label": "密码",
+          "name": "password",
+          "placeholder": "输入redis使用的密码",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "介绍描述，不超过50个字符",
+          "type": "PASSWORD",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "使用数据库",
+          "name": "database",
+          "placeholder": "集群部署模式不需要配置",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "哨兵模式和单节点模式下可设置使用的数据库1-32",
+          "type": "INPUT_NUMBER",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        }
+      ]
+    }
+  ]
+}

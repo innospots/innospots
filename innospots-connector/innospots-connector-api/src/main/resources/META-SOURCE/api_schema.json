@@ -1,0 +1,379 @@
+{
+  "name": "Http",
+  "icon": "/http-api.svg",
+  "order": 200,
+  "enabled": true,
+  "minder": "io.innospots.connector.api.minder.BasicAuthApiConnectionMinder",
+  "connectType": "API",
+  "appNodeType": "io.innospots.workflow.node.app.data.ApiDataNode",
+  "overview": "基于HTTP协议的请求连接",
+  "description": "请选择此连接支持的鉴权方式并填入连接鉴权的默认值，当组件的“只读”选项被勾选中时，此组件在凭据创建时只展示不能修改。",
+  "configs": [
+    {
+      "name": "Basic Auth",
+      "code": "basic-auth-api",
+      "defaults": {},
+      "elements": [
+        {
+          "label": "ip路径",
+          "name": "server_ip",
+          "placeholder": "请输入ip路径",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的ip路径",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "端口号",
+          "name": "port",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的端口号",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "用户名",
+          "name": "user_name",
+          "placeholder": "用户名",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "用户名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "密码",
+          "name": "password",
+          "placeholder": "密码",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "密码",
+          "type": "PASSWORD",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "Digest Auth",
+      "code": "digest-auth-api",
+      "defaults": {},
+      "elements": [
+        {
+          "label": "ip路径",
+          "name": "server_ip",
+          "placeholder": "请输入ip路径",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的ip路径",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "端口号",
+          "name": "port",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的端口号",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "用户名",
+          "name": "user_name",
+          "placeholder": "用户名",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "用户名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "密码",
+          "name": "password",
+          "placeholder": "密码",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "密码",
+          "type": "PASSWORD",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "Header Auth",
+      "code": "header-auth-api",
+      "defaults": {},
+      "elements": [
+        {
+          "label": "ip路径",
+          "name": "server_ip",
+          "placeholder": "请输入ip路径",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的ip路径",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "端口号",
+          "name": "port",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的端口号",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "鉴权字段",
+          "name": "authority_name",
+          "placeholder": "头部鉴权字段",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "字段",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "字段值",
+          "name": "authority_value",
+          "placeholder": "鉴权字段值",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "字段值",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "Oauth2 Auth",
+      "code": "oauth2-auth-api",
+      "defaults": {},
+      "elements": [
+        {
+          "label": "Client ID",
+          "name": "client_id",
+          "placeholder": "input client id",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "oauth client id",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "Client Secret",
+          "name": "client_secret",
+          "placeholder": "input client secret",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Client Secret",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "Scope",
+          "name": "scope",
+          "placeholder": "input scope",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Scope",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "Callback Url",
+          "name": "callback_url",
+          "placeholder": "input callback url",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Callback Url",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "Authority Url",
+          "name": "authority_url",
+          "placeholder": "input authority url",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Authority Url",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "Access Token Url",
+          "name": "access_token_url",
+          "placeholder": "input access token url",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Access token Url",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "Auth Url Param",
+          "name": "auth_url_param",
+          "placeholder": "input auth url param",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Auth Url Param",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "Auth",
+          "name": "auth",
+          "placeholder": "input auth",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "auth",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "Token Auth",
+      "code": "token-auth-api",
+      "defaults": {},
+      "elements": [
+        {
+          "label": "ip路径",
+          "name": "server_ip",
+          "placeholder": "请输入ip路径",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的ip路径",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "端口号",
+          "name": "port",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "连接的端口号",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "Token",
+          "name": "bearer_token",
+          "placeholder": "Input token",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "bearer token",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        }
+      ]
+    },
+    {
+      "name": "Oauth2 client",
+      "code": "oauth2-client-api",
+      "defaults": {},
+      "elements": [
+        {
+          "label": "Authority Url",
+          "name": "authority_url",
+          "placeholder": "input authority url",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "Authority Url",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 8,
+          "options": []
+        },
+        {
+          "label": "grant_type",
+          "name": "grant_type",
+          "placeholder": "client_credentials",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "grant_type",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "client_id",
+          "name": "client_id",
+          "placeholder": "Input client_id",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "client_id",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "client_secret",
+          "name": "client_secret",
+          "placeholder": "Input client_secret",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "client_secret",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        }
+      ]
+    }
+  ]
+}
