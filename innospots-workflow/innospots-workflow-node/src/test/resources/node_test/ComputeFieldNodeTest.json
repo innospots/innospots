@@ -1,0 +1,120 @@
+{
+  "data": {
+    "compute_fields": [
+      {
+        "fieldId": 221,
+        "name": "字段名称",
+        "code": "cfCode",
+        "valueType": "INTEGER",
+        "comment": null,
+        "computeItems": [
+          {
+            "id": "IPMDgA",
+            "element": "input",
+            "value": "10",
+            "displayValue": "10",
+            "data": []
+          },
+          {
+            "id": "YXpfah",
+            "element": "operator",
+            "value": "+",
+            "displayValue": "+",
+            "data": []
+          },
+          {
+            "id": "zGljQc",
+            "element": "input",
+            "value": "20",
+            "displayValue": "20",
+            "data": []
+          },
+          {
+            "id": "wngPVF",
+            "element": "operator",
+            "value": "/",
+            "displayValue": "/",
+            "data": []
+          },
+          {
+            "id": "JracOU",
+            "element": "function",
+            "value": "string.startsWith(${s1},${s2})",
+            "displayValue": "string.startsWith(s1,s2)",
+            "data": [
+              {
+                "id": "UpniFZ",
+                "element": "field",
+                "value": "user_number",
+                "displayValue": "user_number",
+                "data": []
+              },
+              {
+                "id": "eLzzKL",
+                "element": "input",
+                "value": "2",
+                "displayValue": "2",
+                "data": []
+              }
+            ]
+          },
+          {
+            "id": "GaGQDc",
+            "element": "operator",
+            "value": "+",
+            "displayValue": "+",
+            "data": []
+          },
+          {
+            "id": "zRfoUi",
+            "element": "function",
+            "value": "cmp(${x},${y})",
+            "displayValue": "cmp(x, y)",
+            "data": [
+              {
+                "id": "BDOYVS",
+                "element": "function",
+                "value": "rand(${n})",
+                "displayValue": "rand(n)",
+                "data": [
+                  {
+                    "id": null,
+                    "element": "field",
+                    "value": "pos",
+                    "displayValue": "pos",
+                    "data": []
+                  }
+                ]
+              },
+              {
+                "id": "nEgfSG",
+                "element": "function",
+                "value": "long(${n})",
+                "displayValue": "long(v)",
+                "data": [
+                  {
+                    "id": null,
+                    "element": "input",
+                    "value": "91",
+                    "displayValue": "91",
+                    "data": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "nodeKey": "dnsdsyePb",
+  "nodeDefinitionId": 4,
+  "name": "compute",
+  "code": "COMPUTE",
+  "color": "",
+  "nodeType": "io.innospots.workflow.node.app.ComputeFieldNode",
+  "displayName": "计算节点",
+  "description": "计算节点",
+  "outputFields": null,
+  "nodeInstanceId": 128
+}

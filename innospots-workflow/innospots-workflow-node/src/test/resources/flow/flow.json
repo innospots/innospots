@@ -1,0 +1,11 @@
+{
+  "workflowInstanceId": 5,
+  "revision": 1,
+  "name": "测试实例",
+  "tenantId": 0,
+  "workflowTemplateId": 1,
+  "flowKey": "flwtst",
+  "edges": [],
+  "nodes": [],
+  "compiled": true
+}

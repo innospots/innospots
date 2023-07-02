@@ -1,0 +1,151 @@
+{
+  "workflowInstanceId": 5,
+  "revision": 1,
+  "name": "测试实例",
+  "orgId": 0,
+  "workflowTemplateId": 1,
+  "flowKey": "flwtst",
+  "edges": [
+    {
+      "edgeId": 1,
+      "source": "mysql_01",
+      "target": "left_join_01"
+    },
+    {
+      "edgeId": 2,
+      "source": "mysql_02",
+      "target": "left_join_01"
+    },
+    {
+      "edgeId": 3,
+      "source": "left_join_01",
+      "target": "filter01"
+    },
+    {
+      "edgeId": 4,
+      "source": "mysql_03",
+      "target": "filter01"
+    },
+    {
+      "edgeId": 5,
+      "source": "filter01",
+      "target": "merge_01"
+    },
+    {
+      "edgeId": 6,
+      "source": "mysql_04",
+      "target": "merge_01"
+    },
+    {
+      "edgeId": 7,
+      "source": "merge_01",
+      "target": "db_output_01"
+    }
+  ],
+  "nodes": [
+    {
+      "name": "mysql_01",
+      "nodeKey": "mysql_01",
+      "code": "DATASET",
+      "nodeType": "io.innospots.workflow.node.batch.DataSetNode",
+      "data": {
+        "data_set": "tableName",
+        "sql_clause": "select age,name,card from tableName"
+      }
+    },
+    {
+      "name": "mysql_02",
+      "nodeKey": "mysql_02",
+      "code": "DATASET",
+      "nodeType": "io.innospots.workflow.node.batch.DataSetNode",
+      "data": {
+        "data_set": "tableName2",
+        "sql_clause": "select name2,address from tableName2"
+      }
+    },
+    {
+      "name": "left_join_01",
+      "nodeKey": "left_join_01",
+      "code": "JOIN",
+      "nodeType": "io.innospots.workflow.node.batch.logic.JoinNode",
+      "data": {
+        "join_type": "LEFT_JOIN",
+        "join_fields": [
+          {
+            "left": {
+              "name": "用户id",
+              "code": "name",
+              "valueType": "STRING"
+            },
+            "right": {
+              "name": "用户身份证",
+              "code": "name2",
+              "valueType": "STRING"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "filter01",
+      "nodeKey": "filter01",
+      "code": "FILTER",
+      "nodeType": "io.innospots.workflow.node.batch.logic.FilterNode",
+      "data": {
+        "filter_mode": "RESERVED",
+        "filter_fields": [
+          {
+            "left": {
+              "name": "用户id",
+              "code": "name",
+              "valueType": "STRING"
+            },
+            "right": {
+              "name": "用户身份证",
+              "code": "name3",
+              "valueType": "STRING"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "mysql_03",
+      "nodeKey": "mysql_03",
+      "code": "DATASET",
+      "nodeType": "io.innospots.workflow.node.batch.DataSetNode",
+      "data": {
+        "data_set": "tableName3",
+        "sql_clause": "select age,name3,address,card from tableName3"
+      }
+    },
+    {
+      "name": "merge_01",
+      "nodeKey": "merge_01",
+      "code": "MERGE",
+      "nodeType": "io.innospots.workflow.node.batch.logic.MergeNode",
+      "data": {
+        "merge_mode": "JOIN_ALL"
+      }
+    },
+    {
+      "name": "mysql_04",
+      "nodeKey": "mysql_04",
+      "code": "DATASET",
+      "nodeType": "io.innospots.workflow.node.batch.DataSetNode",
+      "data": {
+        "data_set": "tableName4",
+        "sql_clause": "select user,name from tableName4"
+      }
+    },
+    {
+      "name": "output_01",
+      "nodeKey": "db_output_01",
+      "code": "DATASET_OUTPUT",
+      "nodeType": "io.innospots.workflow.node.batch.output.DataSetOutputNode",
+      "data": {
+        "data_set": "out_table"
+      }
+    }
+  ]
+}

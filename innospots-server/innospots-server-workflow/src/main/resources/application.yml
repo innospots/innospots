@@ -1,0 +1,88 @@
+server:
+  port: 8989
+  undertow:
+    threads:
+      io: 4
+      worker: 50
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+
+spring:
+  application:
+    name: Innospots-server-workflow
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    include:
+      - security
+    active: dev
+  boot:
+    admin:
+      context-path: /monitor
+      ui:
+        title: innospots-Server-Monitor
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      chain:
+        compressed: true
+      cache:
+        cachecontrol:
+          max-age: 120
+          must-revalidate: true
+      static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources,file:${innospots.config.upload-file-path}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  file:
+    path: ${innospots.config.log-root-path}/logs
+  config: classpath:log4j2-spring.xml
+
+
+mybatis-plus:
+  global-config:
+    banner: off
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+innospots:
+  config:
+    # set system environment variable: logRootPath
+    log-root-path: ${LOG_PATH:innospots-server}
+    script-build-path: .script_build_path
+    enable-registry: true
+    enable-swagger: true
+    upload-file-path: ./file/
+    ext-lib-path: ./ext_lib/
+    # open debug mode
+    debug-mode: true
+
+
+springdoc:
+  swagger-ui:
+    docExpansion: none
+    persistAuthorization: true
+
+
+# /actuator/info config
+info:
+  build:
+    version: ${java.version}
+  profiles:
+    active: ${spring.profiles.active}

@@ -1,0 +1,78 @@
+{
+  "description": "节点描述信息",
+  "name": "switch节点测试",
+  "color": "#98221",
+  "icon": "switch_icon",
+  "nodeKey": "n99switchNodeKey",
+  "actionScriptType": "CONDITION",
+  "displayName": "分支节点",
+  "code": "SWITCH",
+  "nodeType": "io.innospots.strategy.event.flow.node.logic.SwitchNode",
+  "inputFields": [
+    {
+      "name": "total_level",
+      "code": "total_level",
+      "valueType": "STRING"
+    },
+    {
+      "name": "user_level",
+      "code": "user_level",
+      "valueType": "STRING"
+    },
+    {
+      "name": "user_age",
+      "code": "user_age",
+      "valueType": "INTEGER"
+    }
+  ],
+  "data": {
+    "conditions": [
+      {
+        "nodeKeys": [
+          "n12345675",
+          "ddsps"
+        ],
+        "desc": "单条件",
+        "branch": {
+          "factors": [
+            {
+              "name": "用户级别",
+              "code": "user_level",
+              "opt": "EQUAL",
+              "value": "v1",
+              "valueType": "STRING"
+            }
+          ],
+          "relation": "AND",
+          "statement": "user_level == 'v1'",
+          "mode": "SCRIPT"
+        }
+      },
+      {
+        "nodeKeys": [
+          "n12345676"
+        ],
+        "desc": "单条件",
+        "branch": {
+          "factors": [
+            {
+              "name": "用户级别",
+              "code": "user_level",
+              "opt": "EQUAL",
+              "value": "v2",
+              "valueType": "STRING"
+            }
+          ],
+          "relation": "AND",
+          "statement": "user_level == 'v2'",
+          "mode": "SCRIPT"
+        }
+      },
+      {
+        "nodeKeys": [],
+        "branch": null,
+        "desc": "默认分支"
+      }
+    ]
+  }
+}

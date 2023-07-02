@@ -1,0 +1,13 @@
+{
+  "description": "数据合并节点",
+  "name": "MergeNode",
+  "color": "#98221",
+  "icon": "merge_node",
+  "nodeKey": "n99mergeNodeKey",
+  "displayName": "数据合并节点",
+  "code": "MERGE",
+  "nodeType": "io.innospots.workflow.node.batch.logic.MergeNode",
+  "data": {
+    "merge_mode": "JOIN_ALL"
+  }
+}

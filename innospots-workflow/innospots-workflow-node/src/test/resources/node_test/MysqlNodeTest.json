@@ -1,0 +1,69 @@
+{
+  "displayName": "mysql节点",
+  "description": "mysql节点",
+  "code": "MYSQL",
+  "nodeType": "io.innospots.workflow.node.app.data.SqlDataNode",
+  "name": "mysql节点",
+  "color": "#98221",
+  "icon": "",
+  "nodeKey": "mysqlNodeKey",
+  "methods": {},
+  "storeFields": [
+    "o1",
+    "o2",
+    "users"
+  ],
+  "inputFields": [
+    {
+      "name": "i1",
+      "code": "i1",
+      "valueType": "STRING"
+    },
+    {
+      "name": "i2",
+      "code": "i2",
+      "valueType": "STRING"
+    }
+  ],
+  "outputFields": [
+    {
+      "name": "o1",
+      "code": "o1",
+      "valueType": "STRING",
+      "valueSource": "CONTEXT",
+      "valueSourceCode": "i1"
+    },
+    {
+      "name": "o2",
+      "code": "o2",
+      "valueType": "STRING",
+      "valueSource": "CONTEXT",
+      "valueSourceCode": "i2"
+    },
+    {
+      "name": "users",
+      "code": "users",
+      "valueType": "STRING"
+    }
+  ],
+  "continueOnFail": true,
+  "retryOnFail": false,
+  "maxTries": 5,
+  "retryWaitTimeMills": 100,
+  "async": false,
+  "nodeInstanceId": 17,
+  "nodeDefinitionId": 1,
+  "width": 200,
+  "height": 300,
+  "x": 25,
+  "y": 30,
+  "pauseFlag": false,
+  "data": {
+    "db_name": "innospots-isp-admin",
+    "datasource_id": 2,
+    "data_operation": "GET_LIST",
+    "display_db_name": "innospots-isp-admin",
+    "sql_clause": "select * from sys_user where user_id=3",
+    "db_direct": false
+  }
+}

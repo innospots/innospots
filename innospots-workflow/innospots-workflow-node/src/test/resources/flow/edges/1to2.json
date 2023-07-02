@@ -1,0 +1,13 @@
+{
+  "edgeId": 23,
+  "name": null,
+  "source": "nodestart",
+  "target": "nodescrpt",
+  "sourceAnchor": "start-out",
+  "targetAnchor": "flow-in",
+  "type": "flow-edge",
+  "style": null,
+  "startPoint": null,
+  "endPoint": null,
+  "data": null
+}

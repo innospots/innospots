@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_PATTERN">%sn %d{yyyy-MM-dd HH:mm:ss,SSS} [%-6p] ${sys:PID} [%t] %C{3}.%M:%L – %m%n
+        </Property>
+        <Property name="LOG_PATTERN_CONSOLE">%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %clr{%5p}
+            %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%C{3}}{cyan}.%clr{%M:%L}{yellow}
+            %clr{:}{faint} %m%n%xwEx
+        </Property>
+        <Property name="LOG_ROOT">logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="appender_console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${LOG_PATTERN_CONSOLE}"/>
+        </Console>
+
+        <RollingFile name="appender_file"
+                     fileName="${LOG_ROOT}/innospot.log"
+                     filePattern="${LOG_ROOT}/innospots-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="1"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="io.innospots.base" level="debug" additivity="false">
+            <AppenderRef ref="appender_console"/>
+        </Logger>
+
+        <Logger name="io.innospots.workflow" level="debug" additivity="false">
+            <AppenderRef ref="appender_console"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="appender_console"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,27 @@
+{
+  "description": "批次filter节点",
+  "name": "filterNode节点",
+  "color": "#98221",
+  "icon": "filter_node",
+  "nodeKey": "n99filterNodeKey",
+  "displayName": "数据过滤节点",
+  "code": "FILTER",
+  "nodeType": "io.innospots.workflow.node.batch.logic.FilterNode",
+  "data": {
+    "filter_mode": "RESERVED",
+    "filter_fields": [
+      {
+        "left": {
+          "name": "用户id",
+          "code": "user_left_id",
+          "valueType": "STRING"
+        },
+        "right": {
+          "name": "用户身份证",
+          "code": "user_right_identity",
+          "valueType": "STRING"
+        }
+      }
+    ]
+  }
+}

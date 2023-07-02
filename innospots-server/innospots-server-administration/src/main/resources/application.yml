@@ -1,0 +1,100 @@
+server:
+  port: 8686
+  undertow:
+    threads:
+      io: 4
+      worker: 50
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+  servlet:
+    encoding:
+      force: true
+
+spring:
+  application:
+    name: innospots-server-administration
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    include:
+      - security
+    active: dev
+  boot:
+    admin:
+      context-path: /monitor
+      ui:
+        title: innospots-server-monitor
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  web:
+    resources:
+      chain:
+        compressed: true
+      cache:
+        cachecontrol:
+          max-age: 216000
+          must-revalidate: true
+      static-locations: classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources,file:${innospots.config.upload-file-path},classpath:/META-INF/resources/apps/visualization/
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  jmx:
+    enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+
+logging:
+  file:
+    path: ${innospots.config.log-root-path}/logs
+  config: classpath:log4j2-spring.xml
+
+
+mybatis-plus:
+  global-config:
+    banner: off
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+innospots:
+  config:
+    # set system environment variable: logRootPath
+    log-root-path: ${LOG_PATH:innospots-server}
+    script-build-path: .script_build_path
+    enable-registry: true
+    enable-swagger: true
+    upload-file-path: ./file/
+    ext-lib-path: ./ext_lib/
+    # open debug mode
+    debug-mode: true
+
+
+springdoc:
+  swagger-ui:
+    docExpansion: none
+    persistAuthorization: true
+
+
+# /actuator/info config
+info:
+  build:
+    version: ${java.version}
+  profiles:
+    active: ${spring.profiles.active}

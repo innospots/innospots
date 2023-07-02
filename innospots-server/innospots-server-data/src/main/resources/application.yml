@@ -1,0 +1,58 @@
+server:
+  port: 8787
+  undertow:
+    threads:
+      io: 4
+      worker: 32
+
+spring:
+  application:
+    name: Innospots-Data-Server
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+logging:
+  file:
+    name: ${innospot.config.log-root-path}/logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+  level:
+    "io.innospots": info
+    "io.innospots.base.data": debug
+
+mybatis-plus:
+  global-config:
+    banner: off
+
+# application config
+innospot:
+  config:
+    # set system environment variable: logRootPath
+    log-root-path: ${LOGROOTPATH:innospots-server}
+    enable-registry: true
+    script-build-path: _script_build_path
+  swagger:
+    enable: true
+    docket:
+      base-package: io.innospots
+    apiInfo:
+      title: 数据服务
+      description: 数据服务
+      terms-of-service-url: http://${spring.cloud.client.ip-address}:${server.port}
+      version: 1.0
+      license:
+      license-url:
+  data:
+    record-store-type: mysql

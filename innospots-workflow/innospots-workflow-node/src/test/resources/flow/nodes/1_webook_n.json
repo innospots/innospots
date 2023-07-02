@@ -1,0 +1,33 @@
+{
+  "name": "start",
+  "displayName": null,
+  "code": "START",
+  "nodeType": "io.innospots.workflow.node.app.StateNode",
+  "color": "",
+  "description": "开始节点",
+  "icon": "",
+  "nodeInstanceId": 43,
+  "nodeKey": "nodestart",
+  "actionScriptType": null,
+  "action": null,
+  "methods": null,
+  "storeFields": null,
+  "inputFields": null,
+  "outputFields": null,
+  "continueOnFail": false,
+  "retryOnFail": false,
+  "maxTries": 0,
+  "retryWaitTimeMills": 0,
+  "async": false,
+  "nextNodeKeys": [
+    "nodescrpt"
+  ],
+  "nodeDefinitionId": 7,
+  "width": null,
+  "height": null,
+  "x": 50,
+  "y": 140,
+  "data": null,
+  "pauseFlag": null,
+  "subFlow": null
+}

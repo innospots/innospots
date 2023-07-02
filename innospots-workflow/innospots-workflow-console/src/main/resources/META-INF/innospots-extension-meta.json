@@ -1,0 +1,48 @@
+{
+  "name": "${strategy-app-name}",
+  "i18nNames": {
+    "en_US": "Workflow",
+    "zh_CN": "策略流程"
+  },
+  "version": "v1.0.0",
+  "publishTime": "2021-10-12",
+  "vendor": "Innospots",
+  "extKey": "innospots-workflow",
+  "kernelVersion": "v1.0.0",
+  "description": "workflow module",
+  "basePackages": [
+    "io.innospots.workflow.console"
+  ],
+  "modules": [
+    {
+      "name": "${workflow.management}",
+      "icon": "workflow_management",
+      "itemKey": "workflow-management",
+      "i18nNames": {
+        "en_US": "Workflow",
+        "zh_CN": "策略管理"
+      },
+      "uri": "/workflow/index"
+    },
+    {
+      "name": "${workflow_template}",
+      "icon": "workflow_template",
+      "itemKey": "app-flow-template",
+      "i18nNames": {
+        "en_US": "Workflow Template",
+        "zh_CN": "策略模板"
+      },
+      "uri": "/workflow/template"
+    },
+    {
+      "name": "${workflow_node}",
+      "icon": "workflow_node",
+      "itemKey": "app-management-definition",
+      "i18nNames": {
+        "en_US": "Workflow Node",
+        "zh_CN": "策略节点管理"
+      },
+      "uri": "/workflow/nodes"
+    }
+  ]
+}

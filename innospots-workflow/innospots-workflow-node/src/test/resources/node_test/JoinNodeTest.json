@@ -1,0 +1,48 @@
+{
+  "description": "数据关联节点",
+  "name": "joinNode",
+  "color": "#98221",
+  "icon": "join_node",
+  "nodeKey": "n99joinNodeKey",
+  "displayName": "数据关联节点",
+  "code": "JOIN",
+  "nodeType": "io.innospots.workflow.node.batch.logic.JoinNode",
+  "outputFields": [
+    {
+      "name": "o1",
+      "code": "o1",
+      "valueType": "STRING",
+      "valueSource": "CONTEXT",
+      "valueSourceCode": "i1"
+    },
+    {
+      "name": "o2",
+      "code": "o2",
+      "valueType": "STRING",
+      "valueSource": "CONTEXT",
+      "valueSourceCode": "i2"
+    },
+    {
+      "name": "res",
+      "code": "res",
+      "valueType": "STRING"
+    }
+  ],
+  "data": {
+    "join_type": "LEFT_JOIN",
+    "join_fields": [
+      {
+        "left": {
+          "name": "用户id",
+          "code": "user_left_id",
+          "valueType": "STRING"
+        },
+        "right": {
+          "name": "用户身份证",
+          "code": "user_right_identity",
+          "valueType": "STRING"
+        }
+      }
+    ]
+  }
+}

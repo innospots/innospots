@@ -1,0 +1,127 @@
+/*
+ *  Copyright © 2021-2023 Innospots (http://www.innospots.com)
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License. You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package io.innospots.workflow.core.execution.node;
+
+import io.innospots.workflow.core.execution.ExecutionResource;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.*;
+
+/**
+ * node execute output for each branch
+ *
+ * @author Smars
+ * @version 1.0.0
+ * @date 2022/2/4
+ */
+@Getter
+@Setter
+public class NodeOutput {
+
+    private List<Map<String, Object>> results = new ArrayList<>();
+
+    /**
+     * key : item position
+     */
+    private Map<Integer,List<ExecutionResource>> resources;
+
+    private Set<String> nextNodeKeys = new HashSet<>();
+
+    private String name;
+
+    public NodeOutput() {
+    }
+
+    public NodeOutput(String name) {
+        this.name = name;
+    }
+
+    public boolean containNextNodeKey(String nodeKey) {
+        return nextNodeKeys.contains(nodeKey);
+    }
+
+    public void addResult(Map<String, Object> item) {
+        results.add(item);
+    }
+
+    public void addResult(String key, Object value) {
+        Map<String, Object> r = new HashMap<>();
+        r.put(key, value);
+        this.addResult(r);
+    }
+
+    public void addResult(Collection<Map<String, Object>> items) {
+        results.addAll(items);
+    }
+
+    public List<ExecutionResource> itemResources(Integer position) {
+        if(resources!=null && position < resources.size()){
+            return this.resources.get(position);
+        }
+        return null;
+    }
+
+    public void addResource(Integer position,ExecutionResource executionResource) {
+        if (resources == null) {
+            this.resources = new LinkedHashMap<>();
+        }
+        List<ExecutionResource> executionResources = null;
+        if(this.resources.containsKey(position)){
+            executionResources = this.resources.get(position);
+        }else {
+            executionResources = new ArrayList<>();
+            this.resources.put(position, executionResources);
+        }
+        executionResources.add(executionResource);
+    }
+
+    public void addNextKey(String nodeKey) {
+        if (nodeKey != null) {
+            this.nextNodeKeys.add(nodeKey);
+        }
+    }
+
+    public void addNextKey(Collection<String> nodeKeys) {
+        if (CollectionUtils.isNotEmpty(nodeKeys)) {
+            this.nextNodeKeys.addAll(nodeKeys);
+        }
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", nextNodeKeys=").append(nextNodeKeys);
+        sb.append(", resources=").append(resources);
+        sb.append(", results=").append(results);
+
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public NodeOutput copy() {
+        NodeOutput nodeOutput = new NodeOutput();
+        nodeOutput.resources = resources;
+        nodeOutput.name = name;
+        nodeOutput.nextNodeKeys = nextNodeKeys;
+        return nodeOutput;
+    }
+}

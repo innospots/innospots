@@ -1,0 +1,14 @@
+{
+  "data": {
+    "file_pattern":"*.pdf",
+    "output_path": "/tmp/pdf_out"
+  },
+  "nodeKey": "DnHPsyFPa",
+  "nodeDefinitionId": 51,
+  "name": "文件存储",
+  "code": "WRITE_FILES",
+  "nodeType": "io.innospots.workflow.node.app.file.WriteFilesNode",
+  "displayName": "文件存储",
+  "description": "文件存储",
+  "nodeInstanceId": 125
+}
