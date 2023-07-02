@@ -1,0 +1,18 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+target
+*.iml
+.idea
+*.log
+logs
+.script_build_path
+.execution_contexts
+_script_build_path
+distribution
+innospots-isp-ui/dist
+.workflow
+
+*.bkp
+.flattened-pom.xml
+target
+null
