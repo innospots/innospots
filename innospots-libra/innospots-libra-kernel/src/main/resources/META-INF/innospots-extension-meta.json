@@ -1,0 +1,237 @@
+{
+  "name": "${app-name.kernel.title}",
+  "i18nNames": {
+    "en_US": "System Kernel",
+    "zh_CN": "系统核心"
+  },
+  "version": "v1.0.0",
+  "publishTime": "2023-01-01",
+  "vendor": "Innospots",
+  "extKey": "innospots-libra-extension-kernel",
+  "kernelVersion": "v1.0.0",
+  "description": "Libra Kernel System Extension",
+  "basePackages": [
+    "io.innospots.libra.kernel",
+    "io.innospots.libra.logger",
+    "io.innospots.connector.schema",
+    "io.innospots.libra.security"
+  ],
+  "modules": [
+    {
+      "name": "${workspace.main.title}",
+      "itemKey": "libra-workspace",
+      "viewScope": "V_PUBLIC",
+      "i18nNames": {
+        "en_US": "Workspace",
+        "zh_CN": "工作台"
+      },
+      "icon": "workspace",
+      "uri": "/apps/visualization/workspace"
+    },
+    {
+      "itemKey": "libra-task",
+      "uri": "/tasks",
+      "i18nNames": {
+        "en_US": "Task",
+        "zh_CN": "工作项管理"
+      }
+    },
+    {
+      "name": "${page.list.title}",
+      "itemKey": "libra-page-root",
+      "icon": "page",
+      "i18nNames": {
+        "en_US": "Page",
+        "zh_CN": "页面"
+      },
+      "items": [
+        {
+          "name": "${page.heading_title}",
+          "itemKey": "libra-page",
+          "uri": "/pages",
+          "i18nNames": {
+            "en_US": "Pages",
+            "zh_CN": "页面管理"
+          }
+        },
+        {
+          "name": "${page.category.heading_title}",
+          "itemKey": "libra-page-category-dynamic",
+          "i18nNames": {
+            "en_US": "Categories",
+            "zh_CN": "页面分类"
+          },
+          "loadMode": "DYNAMIC"
+        },
+        {
+          "name": "${page.info.title}",
+          "itemKey": "libra-page-info-dynamic",
+          "i18nNames": {
+            "en_US": "Page Infos",
+            "zh_CN": "页面明细"
+          },
+          "loadMode": "DYNAMIC"
+        }
+      ]
+    },
+    {
+      "itemKey": "application",
+      "uri": "/app",
+      "icon": "application",
+      "i18nNames": {
+        "en_US": "Application",
+        "zh_CN": "应用管理"
+      }
+    },
+    {
+      "name": "${app.main.title}",
+      "itemKey": "libra-extension-installed",
+      "uri": "/extension/installed",
+      "icon": "extension-installed",
+      "i18nNames": {
+        "en_US": "Extensions",
+        "zh_CN": "扩展列表"
+      }
+    },
+    {
+      "name": "${app.main.button.app_store}",
+      "itemKey": "libra-extension-store",
+      "uri": "/extension-store",
+      "adminDefault": false,
+      "i18nNames": {
+        "en_US": "Extensions Store",
+        "zh_CN": "扩展市场"
+      }
+    },
+    {
+      "itemKey": "libra-apps",
+      "uri": "/metadata/credential",
+      "i18nNames": {
+        "en_US": "Credential",
+        "zh_CN": "凭据管理"
+      }
+    },
+    {
+      "itemKey": "libra-apps-api",
+      "uri": "/apps/schema/api",
+      "i18nNames": {
+        "en_US": "HTTP API",
+        "zh_CN": "HTTP接口"
+      }
+    },
+    {
+      "itemKey": "libra-apps-dataset",
+      "uri": "/apps/schema/data-set",
+      "i18nNames": {
+        "en_US": "Datasets",
+        "zh_CN": "数据视图管理"
+      }
+    },
+    {
+      "itemKey": "libra-user",
+      "uri": "/system/users",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Users",
+        "zh_CN": "用户管理"
+      }
+    },
+    {
+      "itemKey": "libra-role",
+      "uri": "/system/roles",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Roles",
+        "zh_CN": "角色管理"
+      }
+    },
+    {
+      "itemKey": "libra-rbac",
+      "uri": "/config/rbac",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Access Control",
+        "zh_CN": "权限管理"
+      }
+    },
+    {
+      "itemKey": "notification-setting",
+      "uri": "/system/notification/channel-assignment",
+      "name": "${notification.assignment.title}",
+      "i18nNames": {
+        "en_US": "Notification Push Channel",
+        "zh_CN": "消息接收设置"
+      }
+    },
+    {
+      "itemKey": "notification-channel",
+      "uri": "/system/notification/channel",
+      "name": "${notification.channel.title}",
+      "i18nNames": {
+        "en_US": "Notification Channels",
+        "zh_CN": "消息渠道设置"
+      }
+    },
+    {
+      "itemKey": "log-login",
+      "uri": "/system/login-logs",
+      "i18nNames": {
+        "en_US": "Login Log",
+        "zh_CN": "登录日志"
+      }
+    },
+    {
+      "itemKey": "log-operate",
+      "uri": "/system/operation-logs",
+      "i18nNames": {
+        "en_US": "Operation Log",
+        "zh_CN": "操作日志"
+      }
+    },
+    {
+      "itemKey": "libra-language",
+      "uri": "/config/languages",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Languages",
+        "zh_CN": "语言管理"
+      }
+    },
+    {
+      "itemKey": "libra-currency",
+      "uri": "/config/currencies",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Currency",
+        "zh_CN": "货币管理"
+      }
+    },
+    {
+      "itemKey": "libra-translation",
+      "uri": "/config/translations",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Translations",
+        "zh_CN": "翻译管理"
+      }
+    },
+    {
+      "itemKey": "libra-menu",
+      "uri": "/config/menus",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "Menus",
+        "zh_CN": "菜单设置"
+      }
+    },
+    {
+      "itemKey": "libra-system-setting",
+      "uri": "/config/system",
+      "adminDefault": true,
+      "i18nNames": {
+        "en_US": "System Setting",
+        "zh_CN": "系统设置"
+      }
+    }
+  ]
+}
