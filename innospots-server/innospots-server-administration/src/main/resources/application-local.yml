@@ -25,5 +25,6 @@ innospots:
     idle-timeout: 600000 # millisecond,default ten minute
 
   workflow:
+    executionStorePath: .execution_contexts
     server:
       port: ${innosports.workflow.server.port:19876}
