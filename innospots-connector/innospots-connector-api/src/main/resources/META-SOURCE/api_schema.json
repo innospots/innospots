@@ -3,7 +3,6 @@
   "icon": "/http-api.svg",
   "order": 200,
   "enabled": true,
-  "minder": "io.innospots.connector.api.minder.BasicAuthApiConnectionMinder",
   "connectType": "API",
   "appNodeType": "io.innospots.workflow.node.app.data.ApiDataNode",
   "overview": "基于HTTP协议的请求连接",
@@ -12,6 +11,7 @@
     {
       "name": "Basic Auth",
       "code": "basic-auth-api",
+      "minder": "io.innospots.connector.api.minder.BasicAuthApiConnectionMinder",
       "defaults": {},
       "elements": [
         {
@@ -67,6 +67,7 @@
     {
       "name": "Digest Auth",
       "code": "digest-auth-api",
+      "minder": "io.innospots.connector.api.minder.DigestAuthApiConnectionMinder",
       "defaults": {},
       "elements": [
         {
@@ -122,6 +123,7 @@
     {
       "name": "Header Auth",
       "code": "header-auth-api",
+      "minder": "io.innospots.connector.api.minder.HeaderAuthApiConnectionMinder",
       "defaults": {},
       "elements": [
         {
@@ -177,6 +179,7 @@
     {
       "name": "Oauth2 Auth",
       "code": "oauth2-auth-api",
+      "minder": "io.innospots.connector.api.minder.OAuth2ApiConnectionMinder",
       "defaults": {},
       "elements": [
         {
@@ -280,6 +283,7 @@
     {
       "name": "Token Auth",
       "code": "token-auth-api",
+      "minder": "io.innospots.connector.api.minder.TokenAuthApiConnectionMinder",
       "defaults": {},
       "elements": [
         {
@@ -323,6 +327,7 @@
     {
       "name": "Oauth2 client",
       "code": "oauth2-client-api",
+      "minder": "io.innospots.connector.api.minder.OAuth2ApiConnectionMinder",
       "defaults": {},
       "elements": [
         {

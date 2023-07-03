@@ -66,7 +66,8 @@ public class CredentialOauth2Controller {
             throw ValidatorException.buildInvalidException("oauth2-credential", "oauth2 credential callback state can not be empty");
         }
         AppCredentialInfo appCredentialInfo = new AppCredentialInfo();
-        appCredentialInfo.setConfigCode("oauth2-api");
+        appCredentialInfo.setConfigCode("oauth2-auth-api");
+        appCredentialInfo.setConnectorName("Http");
         appCredentialInfo.setEncryptFormValues(state);
 
         ConnectionCredential connectionCredential = connectionCredentialReader.fillCredential(appCredentialInfo);

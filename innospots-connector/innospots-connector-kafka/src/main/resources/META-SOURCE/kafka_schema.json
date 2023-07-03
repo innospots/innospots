@@ -3,7 +3,6 @@
   "icon": "/Kafka.svg",
   "order": 100,
   "enabled": true,
-  "minder": "io.innospots.connector.kafka.minder.KafkaDataConnectionMinder",
   "connectType": "QUEUE",
   "appNodeType": "io.innospots.workflow.node.app.data.KafkaDataNode",
   "overview": "",
@@ -12,6 +11,7 @@
     {
       "name": "基础配置",
       "code": "kafka-basic",
+      "minder": "io.innospots.connector.kafka.minder.KafkaDataConnectionMinder",
       "defaults": {
         "classDriver": ""
       },

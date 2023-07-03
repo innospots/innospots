@@ -28,6 +28,7 @@ import io.innospots.base.data.schema.config.ConnectionMinderSchemaLoader;
 import io.innospots.base.data.schema.config.CredentialFormConfig;
 import io.innospots.base.data.schema.reader.IConnectionCredentialReader;
 import io.innospots.base.data.schema.reader.ISchemaRegistryReader;
+import io.innospots.base.exception.LoadConfigurationException;
 import io.innospots.base.exception.ResourceException;
 import io.innospots.base.exception.data.DataConnectionException;
 import io.innospots.base.model.PageBody;
@@ -49,15 +50,7 @@ public class DataConnectionMinderManager {
 
     private static final Logger logger = LoggerFactory.getLogger(DataConnectionMinderManager.class);
 
-    static {
-//        loadInitialMinder();
-    }
-
     private Cache<String, IDataConnectionMinder> connectionPoolCache;
-    /**
-     * key:connectorName, value: dataConnectionDriver
-     */
-//    private static Map<String, Class<? extends IDataConnectionMinder>> connectionClazz;
 
     private IConnectionCredentialReader connectionCredentialReader;
 
@@ -72,22 +65,6 @@ public class DataConnectionMinderManager {
         connectionPoolCache = build(cacheTimeoutSecond);
     }
 
-    /*
-    private static void loadInitialMinder() {
-        connectionClazz = new HashMap<>(7);
-        ServiceLoader<IDataConnectionMinder> serviceLoader = ServiceLoader.load(IDataConnectionMinder.class);
-        Iterator<IDataConnectionMinder> iterator = serviceLoader.iterator();
-
-        while (iterator.hasNext()) {
-            IDataConnectionMinder cPool = iterator.next();
-            connectionClazz.put(cPool.minderName(), cPool.getClass());
-            logger.debug("Loading data connection driver:{}", cPool.getClass());
-        }
-
-        logger.debug("Loaded data connection driver size:{}", connectionClazz.size());
-    }
-     */
-
     public static IDataConnectionMinder getCredentialMinder(Integer credentialId) {
         return ApplicationContextUtils.getBean(DataConnectionMinderManager.class).getMinder(credentialId);
     }
@@ -96,28 +73,16 @@ public class DataConnectionMinderManager {
         return (IQueueConnectionMinder) ApplicationContextUtils.getBean(DataConnectionMinderManager.class).getMinder(credentialId);
     }
 
-
-    /*
-    public static Collection<Class<? extends IDataConnectionMinder>> getMinderClasses() {
-        return connectionClazz.values();
-    }
-
-     */
-
-    /*
-    public static Class<? extends IDataConnectionMinder> getMinderClass(String minderName) {
-        return connectionClazz.get(connectorName);
-    }
-
-     */
-
-    public static IDataConnectionMinder newInstanceByConfigCode(String schemaName) {
+    public static IDataConnectionMinder newInstanceByConnectorNameAndConfigCode(String connectorName, String configCode) {
         try {
-            ConnectionMinderSchema minderSchema = ConnectionMinderSchemaLoader.getConnectionMinderSchema(schemaName);
+            ConnectionMinderSchema minderSchema = ConnectionMinderSchemaLoader.getConnectionMinderSchema(connectorName);
             if (minderSchema == null) {
                 return null;
             }
-            return (IDataConnectionMinder) Class.forName(minderSchema.getMinder()).newInstance();
+            CredentialFormConfig config = minderSchema.getConfigs().stream().filter(f -> configCode.equals(f.getCode())).findFirst()
+                    .orElseThrow(() -> LoadConfigurationException.buildException(ConnectionMinderSchemaLoader.class, "dataConnectionMinder newInstance failed, configCode invalid."));
+
+            return (IDataConnectionMinder) Class.forName(config.getMinder()).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
         }
@@ -125,22 +90,11 @@ public class DataConnectionMinderManager {
     }
 
     public static Boolean testConnection(ConnectionCredential connectionCredential) {
-        //Class<? extends IDataConnectionMinder> driverClass = DataConnectionMinderManager.getMinderClass(formConfig.getMinder());
-        IDataConnectionMinder dataConnectionDriver = newInstanceByConfigCode(connectionCredential.getConnectorName());
+        IDataConnectionMinder dataConnectionDriver = newInstanceByConnectorNameAndConfigCode(connectionCredential.getConnectorName(),connectionCredential.getConfigCode());
         if (dataConnectionDriver != null) {
             return dataConnectionDriver.test(connectionCredential);
         }
         return false;
-        /*
-        try {
-
-            return dataConnectionDriver.test(connectionCredential);
-        } catch (InstantiationException | IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return false;
-
-         */
     }
 
     public static Object fetchSample(ConnectionCredential connectionCredential) {
@@ -148,24 +102,11 @@ public class DataConnectionMinderManager {
         if (formConfig == null) {
             return false;
         }
-        //Class<? extends IDataConnectionMinder> driverClass = DataConnectionMinderManager.getMinderClass(formConfig.getMinder());
-        IDataConnectionMinder dataConnectionDriver = newInstanceByConfigCode(connectionCredential.getConfigCode());
+        IDataConnectionMinder dataConnectionDriver = newInstanceByConnectorNameAndConfigCode(connectionCredential.getConnectorName(),connectionCredential.getConfigCode());
         if (dataConnectionDriver != null) {
             dataConnectionDriver.open();
             return dataConnectionDriver.fetchSample(connectionCredential, null);
         }
-        /*
-        dataConnectionDriver.open();
-        Class<? extends IDataConnectionMinder> driverClass = DataConnectionMinderManager.getMinderClass(connectionCredential.getConnectorName());
-        try {
-            IDataConnectionMinder dataConnectionDriver = driverClass.newInstance();
-            dataConnectionDriver.open();
-            return dataConnectionDriver.fetchSample(connectionCredential, null);
-        } catch (InstantiationException | IllegalAccessException e) {
-            logger.error(e.getMessage(), e);
-        }
-
-         */
         return null;
     }
 
@@ -189,10 +130,8 @@ public class DataConnectionMinderManager {
         }
 
         try {
-            dataConnectionMinder = newInstanceByConfigCode(connectionCredential.getConnectorName());
-            //Class<? extends IDataConnectionMinder> connectionMinderClass = connectionClazz.get(connectionCredential.getConnectorName());
+            dataConnectionMinder = newInstanceByConnectorNameAndConfigCode(connectionCredential.getConnectorName(),connectionCredential.getConfigCode());
             if (dataConnectionMinder != null) {
-//                dataConnectionMinder = connectionMinderClass.newInstance();
                 dataConnectionMinder.initialize(dataSchemaReader, connectionCredential);
                 connectionPoolCache.put(connectionCredential.key(), dataConnectionMinder);
                 dataConnectionMinder.open();
@@ -216,10 +155,6 @@ public class DataConnectionMinderManager {
     public void unregister(Integer credentialId) {
         connectionPoolCache.invalidate(key(credentialId));
     }
-
-//    public IDataConnectionMinder getMinder(Integer datasourceId) {
-//        return getMinder(datasourceId, null);
-//    }
 
     public IDataConnectionMinder getMinder(String credentialCode) {
         ConnectionCredential connectionCredential = connectionCredentialReader.readCredential(credentialCode);
