@@ -8,7 +8,7 @@
 mvn clean install -DskipTests
 ```
 
-TODO待验证--
+TODO待验证
 
 ```shell script
 mvn docker:build
