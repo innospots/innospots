@@ -87,7 +87,7 @@ public class DataframeExecutor {
         Dataframe dataframe = new Dataframe();
 
         if (viewExecuteParam.getPageInfo().isCountTotal()) {
-            String countSql = SqlScriptBuilderManager.buildCountSql(connectionCredential.getConfigCode(), viewExecuteParam);
+            String countSql = SqlScriptBuilderManager.buildCountSql(connectionCredential.getConnectorName(), viewExecuteParam);
             InnospotResponse<DataBody<Map<String, Object>>> dataBody = sqlOperator.queryForObject(dataset.getCredentialId(), countSql);
             Long total = this.parseResultCount(dataBody);
             viewExecuteParam.getPageInfo().setTotal(total);
