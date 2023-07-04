@@ -94,7 +94,7 @@ public class DataframeExecutor {
             dataframe.setPageInfo(viewExecuteParam.getPageInfo());
         }
 
-        String sql = SqlScriptBuilderManager.buildSql(connectionCredential.getConfigCode(), viewExecuteParam);
+        String sql = SqlScriptBuilderManager.buildSql(connectionCredential.getConnectorName(), viewExecuteParam);
         dataframe.setScript(sql);
 
         InnospotResponse<PageBody> pageBody = sqlOperator.queryForList(dataset.getCredentialId(), sql);
