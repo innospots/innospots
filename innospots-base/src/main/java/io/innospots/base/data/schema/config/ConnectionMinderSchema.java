@@ -41,8 +41,6 @@ public class ConnectionMinderSchema {
 
     private Boolean enabled;
 
-    private String minder;
-
     /**
      * the nodeType of the application node definition
      */
@@ -63,7 +61,6 @@ public class ConnectionMinderSchema {
         sb.append(", icon='").append(icon).append('\'');
         sb.append(", order=").append(order);
         sb.append(", enabled=").append(enabled);
-        sb.append(", minder='").append(minder).append('\'');
         sb.append(", configs=").append(configs);
         sb.append('}');
         return sb.toString();

@@ -1,9 +1,12 @@
+server:
+  port: 9800
+
 spring:
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: false
-    generate-ddl: false
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
     open-in-view: false
 
 innospots:
@@ -22,5 +25,6 @@ innospots:
     idle-timeout: 600000 # millisecond,default ten minute
 
   workflow:
+    executionStorePath: .execution_contexts
     server:
       port: ${innosports.workflow.server.port:19876}

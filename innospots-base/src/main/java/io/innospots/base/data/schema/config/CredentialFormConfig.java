@@ -37,6 +37,7 @@ public class CredentialFormConfig implements Cloneable {
 
     private String code;
 
+    private String minder;
 
     private LinkedHashMap<String, String> defaults;
 
