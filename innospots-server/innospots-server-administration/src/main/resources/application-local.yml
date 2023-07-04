@@ -4,9 +4,9 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
-    generate-ddl: true
+      ddl-auto: none
+    show-sql: false
+    generate-ddl: false
     open-in-view: false
 
 innospots:
@@ -14,10 +14,10 @@ innospots:
     schemaCacheTimeoutSecond: 30
     recordStoreType: mysql
   db:
-    driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
-    jdbc-url: jdbc:mysql://${DB_IP}:${DB_PORT:3306}/${DB_NAME}?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=${DB_TIMEZONE:GMT%2B8}&zeroDateTimeBehavior=CONVERT_TO_NULL
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+    jdbc-url: jdbc:h2:${INNOS_ROOT};MODE=MySQL;DB_CLOSE_DELAY=-1;CASE_INSENSITIVE_IDENTIFIERS=TRUE;IGNORECASE=TRUE;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password: sa
     maximum-pool-size: 64
     minimum-idle: 4
     pool-name: innospots-pool

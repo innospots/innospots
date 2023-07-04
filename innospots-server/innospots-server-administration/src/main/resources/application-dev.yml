@@ -1,9 +1,12 @@
+server:
+  port: 9800
+
 spring:
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: false
-    generate-ddl: false
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
     open-in-view: false
 
 innospots:
