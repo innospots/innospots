@@ -220,4 +220,9 @@ public class SchemaRegistryOperator extends ServiceImpl<SchemaRegistryDao, Schem
                 .eq(SchemaRegistryEntity::getName, name)
                 .ne(SchemaRegistryEntity::getCredentialId, credentialId)) > 0;
     }
+
+    public List<SchemaRegistry> listByRegistryIds(Set<Integer> ids) {
+        List<SchemaRegistryEntity> entities = super.listByIds(ids);
+        return SchemaRegistryConvertMapper.INSTANCE.entitiesToModels(entities);
+    }
 }

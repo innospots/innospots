@@ -21,6 +21,7 @@ package io.innospots.connector.schema.operator;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.innospots.base.data.dataset.Dataset;
+import io.innospots.base.data.dataset.IDatasetReader;
 import io.innospots.base.data.schema.SchemaRegistry;
 import io.innospots.base.data.schema.SchemaRegistryType;
 import io.innospots.base.exception.ResourceException;
@@ -31,12 +32,13 @@ import io.innospots.connector.schema.mapper.SchemaRegistryConvertMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alfred
  * @date 2022/1/31
  */
-public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegistryEntity> {
+public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegistryEntity> implements IDatasetReader {
 
     private final SchemaRegistryOperator schemaRegistryOperator;
 
@@ -109,4 +111,15 @@ public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegist
                 .ne(SchemaRegistryEntity::getRegistryId, registryId)) > 0;
     }
 
+    @Override
+    public List<Dataset> listDatasets(Integer credentialId) {
+        List<SchemaRegistry> schemaRegistries = schemaRegistryOperator.listSchemaRegistries(credentialId);
+        return SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistries);
+    }
+
+    @Override
+    public List<Dataset> listDatasets(Set<Integer> ids) {
+        List<SchemaRegistry> schemaRegistries = schemaRegistryOperator.listByRegistryIds(ids);
+        return SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistries);
+    }
 }

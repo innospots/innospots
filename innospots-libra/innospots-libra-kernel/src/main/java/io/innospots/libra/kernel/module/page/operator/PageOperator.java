@@ -23,6 +23,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.innospots.base.data.dataset.Dataset;
+import io.innospots.base.data.dataset.IDatasetReader;
 import io.innospots.base.enums.DataStatus;
 import io.innospots.base.exception.ValidatorException;
 import io.innospots.base.json.JSONUtils;
@@ -43,26 +45,23 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Alfred
  * @date 2022/1/23
  */
-@Service // TODO 删除@Service
+@Service
 public class PageOperator extends ServiceImpl<PageDao, PageEntity> {
 
     private final WidgetOperator widgetOperator;
 
-//    private final IDatasetReader datasetReader; TODO 待改造Dataset
+    private final IDatasetReader datasetReader;
 
-    public PageOperator(WidgetOperator widgetOperator
-//            , IDatasetReader datasetReader TODO 待改造Dataset
+    public PageOperator(WidgetOperator widgetOperator, IDatasetReader datasetReader
     ) {
         this.widgetOperator = widgetOperator;
-//        this.datasetReader = datasetReader; TODO 待改造Dataset
+        this.datasetReader = datasetReader;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -159,12 +158,12 @@ public class PageOperator extends ServiceImpl<PageDao, PageEntity> {
         PageDetail pageDetail = PageMapper.INSTANCE.modelToDetail(page);
         pageDetail.setWidgets(widgets);
 
-        List<String> viewIds = new ArrayList<>();
-        widgets.forEach(v -> viewIds.addAll(v.getViewIds()));
-
-        // TODO 待改造Dataset
-//        List<Dataset> views = datasetReader.listDatasets(viewIds);
-//        pageDetail.setViews(views);
+        Set<Integer> viewIds = new HashSet<>();
+        for (Widget widget : widgets) {
+            widget.getViewIds().forEach(v -> viewIds.add(Integer.valueOf(v)));
+        }
+        List<Dataset> views = datasetReader.listDatasets(viewIds);
+        pageDetail.setViews(views);
 
         return pageDetail;
     }
