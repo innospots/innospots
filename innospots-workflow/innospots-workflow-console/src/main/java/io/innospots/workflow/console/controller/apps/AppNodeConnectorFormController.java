@@ -50,7 +50,7 @@ import static io.innospots.libra.base.controller.BaseController.PATH_ROOT_ADMIN;
  */
 @RestController
 @RequestMapping(PATH_ROOT_ADMIN + "apps/connector/form")
-@ModuleMenu(menuKey = "app-management-definition")
+@ModuleMenu(menuKey = "application")
 @Tag(name = "Apps Node Connector")
 public class AppNodeConnectorFormController {
 

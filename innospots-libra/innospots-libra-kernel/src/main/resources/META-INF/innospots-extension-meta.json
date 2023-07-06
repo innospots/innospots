@@ -14,7 +14,8 @@
     "io.innospots.libra.kernel",
     "io.innospots.libra.logger",
     "io.innospots.connector.schema",
-    "io.innospots.libra.security"
+    "io.innospots.libra.security",
+    "io.innospots.workflow.console"
   ],
   "modules": [
     {

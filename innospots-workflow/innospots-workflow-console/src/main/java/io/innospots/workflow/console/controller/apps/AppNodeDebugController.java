@@ -46,7 +46,7 @@ import static io.innospots.libra.base.menu.ItemType.BUTTON;
  */
 @RestController
 @RequestMapping(PATH_ROOT_ADMIN + "apps/definition/debug")
-@ModuleMenu(menuKey = "app-management-definition")
+@ModuleMenu(menuKey = "application")
 @Tag(name = "Apps Node debug")
 public class AppNodeDebugController {
 
