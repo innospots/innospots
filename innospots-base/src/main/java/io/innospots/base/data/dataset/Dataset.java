@@ -74,4 +74,7 @@ public class Dataset extends BaseModelInfo {
     @Schema(title = "scriptVariables")
     private List<Variable> variables;
 
+    @Schema(title = "icon")
+    private String icon;
+
 }
