@@ -24,15 +24,22 @@ import io.innospots.base.data.dataset.Dataset;
 import io.innospots.base.data.dataset.IDatasetReader;
 import io.innospots.base.data.schema.SchemaRegistry;
 import io.innospots.base.data.schema.SchemaRegistryType;
+import io.innospots.base.data.schema.config.ConnectionMinderSchema;
+import io.innospots.base.data.schema.config.ConnectionMinderSchemaLoader;
 import io.innospots.base.exception.ResourceException;
 import io.innospots.base.model.PageBody;
 import io.innospots.connector.schema.dao.SchemaRegistryDao;
+import io.innospots.connector.schema.entity.AppCredentialEntity;
 import io.innospots.connector.schema.entity.SchemaRegistryEntity;
 import io.innospots.connector.schema.mapper.SchemaRegistryConvertMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Alfred
@@ -42,8 +49,12 @@ public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegist
 
     private final SchemaRegistryOperator schemaRegistryOperator;
 
-    public DatasetOperator(SchemaRegistryOperator schemaRegistryOperator) {
+    private final AppCredentialOperator appCredentialOperator;
+
+    public DatasetOperator(SchemaRegistryOperator schemaRegistryOperator,
+                           AppCredentialOperator appCredentialOperator) {
         this.schemaRegistryOperator = schemaRegistryOperator;
+        this.appCredentialOperator = appCredentialOperator;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -84,13 +95,16 @@ public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegist
 
     public List<Dataset> listDatasets(Integer categoryId, String queryCode, String sort) {
         List<SchemaRegistry> schemaRegistries = schemaRegistryOperator.listSchemaRegistries(queryCode, sort, categoryId, SchemaRegistryType.DATASET);
-        return SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistries);
+        List<Dataset> datasets = SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistries);
+        this.fillDatasetIcon(datasets);
+        return datasets;
     }
 
     public PageBody<Dataset> pageDatasets(Integer categoryId, Integer page, Integer size, String queryCode, String sort) {
         PageBody<SchemaRegistry> schemaRegistryPageBody = schemaRegistryOperator.pageSchemaRegistries(queryCode, sort, categoryId, SchemaRegistryType.DATASET, page, size);
         List<Dataset> datasets = SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistryPageBody.getList());
         PageBody<Dataset> pageBody = new PageBody<>();
+        this.fillDatasetIcon(datasets);
         pageBody.setList(datasets);
         pageBody.setPageSize(schemaRegistryPageBody.getPagination().getPageSize());
         pageBody.setCurrent(schemaRegistryPageBody.getPagination().getCurrent());
@@ -122,4 +136,19 @@ public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegist
         List<SchemaRegistry> schemaRegistries = schemaRegistryOperator.listByRegistryIds(ids);
         return SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistries);
     }
+
+    private void fillDatasetIcon(List<Dataset> datasets){
+        Set<Integer> ids = datasets.stream().map(Dataset::getCredentialId).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(ids)) {
+            return;
+        }
+        List<AppCredentialEntity> credentials = appCredentialOperator.listByIds(ids);
+        Map<Integer, String> iconMap = new HashMap<>();
+        for (AppCredentialEntity credential : credentials) {
+            ConnectionMinderSchema minderSchema = ConnectionMinderSchemaLoader.getConnectionMinderSchema(credential.getConnectorName());
+            iconMap.put(credential.getCredentialId(), minderSchema.getIcon());
+        }
+        datasets.forEach(v -> v.setIcon(iconMap.get(v.getCredentialId())));
+    }
+
 }
