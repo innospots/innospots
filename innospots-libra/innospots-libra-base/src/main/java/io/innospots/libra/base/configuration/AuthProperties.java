@@ -81,8 +81,14 @@ public class AuthProperties {
      */
     private String secretKey;
 
+    /**
+     * these paths can be access in public, not be login
+     */
     private List<String> ignoreAuthPaths = new ArrayList<>();
 
+    /**
+     * these paths can be access, which not be set role permission, but must be login
+     */
     private List<String> ignorePermissionPaths = new ArrayList<>();
 
     private List<AppAuthInfo> appAuthInfos = new ArrayList<>();

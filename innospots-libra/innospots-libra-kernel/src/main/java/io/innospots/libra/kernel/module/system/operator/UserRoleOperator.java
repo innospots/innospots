@@ -21,8 +21,11 @@ package io.innospots.libra.kernel.module.system.operator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.innospots.base.exception.AuthenticationException;
+import io.innospots.libra.base.configuration.AuthProperties;
 import io.innospots.libra.kernel.module.system.dao.UserRoleDao;
 import io.innospots.libra.kernel.module.system.entity.UserRoleEntity;
+import io.innospots.libra.kernel.module.system.enums.SystemRoleCode;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import org.springframework.stereotype.Service;
@@ -35,6 +38,12 @@ import java.util.*;
  */
 @Service
 public class UserRoleOperator extends ServiceImpl<UserRoleDao, UserRoleEntity> {
+
+    private AuthProperties authProperties;
+
+    public UserRoleOperator(AuthProperties authProperties) {
+        this.authProperties = authProperties;
+    }
 
     /**
      * create
@@ -99,7 +108,7 @@ public class UserRoleOperator extends ServiceImpl<UserRoleDao, UserRoleEntity> {
         }
 
         if (!removed.isEmpty()) {
-            up = this.removeByIds(removed) && up;
+            up = this.deleteByRoleIds(removed) && up;
         }
 
         return up;
@@ -118,7 +127,11 @@ public class UserRoleOperator extends ServiceImpl<UserRoleDao, UserRoleEntity> {
      *
      * @param roleIds
      */
-    public boolean deleteByRoleIds(List<Integer> roleIds) {
+    public boolean deleteByRoleIds(Collection<Integer> roleIds) {
+        if (roleIds.contains(SystemRoleCode.SUPER_ADMIN.getRoleId())) {
+            throw AuthenticationException.buildPermissionException(this.getClass(), "not allow delete super admin role.");
+
+        }
         QueryWrapper<UserRoleEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().in(UserRoleEntity::getRoleId, roleIds);
         return this.remove(queryWrapper);
@@ -126,11 +139,28 @@ public class UserRoleOperator extends ServiceImpl<UserRoleDao, UserRoleEntity> {
 
     public boolean deleteByUserIds(List<Integer> userIds) {
         QueryWrapper<UserRoleEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().in(UserRoleEntity::getUserId, userIds);
-        return this.remove(queryWrapper);
+        boolean up = false;
+        if (userIds.contains(authProperties.getDefaultSuperAdminUserId())) {
+            userIds.remove(authProperties.getDefaultSuperAdminUserId());
+            queryWrapper.lambda().eq(UserRoleEntity::getUserId, authProperties.getDefaultSuperAdminUserId())
+                    .ne(UserRoleEntity::getRoleId, SystemRoleCode.SUPER_ADMIN.getRoleId());
+            up = this.remove(queryWrapper);
+        }
+
+        if (!userIds.isEmpty()) {
+            queryWrapper.lambda().in(UserRoleEntity::getUserId, userIds);
+            up = this.remove(queryWrapper);
+        }
+
+        return up;
     }
 
     public boolean delete(Integer userId, Integer roleId) {
+        if(authProperties.getDefaultSuperAdminUserId().equals(userId) &&
+                SystemRoleCode.SUPER_ADMIN.getRoleId().equals(roleId)
+        ){
+            throw AuthenticationException.buildPermissionException(this.getClass(),"not allow remove admin role for admin user");
+        }
         QueryWrapper<UserRoleEntity> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(UserRoleEntity::getUserId, userId).eq(UserRoleEntity::getRoleId, roleId);
         return this.remove(queryWrapper);
