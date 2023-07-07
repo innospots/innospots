@@ -71,7 +71,7 @@ Innospots基于组件化和模块化的设计思想，实现了可插拔的组�
 
 ## 在线文档
 **快速开始**：
-[http://innospots.com/manual](http://innospots.com/manual])
+[https://innospots.com/docs/quick-start](https://innospots.com/docs/quick-start])
 
 ## 社区支持
 ### 反馈问题
