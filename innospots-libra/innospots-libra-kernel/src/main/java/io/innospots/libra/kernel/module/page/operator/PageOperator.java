@@ -160,7 +160,12 @@ public class PageOperator extends ServiceImpl<PageDao, PageEntity> {
 
         Set<Integer> viewIds = new HashSet<>();
         for (Widget widget : widgets) {
-            widget.getViewIds().forEach(v -> viewIds.add(Integer.valueOf(v)));
+            for (String viewId : widget.getViewIds()) {
+                if (StringUtils.isBlank(viewId)) {
+                    continue;
+                }
+                viewIds.add(Integer.valueOf(viewId));
+            }
         }
         List<Dataset> views = datasetReader.listDatasets(viewIds);
         pageDetail.setViews(views);
