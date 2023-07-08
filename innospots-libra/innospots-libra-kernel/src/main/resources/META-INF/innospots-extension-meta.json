@@ -14,8 +14,7 @@
     "io.innospots.libra.kernel",
     "io.innospots.libra.logger",
     "io.innospots.connector.schema",
-    "io.innospots.libra.security",
-    "io.innospots.workflow.console"
+    "io.innospots.libra.security"
   ],
   "modules": [
     {
@@ -76,22 +75,13 @@
       ]
     },
     {
-      "itemKey": "application",
-      "uri": "/app",
-      "icon": "application",
-      "i18nNames": {
-        "en_US": "Application",
-        "zh_CN": "应用管理"
-      }
-    },
-    {
       "name": "${app.main.title}",
       "itemKey": "libra-extension-installed",
       "uri": "/extension/installed",
       "icon": "extension-installed",
       "i18nNames": {
         "en_US": "Extensions",
-        "zh_CN": "扩展列表"
+        "zh_CN": "安装扩展"
       }
     },
     {
@@ -113,16 +103,8 @@
       }
     },
     {
-      "itemKey": "libra-apps-api",
-      "uri": "/apps/schema/api",
-      "i18nNames": {
-        "en_US": "HTTP API",
-        "zh_CN": "HTTP接口"
-      }
-    },
-    {
       "itemKey": "libra-apps-dataset",
-      "uri": "/apps/schema/data-set",
+      "uri": "/metadata/dataset",
       "i18nNames": {
         "en_US": "Datasets",
         "zh_CN": "数据视图管理"
@@ -171,6 +153,15 @@
       "i18nNames": {
         "en_US": "Notification Channels",
         "zh_CN": "消息渠道设置"
+      }
+    },
+    {
+      "itemKey": "notification-message",
+      "uri": "/system/notification-message",
+      "name": "${notification.message}",
+      "i18nNames": {
+        "en_US": "Notification Messages",
+        "zh_CN": "通知消息"
       }
     },
     {

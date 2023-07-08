@@ -47,10 +47,11 @@ import static io.innospots.libra.base.menu.ItemType.BUTTON;
  * @author Alfred
  * @date 2021-08-21
  */
-@RestController
-@RequestMapping(PATH_ROOT_ADMIN + "apps/schema/api")
-@ModuleMenu(menuKey = "libra-apps-api")
-@Tag(name = "Schema Http")
+@Deprecated
+//@RestController
+//@RequestMapping(PATH_ROOT_ADMIN + "apps/schema/api")
+//@ModuleMenu(menuKey = "libra-apps-api")
+//@Tag(name = "Schema Http")
 public class HttpApiController extends BaseController {
 
     private final HttpApiOperator httpApiOperator;
