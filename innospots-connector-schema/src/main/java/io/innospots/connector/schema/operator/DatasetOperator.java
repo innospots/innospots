@@ -35,10 +35,7 @@ import io.innospots.connector.schema.mapper.SchemaRegistryConvertMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -133,6 +130,9 @@ public class DatasetOperator extends ServiceImpl<SchemaRegistryDao, SchemaRegist
 
     @Override
     public List<Dataset> listDatasets(Set<Integer> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
         List<SchemaRegistry> schemaRegistries = schemaRegistryOperator.listByRegistryIds(ids);
         return SchemaRegistryConvertMapper.INSTANCE.schemaRegistriesToDatasets(schemaRegistries);
     }
