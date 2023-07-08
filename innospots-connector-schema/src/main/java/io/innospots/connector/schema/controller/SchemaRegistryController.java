@@ -49,10 +49,11 @@ import static io.innospots.libra.base.controller.BaseController.PATH_ROOT_ADMIN;
  * @date 2021-02-04
  */
 @Slf4j
-@RestController
-@RequestMapping(PATH_ROOT_ADMIN + "apps/schema/registry")
-@ModuleMenu(menuKey = "libra-apps-schema")
-@Tag(name = "Schema Registry")
+//@RestController
+//@RequestMapping(PATH_ROOT_ADMIN + "apps/schema/registry")
+//@ModuleMenu(menuKey = "libra-apps-schema")
+//@Tag(name = "Schema Registry")
+@Deprecated
 public class SchemaRegistryController extends BaseController {
 
     private final SchemaRegistryOperator schemaRegistryOperator;

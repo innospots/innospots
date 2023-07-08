@@ -167,8 +167,13 @@ public class PageOperator extends ServiceImpl<PageDao, PageEntity> {
                 viewIds.add(Integer.valueOf(viewId));
             }
         }
-        List<Dataset> views = datasetReader.listDatasets(viewIds);
-        pageDetail.setViews(views);
+        if(viewIds.size() > 0){
+            List<Dataset> views = datasetReader.listDatasets(viewIds);
+            pageDetail.setViews(views);
+        }else{
+            pageDetail.setViews(Collections.emptyList());
+        }
+
 
         return pageDetail;
     }
