@@ -36,7 +36,7 @@
 
         <dependency>
             <groupId>io.innospots</groupId>
-            <artifactId>innospots-libra-ui</artifactId>
+            <artifactId>innospots-ui</artifactId>
         </dependency>
 
         <!--        <dependency>-->
@@ -46,7 +46,7 @@
 
         <dependency>
             <groupId>io.innospots</groupId>
-            <artifactId>innospots-visualization-ui</artifactId>
+            <artifactId>innospots-page-ui</artifactId>
         </dependency>
 
         <dependency>
