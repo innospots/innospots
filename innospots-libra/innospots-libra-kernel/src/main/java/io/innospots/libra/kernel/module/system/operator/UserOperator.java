@@ -108,6 +108,10 @@ public class UserOperator extends ServiceImpl<UserDao, SysUserEntity> {
             module = "libra-user",
             title = "${event.update.user.title}", content = "${event.update.user.content}")
     public boolean updateUser(UserForm user) {
+        if (authProperties.getDefaultSuperAdminUserId().equals(user.getUserId()) &&
+                authProperties.getMode() == AuthMode.EXHIBITION) {
+            throw AuthenticationException.buildPermissionException(this.getClass(), "this is exhibition mode, not allow change admin user.");
+        }
         this.checkDifferentUserName(user.getUserName(), user.getUserId());
         SysUserEntity sysUser = this.getById(user.getUserId());
         if (sysUser == null) {
