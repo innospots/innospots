@@ -128,13 +128,8 @@ public class AccessPermissionInterceptor implements HandlerInterceptor {
                 break;
             }
         }
-        if (userResourceService == null) {
-            userResourceService = ApplicationContextUtils.getBean(UserResourceService.class);
-        }
-        if (authProperties == null) {
-            authProperties = ApplicationContextUtils.getBean(AuthProperties.class);
-        }
-        boolean adminRole = userResourceService.isSuperAdminRole();
+
+        boolean adminRole = isSuperAdminRole();
 
         if (adminRole && authProperties.isOpenSuperAdminPermission()) {
             //open suer admin
@@ -178,14 +173,8 @@ public class AccessPermissionInterceptor implements HandlerInterceptor {
     }
 
     protected boolean hasPagePermission(String pageUrl) {
-        if (userResourceService == null) {
-            userResourceService = ApplicationContextUtils.getBean(UserResourceService.class);
-        }
-        if (authProperties == null) {
-            authProperties = ApplicationContextUtils.getBean(AuthProperties.class);
-        }
 
-        boolean adminRole = userResourceService.isSuperAdminRole();
+        boolean adminRole = isSuperAdminRole();
 
         if (adminRole && authProperties.isOpenSuperAdminPermission()) {
             //open suer admin
@@ -210,5 +199,16 @@ public class AccessPermissionInterceptor implements HandlerInterceptor {
             log.warn("page url not allow access, user:{} ,page: {}", CCH.userId(), pageUrl);
         }
         return pagePermission;
+    }
+
+    private boolean isSuperAdminRole() {
+        if (userResourceService == null) {
+            userResourceService = ApplicationContextUtils.getBean(UserResourceService.class);
+        }
+        if (authProperties == null) {
+            authProperties = ApplicationContextUtils.getBean(AuthProperties.class);
+        }
+
+        return userResourceService.isSuperAdminRole();
     }
 }
