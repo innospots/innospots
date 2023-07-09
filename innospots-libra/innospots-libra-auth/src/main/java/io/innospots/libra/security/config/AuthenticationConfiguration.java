@@ -51,6 +51,12 @@ public class AuthenticationConfiguration {
         return new UserPasswordAuthenticationProvider();
     }
 
+    @ConditionalOnProperty(prefix = "innospots.security", name = "mode", havingValue = "EXHIBITION")
+    @Bean
+    public AuthenticationProvider exhibitAuthenticationProvider() {
+        return new UserPasswordAuthenticationProvider();
+    }
+
     @Bean
     public JwtAuthManager jwtAuthManager(AuthProperties authProperties) {
         return new JwtAuthManager(authProperties);
