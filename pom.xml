@@ -47,9 +47,9 @@
 
         <hutool.version>5.8.9</hutool.version>
         <mail.version>1.6.2</mail.version>
-        <innospots-ui.version>1.1.1-SNAPSHOT</innospots-ui.version>
+        <innospots-ui.version>1.2.0-SNAPSHOT</innospots-ui.version>
         <innospots-workflow-ui.version>1.1.1-SNAPSHOT</innospots-workflow-ui.version>
-        <innospots-visualization-ui.version>1.1.1-SNAPSHOT</innospots-visualization-ui.version>
+        <innospots-page-ui.version>1.2.0-SNAPSHOT</innospots-page-ui.version>
         <innosopts.version>1.2.0-SNAPSHOT</innosopts.version>
 
         <jackson.version>2.13.3</jackson.version>
@@ -562,7 +562,7 @@
 
             <dependency>
                 <groupId>io.innospots</groupId>
-                <artifactId>innospots-libra-ui</artifactId>
+                <artifactId>innospots-ui</artifactId>
                 <version>${innospots-ui.version}</version>
             </dependency>
 
@@ -574,8 +574,8 @@
 
             <dependency>
                 <groupId>io.innospots</groupId>
-                <artifactId>innospots-visualization-ui</artifactId>
-                <version>${innospots-visualization-ui.version}</version>
+                <artifactId>innospots-page-ui</artifactId>
+                <version>${innospots-page-ui.version}</version>
             </dependency>
 
             <dependency>
