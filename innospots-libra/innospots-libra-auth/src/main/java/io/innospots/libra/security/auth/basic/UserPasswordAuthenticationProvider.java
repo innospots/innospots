@@ -40,7 +40,6 @@ import org.springframework.stereotype.Service;
  * @author Smars
  * @date 2021/2/16
  */
-@Service
 public class UserPasswordAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
