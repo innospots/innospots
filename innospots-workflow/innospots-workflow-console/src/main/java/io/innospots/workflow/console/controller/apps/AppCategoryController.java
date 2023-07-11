@@ -43,7 +43,7 @@ import static io.innospots.libra.base.controller.BaseController.PATH_ROOT_ADMIN;
  */
 @RestController
 @RequestMapping(PATH_ROOT_ADMIN + "apps/category")
-@ModuleMenu(menuKey = "app-management-definition")
+@ModuleMenu(menuKey = "application")
 @Tag(name = "App Node Category")
 public class AppCategoryController extends BaseController {
 

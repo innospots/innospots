@@ -189,6 +189,8 @@ public class ImageFileUploader {
                 width = imageType.getWidth();
                 height = imageType.getHeight();
                 pair = Pair.of(width,height);
+            }else{
+                pair = Pair.of(width,height);
             }
         }else{
             float scale = imageType.getHeight() * 1.0f / imageType.getWidth();

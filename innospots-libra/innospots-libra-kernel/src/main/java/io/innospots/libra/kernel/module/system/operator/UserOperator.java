@@ -28,6 +28,7 @@ import com.google.common.base.CaseFormat;
 import io.innospots.base.crypto.PasswordEncoder;
 import io.innospots.base.crypto.RsaKeyManager;
 import io.innospots.base.enums.DataStatus;
+import io.innospots.base.exception.AuthenticationException;
 import io.innospots.base.exception.ResourceException;
 import io.innospots.base.exception.ValidatorException;
 import io.innospots.base.model.PageBody;
@@ -35,6 +36,7 @@ import io.innospots.base.model.user.SimpleUser;
 import io.innospots.base.model.user.UserInfo;
 import io.innospots.libra.base.configuration.AuthProperties;
 import io.innospots.libra.base.event.NotificationAnnotation;
+import io.innospots.libra.base.menu.AuthMode;
 import io.innospots.libra.base.model.QueryRequest;
 import io.innospots.libra.kernel.module.system.dao.UserDao;
 import io.innospots.libra.kernel.module.system.entity.SysUserEntity;
@@ -106,6 +108,10 @@ public class UserOperator extends ServiceImpl<UserDao, SysUserEntity> {
             module = "libra-user",
             title = "${event.update.user.title}", content = "${event.update.user.content}")
     public boolean updateUser(UserForm user) {
+        if (authProperties.getDefaultSuperAdminUserId().equals(user.getUserId()) &&
+                authProperties.getMode() == AuthMode.EXHIBITION) {
+            throw AuthenticationException.buildPermissionException(this.getClass(), "this is exhibition mode, not allow change admin user.");
+        }
         this.checkDifferentUserName(user.getUserName(), user.getUserId());
         SysUserEntity sysUser = this.getById(user.getUserId());
         if (sysUser == null) {
@@ -145,6 +151,10 @@ public class UserOperator extends ServiceImpl<UserDao, SysUserEntity> {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean changePassword(UserPassword userPassword) {
+        if (authProperties.getDefaultSuperAdminUserId().equals(userPassword.getUserId()) &&
+                authProperties.getMode() == AuthMode.EXHIBITION) {
+            throw AuthenticationException.buildPermissionException(this.getClass(), "this is exhibition mode, not allow change admin password.");
+        }
         this.checkUserExist(userPassword.getUserId());
         SysUserEntity user = this.getById(userPassword.getUserId());
         String password = RsaKeyManager.decrypt(userPassword.getNewPassword(), authProperties.getPrivateKey());
@@ -160,6 +170,10 @@ public class UserOperator extends ServiceImpl<UserDao, SysUserEntity> {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteUser(Integer userId) {
+        if (authProperties.getDefaultSuperAdminUserId().equals(userId)) {
+            //superAdmin not be allowed delete
+            return false;
+        }
         return this.removeById(userId);
     }
 

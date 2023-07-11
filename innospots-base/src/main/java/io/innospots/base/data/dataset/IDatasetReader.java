@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * data source schema reader
@@ -39,7 +40,7 @@ public interface IDatasetReader {
     List<Dataset> listDatasets(@PathVariable("credentialId") Integer credentialId);
 
     @PostMapping(ServiceConstant.PATH_ROOT_DATA_API + "/data-set/list")
-    List<Dataset> listDatasets(@RequestBody List<String> ids);
+    List<Dataset> listDatasets(@RequestBody Set<Integer> ids);
 
 
 }

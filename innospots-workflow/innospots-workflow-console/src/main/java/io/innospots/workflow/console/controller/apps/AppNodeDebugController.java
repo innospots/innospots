@@ -46,14 +46,14 @@ import static io.innospots.libra.base.menu.ItemType.BUTTON;
  */
 @RestController
 @RequestMapping(PATH_ROOT_ADMIN + "apps/definition/debug")
-@ModuleMenu(menuKey = "app-management-definition")
+@ModuleMenu(menuKey = "application")
 @Tag(name = "Apps Node debug")
 public class AppNodeDebugController {
 
 
     @PostMapping("upload-file/{force}")
     @Operation(summary = "upload debug file")
-    @ResourceItemOperation(type = BUTTON, icon = "create", name = "${common.button.create}")
+    @ResourceItemOperation(type = BUTTON, icon = "create", name = "${common.button.upload}")
     public InnospotResponse<ExecutionResource> uploadFile
             (@Parameter(name = "files", required = true) @RequestParam("files") MultipartFile uploadFile,@PathVariable boolean force){
 
@@ -64,7 +64,7 @@ public class AppNodeDebugController {
     @OperationLog(operateType = OperateType.EXECUTE)
     @PostMapping("execute")
     @Operation(summary = "debug app node")
-    @ResourceItemOperation(type = BUTTON, icon = "create", name = "${common.button.create}")
+    @ResourceItemOperation(type = BUTTON, icon = "create", name = "${common.button.execute}")
     public InnospotResponse<NodeExecutionDisplay> execute(
             @RequestBody AppDebugPayload debugPayload){
 

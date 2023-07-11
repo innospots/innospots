@@ -49,7 +49,7 @@ import static io.innospots.libra.base.menu.ItemType.BUTTON;
  */
 @RestController
 @RequestMapping(PATH_ROOT_ADMIN + "apps/definition")
-@ModuleMenu(menuKey = "app-management-definition")
+@ModuleMenu(menuKey = "application")
 @Tag(name = "Apps Management Definition")
 public class AppManagementController extends BaseController {
 

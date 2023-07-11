@@ -15,7 +15,7 @@ innospots:
     recordStoreType: mysql
   db:
     driver-class-name: org.h2.Driver
-    jdbc-url: jdbc:h2:${INNOS_ROOT};MODE=MySQL;DB_CLOSE_DELAY=-1;CASE_INSENSITIVE_IDENTIFIERS=TRUE;IGNORECASE=TRUE;DATABASE_TO_LOWER=TRUE
+    jdbc-url: jdbc:h2:${INNOS_ROOT};MODE=MySQL;DB_CLOSE_DELAY=-1
     username: sa
     password: sa
     maximum-pool-size: 64

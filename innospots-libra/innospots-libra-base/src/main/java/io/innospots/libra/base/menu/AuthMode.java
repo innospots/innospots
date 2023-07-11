@@ -30,6 +30,8 @@ public enum AuthMode {
      *
      */
     BASIC,
+    //only use in demo deployment
+    EXHIBITION,
     NON_LOGIN,
     OAUTH,
     LDAP;

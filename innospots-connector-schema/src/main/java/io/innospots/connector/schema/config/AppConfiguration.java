@@ -68,8 +68,8 @@ public class AppConfiguration {
     }
 
     @Bean
-    public DatasetOperator datasetOperator(SchemaRegistryOperator schemaRegistryOperator) {
-        return new DatasetOperator(schemaRegistryOperator);
+    public DatasetOperator datasetOperator(SchemaRegistryOperator schemaRegistryOperator, AppCredentialOperator appCredentialOperator) {
+        return new DatasetOperator(schemaRegistryOperator, appCredentialOperator);
     }
 
     @Bean
