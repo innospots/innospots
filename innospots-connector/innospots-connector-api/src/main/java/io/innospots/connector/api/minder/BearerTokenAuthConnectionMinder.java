@@ -30,14 +30,8 @@ import java.util.Map;
  * @version 1.2.0
  * @date 2023/2/14
  */
-public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
+public class BearerTokenAuthConnectionMinder extends HttpDataConnectionMinder {
 
-
-    public static final String TOKEN_ADDRESS = "token_address";
-    public static final String REQUEST_METHOD = "request_method";
-    public static final String TOKEN_LOCATION = "token_location";
-    public static final String TOKEN_PARAM = "token_param";
-    public static final String CACHE_TIME = "cache_time";
 
     @Override
     protected Map<String, String> authHeaders() {

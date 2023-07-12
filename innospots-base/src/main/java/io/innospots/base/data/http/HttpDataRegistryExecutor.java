@@ -109,7 +109,7 @@ public class HttpDataRegistryExecutor implements IExecutionOperator {
         Map<String, String> headers = extractStrFields(headerFields, body);
         Map<String, String> pathValues = extractStrFields(pathFields, body);
         Map<String, Object> requestParams = extractFields(paramFields, body);
-        Map<String, ?> bodyValues = extractBody(bodyFields, body, httpBodyTemplate);
+        Map<String, Object> bodyValues = extractBody(bodyFields, body, httpBodyTemplate);
 
         url = PlaceholderUtils.replacePlaceholders(url, pathValues, true);
 
@@ -117,7 +117,7 @@ public class HttpDataRegistryExecutor implements IExecutionOperator {
         if (ApiMethod.GET == this.schemaRegistry.getApiMethod()) {
             data = httpConnection.get(url, requestParams, headers);
         } else if (ApiMethod.POST == this.schemaRegistry.getApiMethod()) {
-            data = httpConnection.post(url, requestParams, JSONUtils.toJsonString(bodyValues), headers, httpContext);
+            data = httpConnection.post(url, requestParams, bodyValues, headers, httpContext);
         } else {
             throw ValidatorException.buildInvalidException(this.getClass(), "httpMethod invalid", this.schemaRegistry.getApiMethod());
         }
@@ -138,7 +138,7 @@ public class HttpDataRegistryExecutor implements IExecutionOperator {
         return dataBody;
     }
 
-    private Map<String, ? extends Object> extractBody(List<SchemaField> schemaFields, Map<String, Object> body, String httpBodyTemplate) {
+    private Map<String,Object> extractBody(List<SchemaField> schemaFields, Map<String, Object> body, String httpBodyTemplate) {
         if (CollectionUtils.isEmpty(schemaFields)) {
             return Collections.emptyMap();
         }
@@ -150,7 +150,7 @@ public class HttpDataRegistryExecutor implements IExecutionOperator {
             httpBodyTemplate = PlaceholderUtils.replacePlaceholders(httpBodyTemplate, values, true);
             return JSONUtils.toMap(httpBodyTemplate);
         }
-        return values;
+        return new HashMap<>(values);
     }
 
     private Map<String, Object> extractFields(List<SchemaField> schemaFields, Map<String, Object> body) {

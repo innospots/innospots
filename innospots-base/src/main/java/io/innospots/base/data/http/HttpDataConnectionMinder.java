@@ -61,6 +61,10 @@ public class HttpDataConnectionMinder extends BaseDataConnectionMinder {
         return new HashMap<>();
     }
 
+    protected Map<String,String> defaultParams(){
+        return new HashMap<>();
+    }
+
     public HttpDataConnectionMinder init() {
         if (this.httpConnection != null) {
             open();

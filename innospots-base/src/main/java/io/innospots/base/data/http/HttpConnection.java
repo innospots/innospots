@@ -20,6 +20,7 @@ package io.innospots.base.data.http;
 
 import io.innospots.base.data.enums.ApiAuth;
 import io.innospots.base.data.schema.ConnectionCredential;
+import io.innospots.base.json.JSONUtils;
 import io.innospots.base.utils.HttpClientBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -44,6 +45,9 @@ public class HttpConnection {
 
     private ConnectionCredential connectionCredential;
 
+    private Map<String,String> defaultParams = new HashMap<>();
+
+    private Map<String,Object> defaultBody = new HashMap<>();
 
     public HttpConnection(ConnectionCredential connectionCredential) {
         this(connectionCredential, null);
@@ -54,10 +58,22 @@ public class HttpConnection {
         this.httpClient = HttpClientBuilder.build(15 * 1000, 15, headers);
     }
 
+    public HttpConnection(ConnectionCredential connectionCredential,
+                          Map<String, String> headers,
+                          Map<String, String> defaultParams,
+                          Map<String, Object> defaultBody
+                          ) {
+        this.connectionCredential = connectionCredential;
+        this.httpClient = HttpClientBuilder.build(15 * 1000, 15, headers);
+        this.defaultParams = defaultParams;
+        this.defaultBody = defaultBody;
+    }
+
     public HttpConnection() {
         this(null);
     }
 
+    /*
     private Map<String, String> authHeaders() {
         if (this.connectionCredential == null) {
             return Collections.emptyMap();
@@ -76,6 +92,8 @@ public class HttpConnection {
         return headerMap;
     }
 
+     */
+
     public ConnectionCredential connectionCredential() {
         return this.connectionCredential;
     }
@@ -93,7 +111,11 @@ public class HttpConnection {
         return HttpClientBuilder.doPost(httpClient, url, headers, params, requestBody, httpContext);
     }
 
-    public HttpData post(String url, Map<String, Object> query, Map<String, Object> params, Map<String, String> headers) {
+    public HttpData post(String url, Map<String, Object> params, Map<String,Object> jsonBody, Map<String, String> headers, HttpContext httpContext) {
+        return HttpClientBuilder.doPost(httpClient, url, headers, params, JSONUtils.toJsonString(jsonBody), httpContext);
+    }
+
+    public HttpData postForm(String url, Map<String, Object> query, Map<String, Object> params, Map<String, String> headers) {
         return HttpClientBuilder.doPost(httpClient, url, query, params, headers);
     }
 
