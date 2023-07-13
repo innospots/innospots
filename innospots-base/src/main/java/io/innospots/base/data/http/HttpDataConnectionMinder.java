@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
@@ -50,19 +51,22 @@ public class HttpDataConnectionMinder extends BaseDataConnectionMinder {
     public static final HttpDataConnectionMinder DEFAULT_HTTP_CONNECTION_MINDER = new HttpDataConnectionMinder().init();
 
 
-    /*
-    public ApiSchemaRegistry getApiSchemaRegistry(String tableName) {
-        return ApiSchemaRegistryConvertMapper.INSTANCE.schemaRegistryToApi(this.schemaRegistry(tableName));
+    protected Supplier<Map<String,String>> headers(){
+        return () ->{
+            return new HashMap<>();
+        };
     }
 
-     */
-
-    protected Map<String, String> authHeaders() {
-        return new HashMap<>();
+    protected Supplier<Map<String,Object>> defaultParams(){
+        return () ->{
+            return new HashMap<>();
+        };
     }
 
-    protected Map<String,String> defaultParams(){
-        return new HashMap<>();
+    protected Supplier<Map<String,Object>> defaultBody(){
+        return () ->{
+            return new HashMap<>();
+        };
     }
 
     public HttpDataConnectionMinder init() {
@@ -79,7 +83,7 @@ public class HttpDataConnectionMinder extends BaseDataConnectionMinder {
         if (httpConnection != null) {
             return;
         }
-        httpConnection = new HttpConnection(connectionCredential, authHeaders());
+        httpConnection = new HttpConnection(connectionCredential, headers(),defaultParams(),defaultBody());
     }
 
 
@@ -121,6 +125,7 @@ public class HttpDataConnectionMinder extends BaseDataConnectionMinder {
         return httpDataExecutor.execute(requestBody).getBody();
     }
 
+    @Override
     public IOperator buildOperator() {
         return buildExecutionOperator();
     }

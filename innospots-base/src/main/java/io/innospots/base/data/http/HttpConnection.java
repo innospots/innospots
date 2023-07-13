@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 
 /**
@@ -45,9 +46,12 @@ public class HttpConnection {
 
     private ConnectionCredential connectionCredential;
 
-    private Map<String,String> defaultParams = new HashMap<>();
+    private Supplier<Map<String, String>> headersSupplier;
 
-    private Map<String,Object> defaultBody = new HashMap<>();
+    private Supplier<Map<String, Object>> paramsSupplier;
+
+    private Supplier<Map<String, Object>> bodySupplier;
+
 
     public HttpConnection(ConnectionCredential connectionCredential) {
         this(connectionCredential, null);
@@ -59,19 +63,21 @@ public class HttpConnection {
     }
 
     public HttpConnection(ConnectionCredential connectionCredential,
-                          Map<String, String> headers,
-                          Map<String, String> defaultParams,
-                          Map<String, Object> defaultBody
-                          ) {
+                          Supplier<Map<String, String>> headers,
+                          Supplier<Map<String, Object>> params,
+                          Supplier<Map<String, Object>> body
+    ) {
         this.connectionCredential = connectionCredential;
-        this.httpClient = HttpClientBuilder.build(15 * 1000, 15, headers);
-        this.defaultParams = defaultParams;
-        this.defaultBody = defaultBody;
+        this.httpClient = HttpClientBuilder.build(15 * 1000, 15);
+        this.headersSupplier = headers;
+        this.paramsSupplier = params;
+        this.bodySupplier = body;
     }
 
     public HttpConnection() {
         this(null);
     }
+
 
     /*
     private Map<String, String> authHeaders() {
@@ -99,24 +105,66 @@ public class HttpConnection {
     }
 
     public HttpData get(String url, Map<String, Object> params, Map<String, String> headers) {
-        return HttpClientBuilder.doGet(httpClient, url, params, headers);
+        return HttpClientBuilder.doGet(httpClient, url, fillParams(params), fillHeader(headers));
     }
 
     public HttpData post(String url, Map<String, Object> params, String requestBody, Map<String, String> headers) {
-        return post(url, params, requestBody, headers, null);
+        return post(url, fillParams(params), requestBody, fillHeader(headers), null);
     }
 
 
     public HttpData post(String url, Map<String, Object> params, String requestBody, Map<String, String> headers, HttpContext httpContext) {
-        return HttpClientBuilder.doPost(httpClient, url, headers, params, requestBody, httpContext);
+        return HttpClientBuilder.doPost(httpClient, url, fillHeader(headers), fillParams(params), requestBody, httpContext);
     }
 
-    public HttpData post(String url, Map<String, Object> params, Map<String,Object> jsonBody, Map<String, String> headers, HttpContext httpContext) {
-        return HttpClientBuilder.doPost(httpClient, url, headers, params, JSONUtils.toJsonString(jsonBody), httpContext);
+    public HttpData post(String url, Map<String, Object> params, Map<String, Object> jsonBody, Map<String, String> headers, HttpContext httpContext) {
+        return HttpClientBuilder.doPost(httpClient, url, fillHeader(headers), fillParams(params), JSONUtils.toJsonString(fillBody(jsonBody)), httpContext);
     }
 
     public HttpData postForm(String url, Map<String, Object> query, Map<String, Object> params, Map<String, String> headers) {
-        return HttpClientBuilder.doPost(httpClient, url, query, params, headers);
+        return HttpClientBuilder.doPost(httpClient, url, fillBody(query), fillParams(params), fillHeader(headers));
+    }
+
+    private Map<String,Object> fillBody(Map<String,Object> body){
+        if(this.bodySupplier!=null){
+            Map<String,Object> pms = bodySupplier.get();
+            if(body==null){
+                body = pms;
+            }else {
+                if(pms!=null){
+                    body.putAll(pms);
+                }
+            }
+        }
+        return body;
+    }
+
+    private Map<String,Object> fillParams(Map<String,Object> params){
+        if(this.paramsSupplier!=null){
+            Map<String,Object> pms = paramsSupplier.get();
+            if(params==null){
+                params = pms;
+            }else {
+                if(pms!=null){
+                    params.putAll(pms);
+                }
+            }
+        }
+        return params;
+    }
+
+    private Map<String,String> fillHeader(Map<String,String> headers){
+        if (headersSupplier != null) {
+            if (headers == null) {
+                headers = headersSupplier.get();
+            } else {
+                Map<String, String> h2 = headersSupplier.get();
+                if (h2 != null) {
+                    headers.putAll(h2);
+                }
+            }
+        }
+        return headers;
     }
 
 }

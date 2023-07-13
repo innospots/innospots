@@ -18,9 +18,11 @@
 
 package io.innospots.libra.base.terminal;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.sun.xml.internal.ws.util.CompletedFuture;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.innospots.base.constant.Constants;
 import io.innospots.base.json.JSONUtils;
@@ -37,6 +39,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Smars
@@ -50,32 +53,9 @@ public class TerminalInfoInterceptor implements HandlerInterceptor {
     public static final String USER_AGENT_HEADER = "user-agent";
     public static final String LANGUAGE_HEADER = "accept-language";
 
-    private final LoadingCache<String, TerminalInfo> terminalCache = Caffeine.newBuilder()
+    private final Cache<String, TerminalInfo> terminalCache = Caffeine.newBuilder()
             .expireAfterAccess(Duration.ofHours(1))
-            .build(new CacheLoader<String, TerminalInfo>() {
-                @Override
-                public @Nullable TerminalInfo load(@NonNull String ip) throws Exception {
-                    TerminalInfo terminalInfo = new TerminalInfo();
-                    try {
-                        if (ip == null || ip.startsWith("127.0.0") || ip.startsWith("192.168.") || ip.startsWith("10.") || ip.startsWith("100.") || ip.matches("^172\\.(1[6-9]|2[0-9]|3[0-1])\\.[0-9]{1,3}\\.[0-9]{1,3}$")) {
-                            return terminalInfo;
-                        }
-                        String rspStr = HttpUtils.sendGet(Constants.IP_URL, "ip=" + ip + "&json=true", "GBK");
-                        if (StringUtils.isNotBlank(rspStr)) {
-                            Map<String, String> resultMap = JSONUtils.toMap(rspStr, String.class, String.class);
-                            if (MapUtils.isNotEmpty(resultMap)) {
-                                terminalInfo.setIp(resultMap.get("ip"));
-                                terminalInfo.setProvince(resultMap.get("pro"));
-                                terminalInfo.setCity(resultMap.get("city"));
-                            }
-                        }
-
-                    } catch (Exception e) {
-                        logger.error("get geo exception:{} ", e.getMessage());
-                    }
-                    return terminalInfo;
-                }
-            });
+            .build();
 
     @Override
     public boolean preHandle(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, Object handler) throws Exception {
@@ -90,8 +70,10 @@ public class TerminalInfoInterceptor implements HandlerInterceptor {
         terminalInfo.setLanguage(request.getHeader(LANGUAGE_HEADER));
         terminalInfo.setRequestPath(request.getServletPath());
         String ip = getIpAddress(request);
-        TerminalInfo info = terminalCache.get(ip);
-        if (info != null) {
+        TerminalInfo info = terminalCache.getIfPresent(ip);
+        if (info == null) {
+            CompletableFuture.supplyAsync(() -> ipInfo(ip));
+        }else{
             terminalInfo.setIp(info.getIp());
             terminalInfo.setProvince(info.getProvince());
             terminalInfo.setCity(info.getCity());
@@ -100,6 +82,28 @@ public class TerminalInfoInterceptor implements HandlerInterceptor {
         TerminalRequestContextHolder.setTerminal(terminalInfo);
 
         return true;
+    }
+
+    private TerminalInfo ipInfo(String ip) {
+        TerminalInfo terminalInfo = new TerminalInfo();
+        try {
+            if (ip == null || ip.startsWith("127.0.0") || ip.startsWith("192.168.") || ip.startsWith("10.") || ip.startsWith("100.") || ip.matches("^172\\.(1[6-9]|2[0-9]|3[0-1])\\.[0-9]{1,3}\\.[0-9]{1,3}$")) {
+            }else {
+                String rspStr = HttpUtils.sendGet(Constants.IP_URL, "ip=" + ip + "&json=true", "GBK");
+                if (StringUtils.isNotBlank(rspStr)) {
+                    Map<String, String> resultMap = JSONUtils.toMap(rspStr, String.class, String.class);
+                    if (MapUtils.isNotEmpty(resultMap)) {
+                        terminalInfo.setIp(resultMap.get("ip"));
+                        terminalInfo.setProvince(resultMap.get("pro"));
+                        terminalInfo.setCity(resultMap.get("city"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("get geo exception:{} ", e.getMessage());
+        }
+        terminalCache.put(ip, terminalInfo);
+        return terminalInfo;
     }
 
 

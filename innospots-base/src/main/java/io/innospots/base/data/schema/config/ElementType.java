@@ -31,6 +31,7 @@ public enum ElementType {
     INPUT("input"),
     PASSWORD("password"),
     INPUT_NUMBER("number"),
+    NUMBER("number"),
     TEXTAREA("textarea"),
     RADIO("radio"),
     CHECKBOX("checkbox"),

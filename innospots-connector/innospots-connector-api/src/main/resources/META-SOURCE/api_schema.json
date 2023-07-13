@@ -261,7 +261,7 @@
         {
           "label": "token地址",
           "name": "token_address",
-          "placeholder": "HTTP://tokenAddress",
+          "placeholder": "http://ip:port",
           "required": true,
           "labelGrid": 4,
           "tips": "请求token的地址",
@@ -317,13 +317,26 @@
           "options": []
         },
         {
+          "label": "JsonPath",
+          "name": "token_json_path",
+          "placeholder": "$.data.body",
+          "value": "$.data.body",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "返回结果的token所在的JsonPath",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
           "label": "参数缓存时间(秒)",
           "name": "cache_time",
           "placeholder": "缓存时间，秒",
           "required": false,
           "labelGrid": 4,
           "tips": "参数缓存时间",
-          "type": "INPUT_NUMBER",
+          "type": "NUMBER",
           "expression": "",
           "gridSize": 4,
           "options": []
