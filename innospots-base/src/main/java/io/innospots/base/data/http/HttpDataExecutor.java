@@ -66,14 +66,17 @@ public class HttpDataExecutor implements IExecutionOperator, HttpConstant {
         if (ApiMethod.POST.equals(ApiMethod.valueOf(requestBody.getOperation()))) {
             if (requestBody.getHeaders() != null &&
                     HttpClientBuilder.APPLICATION_FORM.equals(requestBody.getHeaders().get(HEADER_CONTENT_TYPE))) {
-                data = httpConnection.postForm(url,requestBody.getQuery(),requestBody.getBody(), requestBody.getHeaders());
+                data = httpConnection.postForm(url, requestBody.getQuery(), requestBody.getBody(), requestBody.getHeaders());
 
             } else {
                 String cnt = requestBody.getContent();
-                if(StringUtils.isEmpty(cnt)){
-                    data = httpConnection.post(url,requestBody.getQuery(),cnt,requestBody.getHeaders(),httpContext);
-                }else{
-                    data = httpConnection.post(url,requestBody.getQuery(),requestBody.getBody(),requestBody.getHeaders(),httpContext);
+                if (StringUtils.isEmpty(cnt)) {
+                    data = httpConnection.post(url, requestBody.getQuery(), cnt, requestBody.getHeaders(), httpContext);
+                } else {
+                    data = httpConnection.post(url,
+                            requestBody.getQuery(),
+                            StringUtils.isNotEmpty(requestBody.getContent()) ? JSONUtils.toMap(requestBody.getContent()) : requestBody.getBody(),
+                            requestBody.getHeaders(), httpContext);
                 }
             }
         } else if (ApiMethod.GET.equals(ApiMethod.valueOf(requestBody.getOperation()))) {
@@ -122,7 +125,6 @@ public class HttpDataExecutor implements IExecutionOperator, HttpConstant {
         }
         return String.valueOf(configs.get(HTTP_API_URL));
     }
-
 
 
 }
