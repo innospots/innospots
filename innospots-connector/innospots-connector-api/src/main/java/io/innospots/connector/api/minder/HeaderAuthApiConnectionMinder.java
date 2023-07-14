@@ -23,6 +23,7 @@ import io.innospots.base.data.http.HttpDataExecutor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Smars
@@ -31,14 +32,16 @@ import java.util.Map;
  */
 public class HeaderAuthApiConnectionMinder extends HttpDataConnectionMinder {
 
-
     @Override
-    protected Map<String, String> authHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-        String name = this.connectionCredential.v(HttpDataExecutor.KEY_AUTHORITY_NAME);
-        String value = this.connectionCredential.v(HttpDataExecutor.KEY_AUTHORITY_VALUE);
-        headers.put(name, value);
-        return headers;
+    protected Supplier<Map<String, String>> headers() {
+        return ()->{
+            HashMap<String, String> headers = new HashMap<>();
+            String name = this.connectionCredential.v(HttpDataExecutor.KEY_AUTHORITY_NAME);
+            String value = this.connectionCredential.v(HttpDataExecutor.KEY_AUTHORITY_VALUE);
+            headers.put(name, value);
+            return headers;
+        };
     }
+
 
 }

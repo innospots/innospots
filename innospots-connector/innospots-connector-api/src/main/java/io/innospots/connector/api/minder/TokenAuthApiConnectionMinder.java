@@ -18,24 +18,20 @@
 
 package io.innospots.connector.api.minder;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import io.innospots.base.data.enums.ApiMethod;
 import io.innospots.base.data.http.HttpConnection;
 import io.innospots.base.data.http.HttpData;
 import io.innospots.base.data.http.HttpDataConnectionMinder;
-import io.innospots.base.data.http.HttpDataExecutor;
 import io.innospots.base.data.schema.ConnectionCredential;
 import io.innospots.base.json.JSONUtils;
-import io.innospots.base.utils.HttpClientBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.noear.snack.ONode;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 /**
@@ -43,10 +39,13 @@ import java.util.function.Supplier;
  * @version 1.2.0
  * @date 2023/2/14
  */
+@Slf4j
 public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
 
 
     public static final String TOKEN_ADDRESS = "token_address";
+    public static final String QUERY_PARAM = "query_param";
+    public static final String POST_BODY = "post_body";
     public static final String REQUEST_METHOD = "request_method";
     public static final String TOKEN_LOCATION = "token_location";
     public static final String TOKEN_PARAM = "token_param";
@@ -96,12 +95,18 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
     }
 
 
-
-
-
     @Override
     public boolean test(ConnectionCredential connectionCredential) {
-        return super.test(connectionCredential);
+        TokenConfig tokenConfig = new TokenConfig(connectionCredential);
+        String token = tokenConfig.fetchToken(false);
+        if(log.isDebugEnabled()){
+            log.debug("test token :{}",tokenConfig);
+        }
+        if (token == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Getter
@@ -124,6 +129,9 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
 
         private String token;
 
+        private String queryParam;
+        private String postBody;
+
         private HttpConnection httpConnection = new HttpConnection();
 
         public TokenConfig(ConnectionCredential connectionCredential) {
@@ -139,6 +147,8 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
             tokenParam = connectionCredential.v(TOKEN_PARAM);
             jsonPath = connectionCredential.v(TOKEN_JSON_PATH);
             tokenLoc = TokenLocation.valueOf(connectionCredential.v(TOKEN_LOCATION));
+            this.queryParam = connectionCredential.v(QUERY_PARAM);
+            this.postBody = connectionCredential.v(POST_BODY);
         }
 
         public String fetchToken(boolean cache) {
@@ -147,12 +157,20 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
             if (cache && expireTime != null && expireTime.isAfter(now) && token != null) {
                 return token;
             }
+            Map<String, Object> params = new HashMap<>();
+            if (this.queryParam != null) {
+                String[] ps = this.queryParam.split("&");
+                for (String p : ps) {
+                    String[] ss = p.split("=");
+                    params.put(ss[0], ss[1]);
+                }
+            }
 
             if (apiMethod == ApiMethod.GET) {
-                HttpData httpData = httpConnection.get(address, null, null);
+                HttpData httpData = httpConnection.get(address, params, null);
                 token = extractToken(httpData);
             } else if (apiMethod == ApiMethod.POST) {
-                HttpData httpData = httpConnection.post(address, null, null, null);
+                HttpData httpData = httpConnection.post(address, params, this.postBody, null);
                 token = extractToken(httpData);
             }
             if (token != null) {
@@ -174,6 +192,22 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
             return t;
         }
 
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("{");
+            sb.append("address='").append(address).append('\'');
+            sb.append(", apiMethod=").append(apiMethod);
+            sb.append(", queryParam='").append(queryParam).append('\'');
+            sb.append(", tokenParam='").append(tokenParam).append('\'');
+            sb.append(", cacheTime=").append(cacheTime);
+            sb.append(", jsonPath='").append(jsonPath).append('\'');
+            sb.append(", expireTime=").append(expireTime);
+            sb.append(", tokenLoc=").append(tokenLoc);
+            sb.append(", token='").append(token).append('\'');
+            sb.append(", postBody='").append(postBody).append('\'');
+            sb.append('}');
+            return sb.toString();
+        }
     }
 
     public enum TokenLocation {

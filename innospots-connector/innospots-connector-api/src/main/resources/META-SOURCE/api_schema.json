@@ -289,6 +289,30 @@
           }]
         },
         {
+          "label": "请求参数",
+          "name": "query_param",
+          "placeholder": "",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "http query params",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
+          "label": "请求Body",
+          "name": "post_body",
+          "placeholder": "",
+          "required": false,
+          "labelGrid": 4,
+          "tips": "http post json body",
+          "type": "TEXTAREA",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
+        },
+        {
           "label": "token位置",
           "name": "token_location",
           "placeholder": "",

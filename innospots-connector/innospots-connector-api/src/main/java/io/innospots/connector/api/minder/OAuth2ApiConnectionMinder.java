@@ -30,6 +30,7 @@ import org.apache.http.HttpStatus;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Smars
@@ -43,15 +44,18 @@ public class OAuth2ApiConnectionMinder extends HttpDataConnectionMinder {
     private final String CODE = "code";
     private final String ACCESS_TOKEN_URL = "access_token_url";
 
+
     @Override
-    protected Map<String, String> authHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-        if (this.connectionCredential != null) {
-            // TODO connectionCredential成员变量的作用？
-            String token = this.connectionCredential.v(HttpDataExecutor.KEY_TOKEN);
-            HttpClientBuilder.fillBearerAuthHeader(token, headers);
-        }
-        return headers;
+    protected Supplier<Map<String, String>> headers() {
+        return ()->{
+            HashMap<String, String> headers = new HashMap<>();
+            if (this.connectionCredential != null) {
+                // TODO connectionCredential成员变量的作用？
+                String token = this.connectionCredential.v(HttpDataExecutor.KEY_TOKEN);
+                HttpClientBuilder.fillBearerAuthHeader(token, headers);
+            }
+            return headers;
+        };
     }
 
 

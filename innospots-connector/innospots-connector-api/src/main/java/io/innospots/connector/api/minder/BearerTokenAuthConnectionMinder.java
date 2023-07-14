@@ -24,6 +24,7 @@ import io.innospots.base.utils.HttpClientBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Smars
@@ -34,10 +35,13 @@ public class BearerTokenAuthConnectionMinder extends HttpDataConnectionMinder {
 
 
     @Override
-    protected Map<String, String> authHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-        String token = this.connectionCredential.v(HttpDataExecutor.KEY_TOKEN);
-        HttpClientBuilder.fillBearerAuthHeader(token, headers);
-        return headers;
+    protected Supplier<Map<String, String>> headers() {
+        return ()->{
+            HashMap<String, String> headers = new HashMap<>();
+            String token = this.connectionCredential.v(HttpDataExecutor.KEY_TOKEN);
+            HttpClientBuilder.fillBearerAuthHeader(token, headers);
+            return headers;
+        };
     }
+
 }

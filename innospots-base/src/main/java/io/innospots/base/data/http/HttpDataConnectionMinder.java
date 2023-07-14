@@ -89,11 +89,6 @@ public class HttpDataConnectionMinder extends BaseDataConnectionMinder {
 
     @Override
     public boolean test(ConnectionCredential connectionCredential) {
-        // TODO 先默认返回true
-//        this.connectionCredential = connectionCredential;
-//        HttpDataExecutor httpDataExecutor = new HttpDataExecutor(new HttpConnection(connectionCredential, authHeaders()),null);
-//        RequestBody requestBody = new RequestBody();
-//        return httpDataExecutor.execute(requestBody).getBody() != null;
         return true;
     }
 

@@ -25,6 +25,7 @@ import io.innospots.base.utils.HttpClientBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * @author Smars
@@ -34,13 +35,17 @@ import java.util.Map;
 public class BasicAuthApiConnectionMinder extends HttpDataConnectionMinder {
 
 
+
     @Override
-    protected Map<String, String> authHeaders() {
-        HashMap<String, String> headers = new HashMap<>();
-        String username = this.connectionCredential.v(HttpDataExecutor.KEY_USERNAME);
-        String password = this.connectionCredential.v(HttpDataExecutor.KEY_PASSWORD);
-        HttpClientBuilder.fillBasicAuthHeader(username, password, headers, StandardCharsets.UTF_8);
-        return headers;
+    protected Supplier<Map<String, String>> headers() {
+        return ()->{
+            HashMap<String, String> headers = new HashMap<>();
+            String username = this.connectionCredential.v(HttpDataExecutor.KEY_USERNAME);
+            String password = this.connectionCredential.v(HttpDataExecutor.KEY_PASSWORD);
+            HttpClientBuilder.fillBasicAuthHeader(username, password, headers, StandardCharsets.UTF_8);
+            return headers;
+        };
     }
+
 
 }

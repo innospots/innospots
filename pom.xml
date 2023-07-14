@@ -48,7 +48,6 @@
         <hutool.version>5.8.9</hutool.version>
         <mail.version>1.6.2</mail.version>
         <innospots-ui.version>1.2.0-SNAPSHOT</innospots-ui.version>
-        <innospots-workflow-ui.version>1.1.1-SNAPSHOT</innospots-workflow-ui.version>
         <innospots-page-ui.version>1.2.0-SNAPSHOT</innospots-page-ui.version>
         <innosopts.version>1.2.0-SNAPSHOT</innosopts.version>
 

@@ -72,6 +72,7 @@ public class TerminalInfoInterceptor implements HandlerInterceptor {
         String ip = getIpAddress(request);
         TerminalInfo info = terminalCache.getIfPresent(ip);
         if (info == null) {
+            terminalCache.put(ip,terminalInfo);
             CompletableFuture.supplyAsync(() -> ipInfo(ip));
         }else{
             terminalInfo.setIp(info.getIp());
