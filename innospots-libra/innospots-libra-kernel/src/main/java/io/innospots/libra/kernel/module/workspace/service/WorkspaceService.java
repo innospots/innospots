@@ -18,6 +18,8 @@
 
 package io.innospots.libra.kernel.module.workspace.service;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.innospots.base.constant.Constants;
 import io.innospots.base.json.JSONUtils;
 import io.innospots.base.utils.DateTimeUtils;
@@ -29,6 +31,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,60 +41,75 @@ import java.util.Map;
 @Service
 public class WorkspaceService {
 
-    public News getActivityInfo() {
-        String rspStr = HttpUtils.sendGet(Constants.ACTIVITY_URL);
-        if (StringUtils.isNotBlank(rspStr)) {
-            List<Map<String, Object>> resultList = JSONUtils.toMapList(rspStr, Map.class);
-            if (CollectionUtils.isEmpty(resultList)) {
-                return getDefaultActivity();
-            }
-            Map<String, Object> map = resultList.get(0);
-            News news = new News();
-            String date = map.get("date").toString().replace("T", " ");
-            news.setDate(DateTimeUtils.formatDate(DateTimeUtils.parseDate(date, DateTimeUtils.DEFAULT_DATETIME_PATTERN), DateTimeUtils.DEFAULT_DATE_PATTERN));
-            news.setLink(map.get("link").toString());
-            LinkedHashMap<String, Object> titleMap = (LinkedHashMap<String, Object>) map.get("title");
-            news.setTitle(titleMap.get("rendered").toString());
-            return news;
-        }
-        return getDefaultActivity();
-    }
+    private final Cache<String, News> newsCache = Caffeine.newBuilder()
+            .expireAfterAccess(Duration.ofDays(1))
+            .build();
 
-    public NewsInfo getNewsInfo() {
-        String rspStr = HttpUtils.sendGet(Constants.NEWS_URL);
-        if (StringUtils.isNotBlank(rspStr)) {
-            List<Map<String, Object>> resultList = JSONUtils.toMapList(rspStr, Map.class);
-            if (CollectionUtils.isEmpty(resultList)) {
-                return getDefaultNews();
-            }
-            NewsInfo newsInfo = new NewsInfo();
-            List<News> newsList = new ArrayList<>();
-            int i = 0;
-            for (Map<String, Object> map : resultList) {
-                if (i == 0) {
-                    LinkedHashMap<String, Object> embeddedMap = (LinkedHashMap<String, Object>) map.get("_embedded");
-                    List<Map<String, Object>> mediaList = (List<Map<String, Object>>) embeddedMap.get("wp:featuredmedia");
-                    if (CollectionUtils.isNotEmpty(mediaList)) {
-                        Map<String, Object> media = mediaList.get(0);
-                        LinkedHashMap<String, Object> mediaDetailMap = (LinkedHashMap<String, Object>) media.get("media_details");
-                        LinkedHashMap<String, Object> sizeMap = (LinkedHashMap<String, Object>) mediaDetailMap.get("sizes");
-                        LinkedHashMap<String, Object> mediumMap = (LinkedHashMap<String, Object>) sizeMap.get("full");
-                        newsInfo.setSourceUrl(mediumMap.get("source_url").toString());
-                    }
+    private final Cache<String, NewsInfo> newsInfoCache = Caffeine.newBuilder()
+            .expireAfterAccess(Duration.ofDays(1))
+            .build();
+
+    public News getActivityInfo() {
+        News news = newsCache.getIfPresent(Constants.ACTIVITY_URL);
+        if (news == null || StringUtils.isEmpty(news.getLink())) {
+            String rspStr = HttpUtils.sendGet(Constants.ACTIVITY_URL);
+            if (StringUtils.isNotBlank(rspStr)) {
+                List<Map<String, Object>> resultList = JSONUtils.toMapList(rspStr, Map.class);
+                if (CollectionUtils.isEmpty(resultList)) {
+                    return getDefaultActivity();
                 }
-                News news = new News();
+                news = new News();
+                Map<String, Object> map = resultList.get(0);
                 String date = map.get("date").toString().replace("T", " ");
                 news.setDate(DateTimeUtils.formatDate(DateTimeUtils.parseDate(date, DateTimeUtils.DEFAULT_DATETIME_PATTERN), DateTimeUtils.DEFAULT_DATE_PATTERN));
                 news.setLink(map.get("link").toString());
                 LinkedHashMap<String, Object> titleMap = (LinkedHashMap<String, Object>) map.get("title");
                 news.setTitle(titleMap.get("rendered").toString());
-                newsList.add(news);
-                i++;
+                newsCache.put(Constants.ACTIVITY_URL, news);
             }
-            newsInfo.setNews(newsList);
-            return newsInfo;
         }
-        return getDefaultNews();
+        return news;
+    }
+
+    public NewsInfo getNewsInfo() {
+        NewsInfo newsInfo = newsInfoCache.getIfPresent(Constants.NEWS_URL);
+        if (newsInfo == null
+                || (CollectionUtils.isNotEmpty(newsInfo.getNews()) && StringUtils.isEmpty(newsInfo.getNews().get(0).getLink()))) {
+            String rspStr = HttpUtils.sendGet(Constants.NEWS_URL);
+            if (StringUtils.isNotBlank(rspStr)) {
+                List<Map<String, Object>> resultList = JSONUtils.toMapList(rspStr, Map.class);
+                if (CollectionUtils.isEmpty(resultList)) {
+                    return getDefaultNews();
+                }
+                newsInfo = new NewsInfo();
+                List<News> newsList = new ArrayList<>();
+                int i = 0;
+                for (Map<String, Object> map : resultList) {
+                    if (i == 0) {
+                        LinkedHashMap<String, Object> embeddedMap = (LinkedHashMap<String, Object>) map.get("_embedded");
+                        List<Map<String, Object>> mediaList = (List<Map<String, Object>>) embeddedMap.get("wp:featuredmedia");
+                        if (CollectionUtils.isNotEmpty(mediaList)) {
+                            Map<String, Object> media = mediaList.get(0);
+                            LinkedHashMap<String, Object> mediaDetailMap = (LinkedHashMap<String, Object>) media.get("media_details");
+                            LinkedHashMap<String, Object> sizeMap = (LinkedHashMap<String, Object>) mediaDetailMap.get("sizes");
+                            LinkedHashMap<String, Object> mediumMap = (LinkedHashMap<String, Object>) sizeMap.get("full");
+                            newsInfo.setSourceUrl(mediumMap.get("source_url").toString());
+                        }
+                    }
+                    News news = new News();
+                    String date = map.get("date").toString().replace("T", " ");
+                    news.setDate(DateTimeUtils.formatDate(DateTimeUtils.parseDate(date, DateTimeUtils.DEFAULT_DATETIME_PATTERN), DateTimeUtils.DEFAULT_DATE_PATTERN));
+                    news.setLink(map.get("link").toString());
+                    LinkedHashMap<String, Object> titleMap = (LinkedHashMap<String, Object>) map.get("title");
+                    news.setTitle(titleMap.get("rendered").toString());
+                    newsList.add(news);
+                    i++;
+                }
+                newsInfo.setNews(newsList);
+                newsInfoCache.put(Constants.NEWS_URL, newsInfo);
+            }
+        }
+        return newsInfo;
     }
 
     private News getDefaultActivity() {

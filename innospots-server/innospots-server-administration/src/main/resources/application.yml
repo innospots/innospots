@@ -85,7 +85,10 @@ innospots:
     # open debug mode
     debug-mode: true
 
-
+springdoc:
+  swagger-ui:
+    docExpansion: none
+    persistAuthorization: true
 
 # /actuator/info config
 info:

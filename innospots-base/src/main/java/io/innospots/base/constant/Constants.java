@@ -38,9 +38,9 @@ public class Constants {
 
     public static final String IP_URL = "http://whois.pconline.com.cn/ipJson.jsp";
 
-    public static final String NEWS_URL = "http://innospots.com/wp-json/wp/v2/posts?categories=3&per_page=3&_fields=id,date,link,title,_links.wp:featuredmedia,_embeded&_embed=wp:featuredmedia";
+    public static final String NEWS_URL = "https://innospots.com/wp-json/wp/v2/posts?categories=3&per_page=3&_fields=id,date,link,title,_links.wp:featuredmedia,_embeded&_embed=wp:featuredmedia";
 
-    public static final String ACTIVITY_URL = "http://innospots.com/wp-json/wp/v2/posts?categories=4";
+    public static final String ACTIVITY_URL = "https://innospots.com/wp-json/wp/v2/posts?categories=4";
 
     /**
      * only supports: contains a maximum of 32 characters, including letters, digits, and underscores (_), and chinese.
