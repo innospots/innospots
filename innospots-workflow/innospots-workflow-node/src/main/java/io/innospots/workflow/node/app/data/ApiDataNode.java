@@ -253,6 +253,7 @@ public class ApiDataNode extends DataNode {
 
     private InnospotResponse<DataBody> doRequest(Map<String, Object> item) {
         RequestBody requestBody = new RequestBody();
+        requestBody.setCredentialId(credentialId);
         requestBody.setOperation(operation);
         requestBody.setUri(urlAddress);
         requestBody.setConnectorName("Http");

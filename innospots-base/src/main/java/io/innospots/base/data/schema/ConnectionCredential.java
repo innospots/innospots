@@ -56,10 +56,10 @@ public class ConnectionCredential {
 
 
     public String key() {
-        if (code != null) {
-            return code;
-        }
         return valueOf(credentialId);
+//        if (code != null) {
+//            return code;
+//        }
     }
 
     public Object value(String key) {

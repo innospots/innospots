@@ -140,7 +140,7 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
             apiMethod = ApiMethod.valueOf(connectionCredential.v(REQUEST_METHOD));
             Object ct = connectionCredential.value(CACHE_TIME);
             if (ct == null) {
-                cacheTime = 180;
+                cacheTime = 600;
             } else {
                 cacheTime = Integer.valueOf(ct.toString());
             }
@@ -174,7 +174,7 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
                 token = extractToken(httpData);
             }
             if (token != null) {
-                expireTime = LocalDateTime.now();
+                expireTime = LocalDateTime.now().plusSeconds(cacheTime);
             }
 
             return token;
