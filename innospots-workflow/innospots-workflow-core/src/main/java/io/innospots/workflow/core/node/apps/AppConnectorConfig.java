@@ -55,7 +55,7 @@ public class AppConnectorConfig {
         Object rv = getValue("readOnly");
         if(rv instanceof Map){
             Map<String,Boolean> ro = (Map<String, Boolean>) rv;
-            return ro.get(name);
+            return ro.getOrDefault(name,Boolean.FALSE);
         }
         return false;
     }
