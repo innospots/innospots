@@ -19,6 +19,7 @@
 package io.innospots.connector.api.minder;
 
 import com.google.common.collect.ImmutableMap;
+import io.innospots.base.data.enums.ApiMethod;
 import io.innospots.base.data.http.HttpData;
 import io.innospots.base.data.http.HttpDataConnectionMinder;
 import io.innospots.base.data.http.HttpDataExecutor;
@@ -37,46 +38,39 @@ import java.util.function.Supplier;
  * @version 1.2.0
  * @date 2023/2/14
  */
-public class OAuth2ApiConnectionMinder extends HttpDataConnectionMinder {
-
-    private final String CLIENT_ID = "client_id";
-    private final String CLIENT_SECRET = "client_secret";
-    private final String CODE = "code";
-    private final String ACCESS_TOKEN_URL = "access_token_url";
+public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
 
 
-    @Override
-    protected Supplier<Map<String, String>> headers() {
-        return ()->{
-            HashMap<String, String> headers = new HashMap<>();
-            if (this.connectionCredential != null) {
-                // TODO connectionCredential成员变量的作用？
-                String token = this.connectionCredential.v(HttpDataExecutor.KEY_TOKEN);
-                HttpClientBuilder.fillBearerAuthHeader(token, headers);
-            }
-            return headers;
-        };
-    }
+    protected final String CODE = "code";
+
+    protected final String APP_ID = "appid";
+
+    protected final String AUTHORITY_URL = "authority_url";
+    protected final String REFRESH_TOKEN = "refresh_token";
+    protected final String ACCESS_TOKEN = "access_token";
+
+    protected final String EXPIRES_IN = "expires_in";
 
 
     @Override
     public Object fetchSample(ConnectionCredential connectionCredential, String tableName) {
-        Map<String, Object> config = connectionCredential.getConfig();
-        String clientId = String.valueOf(config.get(CLIENT_ID));
-        String clientSecret = String.valueOf(config.get(CLIENT_SECRET));
-        String code = String.valueOf(config.get(CODE));
-        String accessTokenUrl = String.valueOf(config.get(ACCESS_TOKEN_URL));
+        String clientId = connectionCredential.v(CLIENT_ID);
+        String clientSecret = connectionCredential.v(CLIENT_SECRET);
+        String authorityUrl = connectionCredential.v(AUTHORITY_URL);
+        String refreshToken = connectionCredential.v(REFRESH_TOKEN);
+        String expiresIn = connectionCredential.v(EXPIRES_IN);
+        String accessToken = connectionCredential.v(ACCESS_TOKEN);
+        String accessTokenUrl = connectionCredential.v(ACCESS_TOKEN_URL);
+        String grantType = "";
+        //1. 判断refreshToken是否为空，不为空 ,如果过期或者expiresIn，则调用刷新TOKEN获取
 
-        Map<String, Object> param = ImmutableMap.of(
-                CLIENT_ID, clientId,
-                CLIENT_SECRET, clientSecret,
-                CODE, code
-        );
+        //2. 如果accessToken不为空，也没有过期，则返回true
 
-        HttpData httpData = httpConnection.get(accessTokenUrl, param, Collections.emptyMap());
-        if (httpData.getStatus() != HttpStatus.SC_OK) {
-            throw HttpConnectionException.buildException(this.getClass(), connectionCredential, httpData);
-        }
-        return httpData.getBody();
+        //3. 如果accessToken为空，refreshToken为空，则返回重定向URL地址
+
+
+
+        return null;
     }
+
 }

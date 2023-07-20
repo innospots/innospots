@@ -56,9 +56,10 @@ public class CredentialOauth2Controller {
         this.systemTempCacheOperator = systemTempCacheOperator;
     }
 
-    @GetMapping("callback")
+    @GetMapping("callback/${appCode}")
     @Operation(summary = "oauth2 credential callback")
     public String callback(
+            @Parameter(name = "appCode") @PathVariable String appCode,
             @Parameter(name = "code") @RequestParam("code") String code,
             @Parameter(name = "state") @RequestParam("state") String state) {
         if (StringUtils.isBlank(state)) {

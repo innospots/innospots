@@ -31,6 +31,7 @@ import io.innospots.base.json.JSONUtils;
 import io.innospots.connector.schema.mapper.CredentialConvertMapper;
 import io.innospots.connector.schema.operator.AppCredentialOperator;
 import io.innospots.libra.base.configuration.AuthProperties;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -78,6 +79,15 @@ public class ConnectionCredentialReader implements IConnectionCredentialReader {
         return connectionCredential;
     }
 
+    public AppCredentialInfo encryptFormValues(AppCredentialInfo appCredentialInfo){
+        if(MapUtils.isEmpty(appCredentialInfo.getFormValues())){
+            return appCredentialInfo;
+        }
+        String jsonStr = JSONUtils.toJsonString(appCredentialInfo.getFormValues());
+        appCredentialInfo.setEncryptFormValues(encryptor.encode(jsonStr));
+
+        return appCredentialInfo;
+    }
 
     private ConnectionCredential decryptFormValues(AppCredentialInfo appCredentialInfo) {
         if (appCredentialInfo == null) {
