@@ -23,7 +23,9 @@ import io.innospots.base.data.schema.AppCredentialInfo;
 import io.innospots.base.data.schema.ConnectionCredential;
 import io.innospots.base.data.schema.reader.IConnectionCredentialReader;
 import io.innospots.base.exception.ValidatorException;
+import io.innospots.base.json.JSONUtils;
 import io.innospots.base.model.response.InnospotResponse;
+import io.innospots.base.store.CacheStoreManager;
 import io.innospots.libra.base.operator.SystemTempCacheOperator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,22 +71,25 @@ public class CredentialOauth2Controller {
         AppCredentialInfo appCredentialInfo = new AppCredentialInfo();
         appCredentialInfo.setConfigCode("oauth2-auth-api");
         appCredentialInfo.setConnectorName("Http");
-        appCredentialInfo.setEncryptFormValues(state);
-
+        appCredentialInfo.setAppNodeCode(appCode);
+        String json = CacheStoreManager.get(state);
+        Map<String,Object> formValues = null;
         ConnectionCredential connectionCredential = connectionCredentialReader.fillCredential(appCredentialInfo);
-        connectionCredential.getConfig().put("code", code);
-        Object result = DataConnectionMinderManager.testConnection(connectionCredential);
-        //Object result = DataConnectionMinderManager.fetchSample(connectionCredential);
-
-        Map<String, Object> config = connectionCredential.getConfig();
-        if (MapUtils.isNotEmpty(config) && result != null) {
-            String clientId = "client_id";
-            String clientSecret = "client_secret";
-            systemTempCacheOperator.put(config.get(clientId) + "_" + config.get(clientSecret), String.valueOf(result));
+        connectionCredential.config("code",code);
+        connectionCredential.config("state",state);
+        if(json!=null){
+            formValues = JSONUtils.toMap(json);
+            connectionCredential.config(formValues);
+            CacheStoreManager.remove(state);
         }
 
-        // TODO 返回一个oauth-callback.html 的页面：Got connected. The window can be closed now.
-        return "forward:/oauth-callback.html";
+        Object result = DataConnectionMinderManager.testConnection(connectionCredential);
+        boolean success = false;
+        if(result instanceof Map && MapUtils.isNotEmpty((Map<?, ?>) result)){
+            success = true;
+        }
+
+        return "forward:/#/metadata/oauth-credential?state="+state + "&appCode="+appCode +"&success="+success;
     }
 
     @GetMapping("status/{clientId}/{clientSecret}")

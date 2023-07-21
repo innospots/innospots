@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.String.valueOf;
@@ -84,6 +85,20 @@ public class ConnectionCredential {
             return null;
         }
         return String.valueOf(config.getOrDefault(key, defaultValue));
+    }
+
+    public void config(String key, String value) {
+        if(this.config == null){
+            this.config = new HashMap<>();
+        }
+        this.config.put(key,value);
+    }
+
+    public void config(Map<String,Object> props){
+        if(this.config == null){
+            this.config = new HashMap<>();
+        }
+        this.config.putAll(props);
     }
 
 

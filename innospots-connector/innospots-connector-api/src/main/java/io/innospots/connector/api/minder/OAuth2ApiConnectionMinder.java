@@ -29,11 +29,14 @@ import io.innospots.base.data.http.HttpDataExecutor;
 import io.innospots.base.data.schema.ConnectionCredential;
 import io.innospots.base.exception.data.HttpConnectionException;
 import io.innospots.base.json.JSONUtils;
+import io.innospots.base.store.CacheStoreManager;
 import io.innospots.base.utils.ApplicationContextUtils;
 import io.innospots.base.utils.HttpClientBuilder;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpStatus;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,40 +58,96 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
     protected final String REFRESH_TOKEN = "refresh_token";
     protected final String ACCESS_TOKEN = "access_token";
     protected final String REDIRECT_ADDRESS = "redirect_address";
+    protected final String REDIRECT_URL = "redirect_url";
     protected final String TOKEN_TIME = "token_time";
     protected final String SCOPE = "scope";
+    protected final String STATE = "state";
 
     protected final String EXPIRES_IN = "expires_in";
+    protected final String GRANT_TYPE = "grant_type";
 
-    private final String OAUTH_CALLBACK = PathConstant.ROOT_PATH+"oauth2/callback";
+    private final String OAUTH_CALLBACK = PathConstant.ROOT_PATH + "oauth2/callback/";
 
 
     @Override
     public Object test(ConnectionCredential connectionCredential) {
+
         String clientId = connectionCredential.v(CLIENT_ID);
         String clientSecret = connectionCredential.v(CLIENT_SECRET);
         String authorityUrl = connectionCredential.v(AUTHORITY_URL);
         String refreshToken = connectionCredential.v(REFRESH_TOKEN);
         String expiresIn = connectionCredential.v(EXPIRES_IN);
+        int expireSecond = expiresIn != null ? Integer.parseInt(expiresIn) : 0;
         String accessToken = connectionCredential.v(ACCESS_TOKEN);
+        String ts = connectionCredential.v(TOKEN_TIME);
+        long tokenTs = ts != null ? Long.parseLong(ts) : 0;
         String accessTokenUrl = connectionCredential.v(ACCESS_TOKEN_URL);
-        String redirectUrl = connectionCredential.v(REDIRECT_ADDRESS);
+        String redirectAddress = connectionCredential.v(REDIRECT_ADDRESS);
         String scopes = connectionCredential.v(SCOPE);
-        String grantType = "";
+        String state = connectionCredential.v(STATE);
+
+        String code = connectionCredential.v(CODE);
+
+        String redirectUrl = redirectAddress != null ? redirectAddress + OAUTH_CALLBACK + connectionCredential.getAppNodeCode() : null;
+
+        Map<String, Object> resp = null;
+
+        if (code != null && redirectUrl != null) {
+            resp = fetchAccessToken(accessTokenUrl, clientId, clientSecret, code, redirectUrl,state);
+        }
+
         //1. 判断refreshToken是否为空，不为空 ,如果过期或者expiresIn，则调用刷新TOKEN获取
+        if (refreshToken != null && ts != null &&
+                Instant.ofEpochMilli(tokenTs).plusSeconds(expireSecond).isBefore(Instant.now())) {
+            resp = refreshToken(connectionCredential.getAppNodeCode(), accessTokenUrl, refreshToken, clientId, clientSecret);
+        }
 
-        //2. 如果accessToken不为空，也没有过期，则返回true
+        //2. 如果accessToken为空，refreshToken为空，则返回重定向URL地址
+        if (refreshToken == null || accessToken == null) {
+            resp = openAuthorize(authorityUrl, clientId, clientSecret, redirectUrl, scopes);
+        }
 
-        //3. 如果accessToken为空，refreshToken为空，则返回重定向URL地址
+        //3. 如果accessToken不为空，也没有过期，则返回true
+        if (accessToken != null) {
+            return true;
+        }
 
-        return super.test(connectionCredential);
+        return resp;
     }
 
-    private Map<String,Object> refreshToken(String accessTokenUrl,String refreshToken,String clientId,String secretId){
-        Map<String,Object> resp = new HashMap<>();
-        UrlBuilder rb = UrlBuilder.of().addQuery(CLIENT_ID,clientId)
-                .addQuery(CLIENT_SECRET,secretId)
-                .addQuery("grant_type","refresh_token")
+    private Map<String, Object> fetchAccessToken(String accessTokenUrl, String clientId, String clientSecret, String code, String redirectUrl,String state) {
+        Map<String, Object> resp = new HashMap<>();
+        UrlBuilder rb = UrlBuilder.of().addQuery(CLIENT_ID, clientId)
+                .addQuery(CLIENT_SECRET, clientSecret)
+                .addQuery(GRANT_TYPE, "authorization_code")
+                .addQuery(REDIRECT_URL, redirectUrl)
+                .addQuery(CODE, code);
+        TokenHolder holder = new TokenHolder();
+        holder.setAddress(accessTokenUrl);
+        holder.setApiMethod(ApiMethod.POST);
+        holder.setJsonPath("$.access_token");
+        holder.setTokenLoc(TokenHolder.TokenLocation.PARAM);
+        holder.setQueryParam(rb.getQueryStr());
+        String token = holder.fetchToken(false);
+        if (token != null) {
+            resp.put(ACCESS_TOKEN, token);
+            resp.put(EXPIRES_IN, holder.getCacheTime());
+            resp.put(TOKEN_TIME, System.currentTimeMillis());
+            if (holder.getResponse() != null && holder.getResponse().getBody() instanceof Map) {
+                resp.putAll((Map<? extends String, ?>) holder.getResponse().getBody());
+            }
+            CacheStoreManager.save(state,JSONUtils.toJsonString(resp));
+        }
+        return resp;
+    }
+
+    private Map<String, Object> refreshToken(String credentialCode, String accessTokenUrl, String refreshToken, String clientId, String clientSecret) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put(CLIENT_ID, clientId);
+        resp.put(GRANT_TYPE,"refresh_token");
+        UrlBuilder rb = UrlBuilder.of().addQuery(CLIENT_ID, clientId)
+                .addQuery(CLIENT_SECRET, clientSecret)
+                .addQuery(GRANT_TYPE, "refresh_token")
                 .addQuery("refresh_token", refreshToken);
         TokenHolder holder = new TokenHolder();
         holder.setAddress(accessTokenUrl);
@@ -97,30 +156,42 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
         holder.setTokenLoc(TokenHolder.TokenLocation.PARAM);
         holder.setQueryParam(rb.getQueryStr());
         String token = holder.fetchToken(false);
-        IEncryptor encryptor = ApplicationContextUtils.getBean(IEncryptor.class);
-        if(token != null){
-            Map<String,Object> body = new HashMap<>();
-            body.put(ACCESS_TOKEN,token);
-            body.put(EXPIRES_IN,holder.getCacheTime());
-            body.put(TOKEN_TIME,System.currentTimeMillis());
 
-            resp.put("encryptFormValues",encryptor.encode(JSONUtils.toJsonString(body)));
+        if (token != null) {
+            resp.put(ACCESS_TOKEN, token);
+            resp.put(EXPIRES_IN, holder.getCacheTime());
+            resp.put(TOKEN_TIME, System.currentTimeMillis());
+            if (holder.getResponse() != null && holder.getResponse().getBody() instanceof Map) {
+                resp.putAll((Map<? extends String, ?>) holder.getResponse().getBody());
+            }
         }
+        CacheStoreManager.save(clientId + "_" + credentialCode, JSONUtils.toJsonString(resp));
+        resp.remove(ACCESS_TOKEN);
         return resp;
     }
 
-    private Map<String,Object> openAuthorize(String authorityUrl,String clientId,String callBackUrl,String scopes){
-        Map<String,Object> resp = new HashMap<>();
+    private Map<String, Object> openAuthorize(String authorityUrl,
+                                              String clientId,
+                                              String clientSecret,
+                                              String redirectUrl, String scopes) {
+        String state = RandomStringUtils.randomAlphabetic(6).toLowerCase();
 
-        UrlBuilder rb = UrlBuilder.of(authorityUrl).addQuery(CLIENT_ID,clientId)
-                .addQuery("response_type","code")
-                .addQuery("redirect_uri",callBackUrl)
-                .addQuery("state", RandomStringUtils.randomAlphabetic(6).toLowerCase());
-        if(scopes!=null){
-            rb.addQuery(SCOPE,scopes);
+        Map<String, Object> resp = new HashMap<>();
+        resp.put(CLIENT_SECRET, clientSecret);
+        resp.put(CLIENT_ID, clientId);
+        resp.put(REDIRECT_URL, redirectUrl);
+
+        UrlBuilder rb = UrlBuilder.of(authorityUrl).addQuery(CLIENT_ID, clientId)
+                .addQuery("response_type", "code")
+                .addQuery("redirect_uri", redirectUrl)
+                .addQuery(STATE, state);
+        if (scopes != null) {
+            rb.addQuery(SCOPE, scopes);
         }
-        resp.put(AUTHORITY_URL,rb.build());
-        //TODO cache
+        resp.put(AUTHORITY_URL, rb.build());
+        resp.put(STATE, state);
+        CacheStoreManager.save(state, JSONUtils.toJsonString(resp));
+        resp.remove(CLIENT_SECRET);
         return resp;
     }
 
