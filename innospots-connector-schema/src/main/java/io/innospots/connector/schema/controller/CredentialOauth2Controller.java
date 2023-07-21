@@ -73,7 +73,8 @@ public class CredentialOauth2Controller {
 
         ConnectionCredential connectionCredential = connectionCredentialReader.fillCredential(appCredentialInfo);
         connectionCredential.getConfig().put("code", code);
-        Object result = DataConnectionMinderManager.fetchSample(connectionCredential);
+        Object result = DataConnectionMinderManager.testConnection(connectionCredential);
+        //Object result = DataConnectionMinderManager.fetchSample(connectionCredential);
 
         Map<String, Object> config = connectionCredential.getConfig();
         if (MapUtils.isNotEmpty(config) && result != null) {

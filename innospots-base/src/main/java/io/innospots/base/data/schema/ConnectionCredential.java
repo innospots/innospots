@@ -54,6 +54,9 @@ public class ConnectionCredential {
     @Schema(title = "config")
     private Map<String, Object> config;
 
+    @Schema(title = "app node definition code")
+    private String appNodeCode;
+
 
     public String key() {
         return valueOf(credentialId);

@@ -109,6 +109,11 @@ public class TokenHolder {
             Object ct = jsonNode.select("$.expires_in");
             if(ct != null){
                 this.cacheTime = Integer.parseInt(ct.toString());
+            }else{
+                ct = jsonNode.select("$.expires");
+                if(ct!=null){
+                    this.cacheTime = Integer.parseInt(ct.toString());
+                }
             }
         } else if (httpData.getBody() instanceof String) {
             ONode jsonNode = ONode.load(JSONUtils.toMap((String) httpData.getBody()));
@@ -116,6 +121,11 @@ public class TokenHolder {
             Object ct = jsonNode.select("$.expires_in");
             if(ct != null){
                 this.cacheTime = Integer.parseInt(ct.toString());
+            }else{
+                ct = jsonNode.select("$.expires");
+                if(ct!=null){
+                    this.cacheTime = Integer.parseInt(ct.toString());
+                }
             }
         }
         return t;

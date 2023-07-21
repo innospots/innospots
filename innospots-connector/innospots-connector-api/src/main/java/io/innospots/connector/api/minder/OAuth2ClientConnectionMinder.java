@@ -58,6 +58,7 @@ public class OAuth2ClientConnectionMinder extends TokenAuthApiConnectionMinder {
         return super.test(connectionCredential);
     }
 
+    @Override
     protected TokenHolder buildTokenHolder(ConnectionCredential cc) {
         TokenHolder th = new TokenHolder();
         th.setTokenLoc(TokenHolder.TokenLocation.PARAM);
