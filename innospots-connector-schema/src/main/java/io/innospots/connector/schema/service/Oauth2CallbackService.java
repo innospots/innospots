@@ -20,7 +20,6 @@ import java.util.Map;
  * @date 2023/7/20
  */
 @Slf4j
-@Service
 public class Oauth2CallbackService {
 
     private ConnectionCredentialReader connectionCredentialReader;
