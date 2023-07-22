@@ -35,15 +35,8 @@ import java.util.function.Supplier;
 @Slf4j
 public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
 
-
-    private static final String TOKEN_ADDRESS = "access_token_url";
     private static final String QUERY_PARAM = "query_param";
     private static final String POST_BODY = "post_body";
-    private static final String REQUEST_METHOD = "request_method";
-    private static final String TOKEN_LOCATION = "token_location";
-    private static final String TOKEN_PARAM = "token_param";
-    private static final String CACHE_TIME = "cache_time";
-    private static final String TOKEN_JSON_PATH = "token_json_path";
 
     protected TokenHolder tokenHolder;
 
@@ -103,33 +96,11 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
     }
 
     protected TokenHolder buildTokenHolder(ConnectionCredential connectionCredential){
-
-        TokenHolder tokenHolder = new TokenHolder();
-
-        String address = connectionCredential.v(TOKEN_ADDRESS);
-        ApiMethod apiMethod = ApiMethod.valueOf(connectionCredential.v(REQUEST_METHOD));
-        Object ct = connectionCredential.value(CACHE_TIME);
-        int cacheTime;
-        if (ct == null) {
-            cacheTime = 600;
-        } else {
-            cacheTime = Integer.parseInt(ct.toString());
-        }
-
-        String tokenParam = connectionCredential.v(TOKEN_PARAM);
-        String jsonPath = connectionCredential.v(TOKEN_JSON_PATH);
-        TokenHolder.TokenLocation tokenLoc = TokenHolder.TokenLocation.valueOf(connectionCredential.v(TOKEN_LOCATION));
+        TokenHolder tokenHolder = TokenHolder.build(connectionCredential);
         String queryParam = connectionCredential.v(QUERY_PARAM);
         String postBody = connectionCredential.v(POST_BODY);
-        tokenHolder.setAddress(address);
-        tokenHolder.setApiMethod(apiMethod);
-        tokenHolder.setCacheTime(cacheTime);
-        tokenHolder.setTokenParam(tokenParam);
-        tokenHolder.setJsonPath(jsonPath);
-        tokenHolder.setTokenLoc(tokenLoc);
         tokenHolder.setQueryParam(queryParam);
         tokenHolder.setPostBody(postBody);
-
         return tokenHolder;
     }
 

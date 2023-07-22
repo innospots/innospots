@@ -77,7 +77,11 @@ public class ConnectionCredential {
         if (config == null) {
             return null;
         }
-        return String.valueOf(config.get(key));
+        Object vv = config.get(key);
+        if(vv==null){
+            return null;
+        }
+        return String.valueOf(vv);
     }
 
     public String v(String key, String defaultValue) {

@@ -38,20 +38,6 @@ public class OAuth2ClientConnectionMinder extends TokenAuthApiConnectionMinder {
 
     protected final String GRANT_TYPE = "grant_type";
 
-    protected final String ACCESS_TOKEN_URL = "access_token_url";
-
-    @Override
-    public Object fetchSample(ConnectionCredential connectionCredential, String tableName) {
-        TokenHolder tokenHolder = buildTokenHolder(connectionCredential);
-        tokenHolder.fetchToken(false);
-
-        HttpData httpData = tokenHolder.getResponse();
-        if (httpData.getStatus() != HttpStatus.SC_OK) {
-            throw HttpConnectionException.buildException(this.getClass(), connectionCredential, httpData);
-        }
-        return httpData.getBody();
-    }
-
 
     @Override
     public Object test(ConnectionCredential connectionCredential) {
@@ -60,10 +46,8 @@ public class OAuth2ClientConnectionMinder extends TokenAuthApiConnectionMinder {
 
     @Override
     protected TokenHolder buildTokenHolder(ConnectionCredential cc) {
-        TokenHolder th = new TokenHolder();
+        TokenHolder th = TokenHolder.build(cc);
         th.setTokenLoc(TokenHolder.TokenLocation.PARAM);
-        th.setJsonPath("$.access_token");
-        th.setAddress(cc.v(ACCESS_TOKEN_URL));
         th.setApiMethod(ApiMethod.POST);
         th.setTokenParam("access_token");
         String queryParam = GRANT_TYPE+"="+cc.v(GRANT_TYPE,"client_credentials")+"&"+
