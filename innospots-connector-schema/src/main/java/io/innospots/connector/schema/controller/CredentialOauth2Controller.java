@@ -26,6 +26,7 @@ import io.innospots.base.exception.ValidatorException;
 import io.innospots.base.json.JSONUtils;
 import io.innospots.base.model.response.InnospotResponse;
 import io.innospots.base.store.CacheStoreManager;
+import io.innospots.connector.schema.service.Oauth2CallbackService;
 import io.innospots.libra.base.operator.SystemTempCacheOperator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,58 +48,32 @@ import java.util.Map;
 @Tag(name = "App Credential Oauth2")
 public class CredentialOauth2Controller {
 
-    private final IConnectionCredentialReader connectionCredentialReader;
+    private Oauth2CallbackService authorizationCallbackService;
 
-    private final SystemTempCacheOperator systemTempCacheOperator;
-
-    public CredentialOauth2Controller(
-            IConnectionCredentialReader connectionCredentialReader,
-            SystemTempCacheOperator systemTempCacheOperator) {
-        this.connectionCredentialReader = connectionCredentialReader;
-        this.systemTempCacheOperator = systemTempCacheOperator;
+    public CredentialOauth2Controller(Oauth2CallbackService authorizationCallbackService) {
+        this.authorizationCallbackService = authorizationCallbackService;
     }
 
-    @GetMapping("callback/${appCode}")
+    @GetMapping("callback/{appCode}")
     @Operation(summary = "oauth2 credential callback")
     public String callback(
             @Parameter(name = "appCode") @PathVariable String appCode,
             @Parameter(name = "code") @RequestParam("code") String code,
             @Parameter(name = "state") @RequestParam("state") String state) {
-        if (StringUtils.isBlank(state)) {
-            log.warn("oauth2 credential callback state can not be empty");
-            throw ValidatorException.buildInvalidException("oauth2-credential", "oauth2 credential callback state can not be empty");
-        }
-        AppCredentialInfo appCredentialInfo = new AppCredentialInfo();
-        appCredentialInfo.setConfigCode("oauth2-auth-api");
-        appCredentialInfo.setConnectorName("Http");
-        appCredentialInfo.setAppNodeCode(appCode);
-        String json = CacheStoreManager.get(state);
-        Map<String,Object> formValues = null;
-        ConnectionCredential connectionCredential = connectionCredentialReader.fillCredential(appCredentialInfo);
-        connectionCredential.config("code",code);
-        connectionCredential.config("state",state);
-        if(json!=null){
-            formValues = JSONUtils.toMap(json);
-            connectionCredential.config(formValues);
-            CacheStoreManager.remove(state);
-        }
-
-        Object result = DataConnectionMinderManager.testConnection(connectionCredential);
-        boolean success = false;
-        if(result instanceof Map && MapUtils.isNotEmpty((Map<?, ?>) result)){
-            success = true;
-        }
+        boolean success = authorizationCallbackService.authCallback(appCode,code, state);
 
         return "forward:/#/metadata/oauth-credential?state="+state + "&appCode="+appCode +"&success="+success;
     }
 
+    @Deprecated
     @GetMapping("status/{clientId}/{clientSecret}")
     @Operation(summary = "oauth2 credential status")
     public InnospotResponse<Boolean> result(
             @Parameter(name = "clientId") @PathVariable("clientId") String clientId,
             @Parameter(name = "clientSecret") @PathVariable("clientSecret") String clientSecret
     ) {
-        String value = systemTempCacheOperator.get(clientId + "_" + clientSecret);
-        return InnospotResponse.success(!StringUtils.isBlank(value));
+        return null;
+        //String value = systemTempCacheOperator.get(clientId + "_" + clientSecret);
+        //return InnospotResponse.success(!StringUtils.isBlank(value));
     }
 }
