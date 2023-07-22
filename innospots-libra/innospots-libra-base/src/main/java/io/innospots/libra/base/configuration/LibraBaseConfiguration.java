@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.google.common.collect.ImmutableList;
+import io.innospots.base.store.CacheStoreManager;
 import io.innospots.base.utils.CCH;
 import io.innospots.libra.base.dao.handler.EntityMetaObjectHandler;
 import io.innospots.libra.base.operator.SystemTempCacheOperator;
@@ -115,6 +116,8 @@ public class LibraBaseConfiguration {
 
     @Bean
     public SystemTempCacheOperator systemTempCacheOperator() {
-        return new SystemTempCacheOperator();
+        SystemTempCacheOperator cacheOperator =  new SystemTempCacheOperator();
+        CacheStoreManager.set(cacheOperator);
+        return cacheOperator;
     }
 }

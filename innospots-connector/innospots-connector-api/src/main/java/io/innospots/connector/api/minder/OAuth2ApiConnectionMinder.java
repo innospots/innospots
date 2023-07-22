@@ -93,19 +93,32 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
 
         Map<String, Object> resp = null;
 
+        String tokenJson = CacheStoreManager.get(clientId+"_"+connectionCredential.getAppNodeCode());
+        if(tokenJson!=null){
+            Map<String,Object> tokenBody = JSONUtils.toMap(tokenJson);
+            return true;
+        }
+
         if (code != null && redirectUrl != null) {
             resp = fetchAccessToken(accessTokenUrl, clientId, clientSecret, code, redirectUrl,state);
+            //TODO 判断
+            return true;
         }
 
         //1. 判断refreshToken是否为空，不为空 ,如果过期或者expiresIn，则调用刷新TOKEN获取
         if (refreshToken != null && ts != null &&
                 Instant.ofEpochMilli(tokenTs).plusSeconds(expireSecond).isBefore(Instant.now())) {
+
             resp = refreshToken(connectionCredential.getAppNodeCode(), accessTokenUrl, refreshToken, clientId, clientSecret);
+            //TODO 判断
+            return true;
         }
+
+
 
         //2. 如果accessToken为空，refreshToken为空，则返回重定向URL地址
         if (refreshToken == null || accessToken == null) {
-            resp = openAuthorize(authorityUrl, clientId, clientSecret, redirectUrl, scopes);
+            return openAuthorize(authorityUrl, clientId, clientSecret, redirectUrl, scopes);
         }
 
         //3. 如果accessToken不为空，也没有过期，则返回true

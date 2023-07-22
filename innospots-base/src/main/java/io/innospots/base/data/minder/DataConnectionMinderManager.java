@@ -90,9 +90,9 @@ public class DataConnectionMinderManager {
     }
 
     public static Object testConnection(ConnectionCredential connectionCredential) {
-        IDataConnectionMinder dataConnectionDriver = newInstanceByConnectorNameAndConfigCode(connectionCredential.getConnectorName(),connectionCredential.getConfigCode());
-        if (dataConnectionDriver != null) {
-            return dataConnectionDriver.test(connectionCredential);
+        IDataConnectionMinder dataConnectionMinder =  newInstanceByConnectorNameAndConfigCode(connectionCredential.getConnectorName(),connectionCredential.getConfigCode());
+        if (dataConnectionMinder != null) {
+            return dataConnectionMinder.test(connectionCredential);
         }
         return false;
     }

@@ -18,6 +18,7 @@
 
 package io.innospots.connector.schema.controller;
 
+import io.innospots.base.constant.PathConstant;
 import io.innospots.base.data.minder.DataConnectionMinderManager;
 import io.innospots.base.data.schema.AppCredentialInfo;
 import io.innospots.base.data.schema.ConnectionCredential;
@@ -44,7 +45,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/credential/oauth2")
+@RequestMapping(PathConstant.ROOT_PATH+"oauth2")
 @Tag(name = "App Credential Oauth2")
 public class CredentialOauth2Controller {
 
