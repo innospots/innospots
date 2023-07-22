@@ -282,6 +282,8 @@
           "labelGrid": 4,
           "tips": "GET POST",
           "type": "SELECT",
+          "value": "POST",
+          "defaultValue": "POST",
           "expression": "",
           "gridSize": 4,
           "options": [{
