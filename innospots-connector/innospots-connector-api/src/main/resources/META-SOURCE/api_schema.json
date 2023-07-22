@@ -426,6 +426,36 @@
           "expression": "",
           "gridSize": 4,
           "options": []
+        },
+        {
+          "label": "token位置",
+          "name": "token_location",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "token 参数在请求头还是请求参数上",
+          "type": "RADIO",
+          "expression": "",
+          "gridSize": 4,
+          "options": [
+            {"name":"请求头","value":"HEADER"},
+            {"name":"请求参数","value":"PARAM"},
+            {"name":"请求体","value":"BODY"}
+          ]
+        },
+        {
+          "label": "token参数",
+          "name": "token_param",
+          "placeholder": "access_token",
+          "defaultValue": "access_token",
+          "value": "access_token",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "accessToken的参数名",
+          "type": "INPUT",
+          "expression": "",
+          "gridSize": 4,
+          "options": []
         }
       ]
     }
