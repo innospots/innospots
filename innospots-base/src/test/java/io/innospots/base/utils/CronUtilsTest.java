@@ -46,4 +46,12 @@ public class CronUtilsTest {
         System.out.println(rb.build());
         System.out.println(rb.getQueryStr());
     }
+
+    @Test
+    public void test3(){
+        long current = System.currentTimeMillis();
+        int expiresIn = 659000;
+        long expireTs = current + expiresIn * 1000;
+        System.out.println(expireTs + ":" + current);
+    }
 }

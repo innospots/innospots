@@ -40,7 +40,7 @@ public class TokenHolder {
 
     private String tokenParam = "access_token";
 
-    private Integer expiresIn;
+    private int expiresIn;
 
     private String tokenPath = "$.access_token";
 
@@ -48,7 +48,7 @@ public class TokenHolder {
 
     private String refreshPath = "$.refresh_token";
 
-    private Long tokenTs;
+    private long tokenTs;
 
     private TokenLocation tokenLoc = TokenLocation.PARAM;
 
@@ -125,7 +125,8 @@ public class TokenHolder {
      */
     public String fetchToken(boolean cache) {
         long current = System.currentTimeMillis();
-        if (cache && tokenTs != null && accessToken != null && (tokenTs + 1000 * expiresIn) > current) {
+        long expireTs = tokenTs + expiresIn * 1000l;
+        if (cache && accessToken != null && expireTs > current) {
             String token = "bearer".equalsIgnoreCase(tokenType) ? "Bearer " + accessToken : accessToken;
             return token;
         }

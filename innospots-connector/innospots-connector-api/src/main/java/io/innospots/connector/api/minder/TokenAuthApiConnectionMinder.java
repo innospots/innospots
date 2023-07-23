@@ -42,7 +42,9 @@ public class TokenAuthApiConnectionMinder extends HttpDataConnectionMinder {
 
     @Override
     public void open() {
-        tokenHolder = buildTokenHolder(connectionCredential);
+        if(tokenHolder==null){
+            tokenHolder = buildTokenHolder(connectionCredential);
+        }
         super.open();
 
     }
