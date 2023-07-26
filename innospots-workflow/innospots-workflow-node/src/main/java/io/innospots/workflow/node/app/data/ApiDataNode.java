@@ -309,10 +309,13 @@ public class ApiDataNode extends DataNode {
                 for (Factor factor : query) {
                     Object v = factor.value(item);
                     if (v == null) {
+                        v = factor.getValue();
+                    }
+                    if(v==null){
                         continue;
                     }
                     if (StringUtils.isNotEmpty(requestBody.getUri())) {
-                        String ph = "{" + factor.getName() + "}";
+                        String ph = "${" + factor.getName() + "}";
                         if (requestBody.getUri().contains(ph)) {
                             requestBody.setUri(requestBody.getUri().replace(ph, v.toString()));
                             continue;
