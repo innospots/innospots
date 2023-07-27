@@ -75,6 +75,7 @@ public class Flow extends WorkflowInstance {
         buildProcessInfo.setWorkflowInstanceId(this.workflowBody.getWorkflowInstanceId());
         buildProcessInfo.setFlowKey(workflowBody.getFlowKey());
         buildProcessInfo.setDatasourceCode(workflowBody.getDatasourceCode());
+        buildProcessInfo.setTriggerCode(this.workflowBody.getTriggerCode());
     }
 
     public BuildProcessInfo prepare() {

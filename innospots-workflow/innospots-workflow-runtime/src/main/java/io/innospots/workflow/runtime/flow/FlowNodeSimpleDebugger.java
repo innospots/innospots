@@ -81,6 +81,8 @@ public class FlowNodeSimpleDebugger implements FlowNodeDebugger {
     public Map<String, NodeExecutionDisplay> execute(Long workflowInstanceId, String nodeKey, List<Map<String, Object>> inputs) {
         workFlowBuilderOperator.saveCacheToDraft(workflowInstanceId);
 
+        inputs = convertApiInput(inputs);
+
         BaseFlowEngine flowEngine = (BaseFlowEngine) FlowEngineManager.eventFlowEngine();
         BuildProcessInfo buildProcessInfo = flowEngine.prepare(workflowInstanceId, 0, true);
         log.info("build info:{}", buildProcessInfo);
@@ -110,6 +112,7 @@ public class FlowNodeSimpleDebugger implements FlowNodeDebugger {
         }
 
         FlowExecution flowExecution = fillFlowExecution(inputs, workflowInstanceId);
+
 
         //endNodeKey
         log.info("flow execution: {}", flowExecution);
@@ -157,6 +160,37 @@ public class FlowNodeSimpleDebugger implements FlowNodeDebugger {
         executionCache.invalidate(workflowInstanceId);
         return result;
 //        return nodeExecutionDisplayReader.readExecutionByFlowExecutionId(workflowInstanceId,flowExecution.getFlowExecutionId(),null);
+    }
+
+    private List<Map<String, Object>> convertApiInput(List<Map<String, Object>> rawInputs) {
+        List<Map<String, Object>> nList = new ArrayList<>();
+        for (Map<String, Object> rawInput : rawInputs) {
+            if (rawInput.containsKey("contentType") &&
+                    (rawInput.containsKey("params") || rawInput.containsKey("headers") || rawInput.containsKey("body"))){
+                Object v = rawInput.get("params");
+                Map<String, Object> params = convertData(v);
+                rawInput.put("params", params);
+                v = rawInput.get("headers");
+                Map<String, Object> headers = convertData(v);
+                rawInput.put("headers", headers);
+                v = rawInput.get("body");
+                Map<String, Object> body = convertData(v);
+                rawInput.put("body", body);
+            }
+            nList.add(rawInput);
+        }//end for
+        return nList;
+    }
+
+    private Map<String, Object> convertData(Object data) {
+        Map<String, Object> mm = new HashMap<>();
+        if (data instanceof List) {
+            List<Map<String, Object>> item = (List<Map<String, Object>>) data;
+            for (Map<String, Object> m : item) {
+                mm.put(String.valueOf(m.get("name")), m.get("value"));
+            }
+        }
+        return mm;
     }
 
     @Override
