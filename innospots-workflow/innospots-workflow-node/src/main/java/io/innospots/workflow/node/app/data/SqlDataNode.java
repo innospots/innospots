@@ -157,6 +157,8 @@ public class SqlDataNode extends DataNode {
                 update(nodeExecution);
                 break;
             case UPSERT:
+                upsert(nodeExecution);
+                break;
             default:
                 logger.warn("data operation not set correctly:{} , execution:{}", operation, nodeExecution);
                 break;
