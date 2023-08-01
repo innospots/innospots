@@ -34,7 +34,7 @@ import java.util.Map;
 @Setter
 public class FlowWebhookConfig {
 
-    public static final String BASIC_AUTH_USERNAME = "userName";
+    public static final String BASIC_AUTH_USERNAME = "username";
     public static final String BASIC_AUTH_PASSWORD = "password";
     public static final String BEARER_AUTH_TOKEN = "token";
 
