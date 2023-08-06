@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.model;
+package io.innospots.libra.base.category;
 
 import io.innospots.base.constant.Constants;
 import io.innospots.base.model.PBaseModelInfo;

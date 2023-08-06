@@ -16,17 +16,12 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.operator;
+package io.innospots.libra.base.category;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.innospots.base.exception.ResourceException;
-import io.innospots.libra.base.dao.BaseCategoryDao;
-import io.innospots.libra.base.entity.BaseCategoryEntity;
-import io.innospots.libra.base.enums.CategoryType;
-import io.innospots.libra.base.mapper.BaseCategoryMapper;
-import io.innospots.libra.base.model.BaseCategory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;

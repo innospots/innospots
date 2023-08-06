@@ -16,18 +16,18 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.entity;
+package io.innospots.libra.base.category;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.innospots.libra.base.enums.CategoryType;
+import io.innospots.libra.base.entity.PBaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-import static io.innospots.libra.base.entity.BaseCategoryEntity.TABLE_NAME;
+import static io.innospots.libra.base.category.BaseCategoryEntity.TABLE_NAME;
 
 
 /**

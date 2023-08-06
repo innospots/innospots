@@ -16,25 +16,16 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.mapper;
-
-import io.innospots.base.mapper.BaseConvertMapper;
-import io.innospots.libra.base.entity.BaseCategoryEntity;
-import io.innospots.libra.base.model.BaseCategory;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
-
-import java.util.List;
+package io.innospots.libra.base.task;
 
 /**
- * @author Alfred
- * @date 2022/2/10
+ * @author Raydian
+ * @date 2020/12/20
  */
-@Mapper
-public interface BaseCategoryMapper extends BaseConvertMapper {
-    BaseCategoryMapper INSTANCE = Mappers.getMapper(BaseCategoryMapper.class);
+public enum TaskExecutionStatus {
 
-    BaseCategory entityToModel(BaseCategoryEntity entity);
-
-    List<BaseCategory> entitiesToModels(List<BaseCategoryEntity> entities);
+    RUNNING,
+    COMPLETE,
+    FAILED,
+    STOPPED;
 }

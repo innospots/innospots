@@ -16,22 +16,23 @@
  *  limitations under the License.
  */
 
-package io.innospots.workflow.console.operator.apps;
+package io.innospots.libra.base.category;
 
-import io.innospots.libra.base.category.CategoryType;
-import io.innospots.libra.base.category.BaseCategory;
-import io.innospots.libra.base.category.BaseCategoryOperator;
+import io.innospots.base.mapper.BaseConvertMapper;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 /**
- * @author Smars
- * @version 1.2.0
- * @date 2023/2/3
+ * @author Alfred
+ * @date 2022/2/10
  */
-public class AppCategoryOperator extends BaseCategoryOperator {
+@Mapper
+public interface BaseCategoryMapper extends BaseConvertMapper {
+    BaseCategoryMapper INSTANCE = Mappers.getMapper(BaseCategoryMapper.class);
 
-    public List<BaseCategory> listCategoryApps() {
-        return super.listCategoriesByType(CategoryType.APPS);
-    }
+    BaseCategory entityToModel(BaseCategoryEntity entity);
+
+    List<BaseCategory> entitiesToModels(List<BaseCategoryEntity> entities);
 }

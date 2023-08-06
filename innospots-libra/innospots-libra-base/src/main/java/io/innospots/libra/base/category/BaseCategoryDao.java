@@ -16,10 +16,10 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.dao;
+package io.innospots.libra.base.category;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import io.innospots.libra.base.entity.BaseCategoryEntity;
+import io.innospots.libra.base.category.BaseCategoryEntity;
 
 /**
  * @author Alfred

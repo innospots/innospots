@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.enums;
+package io.innospots.libra.base.category;
 
 /**
  * @author Alfred

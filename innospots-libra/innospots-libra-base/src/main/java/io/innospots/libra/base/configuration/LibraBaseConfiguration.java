@@ -43,8 +43,8 @@ import java.util.List;
  * @date 2022/2/10
  */
 @Configuration
-@EntityScan(basePackages = "io.innospots.libra.base.entity")
-@MapperScan(basePackages = "io.innospots.libra.base.dao")
+@EntityScan(basePackages = {"io.innospots.libra.base.entity","io.innospots.libra.base.category"})
+@MapperScan(basePackages = {"io.innospots.libra.base.dao","io.innospots.libra.base.category"})
 @EnableConfigurationProperties({AuthProperties.class})
 public class LibraBaseConfiguration {
 
