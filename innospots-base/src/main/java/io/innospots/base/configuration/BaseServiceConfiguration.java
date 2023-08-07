@@ -80,7 +80,7 @@ public class BaseServiceConfiguration {
 
     @Bean
     public EventBusCenter eventBusCenter() {
-        return new EventBusCenter();
+        return EventBusCenter.getInstance();
     }
 
     @Bean

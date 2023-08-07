@@ -16,11 +16,10 @@
  *  limitations under the License.
  */
 
-package io.innospots.workflow.runtime.response;
+package io.innospots.workflow.core.webhook;
 
 import io.innospots.workflow.core.context.WorkflowRuntimeContext;
-import io.innospots.workflow.core.webhook.WorkflowResponse;
-import io.innospots.workflow.node.app.trigger.ApiTriggerNode;
+
 
 /**
  * @author Smars
@@ -29,7 +28,7 @@ import io.innospots.workflow.node.app.trigger.ApiTriggerNode;
 public interface WorkflowResponseBuilder {
 
 
-    WorkflowResponse build(WorkflowRuntimeContext workflowRuntimeContext, ApiTriggerNode triggerNode);
+    WorkflowResponse build(WorkflowRuntimeContext workflowRuntimeContext, FlowWebhookConfig webhookConfig);
 
     default WorkflowResponse build(WorkflowRuntimeContext workflowRuntimeContext) {
         return build(workflowRuntimeContext, null);

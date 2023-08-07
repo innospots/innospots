@@ -33,6 +33,7 @@ import io.innospots.workflow.console.dao.execution.NodeExecutionDao;
 import io.innospots.workflow.console.dao.execution.ScheduledNodeExecutionDao;
 import io.innospots.workflow.console.dao.instance.WorkflowInstanceCacheDao;
 import io.innospots.workflow.console.dao.instance.WorkflowRevisionDao;
+import io.innospots.workflow.console.loader.WorkflowDBLoader;
 import io.innospots.workflow.console.operator.WorkflowCategoryOperator;
 import io.innospots.workflow.console.operator.apps.AppCategoryOperator;
 import io.innospots.workflow.console.operator.apps.AppFlowTemplateOperator;
@@ -52,6 +53,7 @@ import io.innospots.workflow.core.execution.reader.FlowExecutionReader;
 import io.innospots.workflow.core.execution.reader.NodeExecutionReader;
 import io.innospots.workflow.core.execution.store.FlowExecutionStoreListener;
 import io.innospots.workflow.core.execution.store.NodeExecutionStoreListener;
+import io.innospots.workflow.core.loader.IWorkflowLoader;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -140,6 +142,11 @@ public class WorkflowOperatorConfiguration {
     @Bean
     public WorkflowInstanceOperator workflowInstanceOperator(AppFlowTemplateOperator appFlowTemplateOperator) {
         return new WorkflowInstanceOperator(appFlowTemplateOperator);
+    }
+
+    @Bean
+    public IWorkflowLoader workflowInstanceLoader(WorkflowBuilderOperator workflowBuilderOperator){
+        return new WorkflowDBLoader(workflowBuilderOperator);
     }
 
     @Bean

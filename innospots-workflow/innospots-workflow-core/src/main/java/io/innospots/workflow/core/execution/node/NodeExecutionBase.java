@@ -53,15 +53,18 @@ public class NodeExecutionBase {
 
     protected Integer sequenceNumber;
 
-
     protected boolean skipNodeExecution;
-
 
     @JsonIgnore
     protected LocalDateTime flowStartTime;
 
     @JsonIgnore
     protected boolean memoryMode;
+
+    protected String nodeName;
+
+    protected String nodeCode;
+
 
     public String flowKey() {
         if (this.nodeExecutionId == null) {

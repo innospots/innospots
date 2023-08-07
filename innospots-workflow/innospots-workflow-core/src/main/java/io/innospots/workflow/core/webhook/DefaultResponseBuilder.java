@@ -16,15 +16,12 @@
  *  limitations under the License.
  */
 
-package io.innospots.workflow.runtime.response;
+package io.innospots.workflow.core.webhook;
 
 
 import io.innospots.base.model.field.ParamField;
 import io.innospots.workflow.core.context.WorkflowRuntimeContext;
 import io.innospots.workflow.core.execution.node.NodeExecution;
-import io.innospots.workflow.core.webhook.FlowWebhookConfig;
-import io.innospots.workflow.core.webhook.WorkflowResponse;
-import io.innospots.workflow.node.app.trigger.ApiTriggerNode;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.Duration;
@@ -41,7 +38,7 @@ public class DefaultResponseBuilder implements WorkflowResponseBuilder {
 
 
     @Override
-    public WorkflowResponse build(WorkflowRuntimeContext workflowRuntimeContext, ApiTriggerNode triggerNode) {
+    public WorkflowResponse build(WorkflowRuntimeContext workflowRuntimeContext, FlowWebhookConfig webhookConfig) {
         WorkflowResponse response = new WorkflowResponse();
         response.setContextId(String.valueOf(workflowRuntimeContext.getFlowExecution().getFlowExecutionId()));
         response.setRevision(workflowRuntimeContext.getFlowExecution().getRevision());
@@ -54,11 +51,10 @@ public class DefaultResponseBuilder implements WorkflowResponseBuilder {
                 ).toMillis());
         response.setResponseTime(workflowRuntimeContext.getFlowExecution().getEndTime());
 
-        if (triggerNode == null) {
+        if (webhookConfig == null) {
             return response;
         }
 
-        FlowWebhookConfig webhookConfig = triggerNode.getFlowWebhookConfig();
         response.setCode(webhookConfig.getResponseCode());
 
         if (webhookConfig.getResponseMode() == FlowWebhookConfig.ResponseMode.ACK) {

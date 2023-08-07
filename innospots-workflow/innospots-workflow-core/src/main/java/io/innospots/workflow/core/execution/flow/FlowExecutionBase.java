@@ -97,7 +97,7 @@ public class FlowExecutionBase implements Initializer {
     protected String executionUri;
 
     /**
-     * the data source
+     * the trigger code
      */
     protected String source;
 

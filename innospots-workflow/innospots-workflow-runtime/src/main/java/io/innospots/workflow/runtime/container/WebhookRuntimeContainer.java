@@ -25,8 +25,8 @@ import io.innospots.workflow.core.runtime.FlowRuntimeRegistry;
 import io.innospots.workflow.core.webhook.FlowWebhookConfig;
 import io.innospots.workflow.core.webhook.WebhookPayload;
 import io.innospots.workflow.core.webhook.WorkflowResponse;
+import io.innospots.workflow.core.webhook.WorkflowResponseBuilder;
 import io.innospots.workflow.node.app.trigger.ApiTriggerNode;
-import io.innospots.workflow.runtime.response.WorkflowResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +63,13 @@ public class WebhookRuntimeContainer extends BaseRuntimeContainer {
         FlowExecution flowExecution = FlowExecution.buildNewFlowExecution(
                 triggerInfo.getWorkflowInstanceId(),
                 triggerInfo.getRevision());
+        flowExecution.setSource(triggerInfo.getRegistryNode().nodeCode());
         flowExecution.setInput(webhookPayload.toExecutionInput());
 
         WorkflowRuntimeContext workflowRuntimeContext = WorkflowRuntimeContext.build(flowExecution);
         execute(workflowRuntimeContext);
 
-        return workflowResponseBuilder.build(workflowRuntimeContext, (ApiTriggerNode) triggerInfo.getRegistryNode());
+        return workflowResponseBuilder.build(workflowRuntimeContext, ((ApiTriggerNode) triggerInfo.getRegistryNode()).getFlowWebhookConfig());
     }
 
     public WorkflowResponse run(String path, FlowWebhookConfig.RequestMethod method, Map<String, Object> payload, Map<String, Object> context) {
@@ -84,7 +85,7 @@ public class WebhookRuntimeContainer extends BaseRuntimeContainer {
 
         WorkflowRuntimeContext workflowRuntimeContext = execute(triggerInfo, payload, context);
 
-        return workflowResponseBuilder.build(workflowRuntimeContext, (ApiTriggerNode) triggerInfo.getRegistryNode());
+        return workflowResponseBuilder.build(workflowRuntimeContext, ((ApiTriggerNode) triggerInfo.getRegistryNode()).getFlowWebhookConfig());
 
     }
 

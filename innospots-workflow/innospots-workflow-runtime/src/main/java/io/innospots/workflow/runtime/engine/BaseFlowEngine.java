@@ -196,6 +196,7 @@ public abstract class BaseFlowEngine implements IFlowEngine {
             logger.warn("the flow is not loaded completed, {},{}", flow.getWorkflowInstanceId(), flow.getRevision());
             flowExecution.setStatus(ExecutionStatus.NOT_PREPARED);
         }
+        flowExecution.setTotalCount(flow.nodeSize());
         return flow;
     }
 

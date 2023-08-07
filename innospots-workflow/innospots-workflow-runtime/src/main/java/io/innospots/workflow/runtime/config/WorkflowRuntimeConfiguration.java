@@ -23,7 +23,6 @@ import io.innospots.base.configuration.BaseServiceConfiguration;
 import io.innospots.base.configuration.DatasourceConfiguration;
 import io.innospots.base.data.minder.DataConnectionMinderManager;
 import io.innospots.base.quartz.QuartzScheduleManager;
-import io.innospots.workflow.console.operator.instance.WorkflowBuilderOperator;
 import io.innospots.workflow.core.config.InnospotWorkflowProperties;
 import io.innospots.workflow.core.debug.FlowNodeDebugger;
 import io.innospots.workflow.core.execution.listener.IFlowExecutionListener;
@@ -31,7 +30,10 @@ import io.innospots.workflow.core.execution.operator.IFlowExecutionOperator;
 import io.innospots.workflow.core.execution.operator.INodeExecutionOperator;
 import io.innospots.workflow.core.execution.operator.IScheduledNodeExecutionOperator;
 import io.innospots.workflow.core.execution.reader.NodeExecutionReader;
+import io.innospots.workflow.core.flow.instance.IWorkflowCacheDraftOperator;
 import io.innospots.workflow.core.loader.IWorkflowLoader;
+import io.innospots.workflow.core.webhook.DefaultResponseBuilder;
+import io.innospots.workflow.core.webhook.WorkflowResponseBuilder;
 import io.innospots.workflow.runtime.container.*;
 import io.innospots.workflow.runtime.endpoint.WebhookRuntimeEndpoint;
 import io.innospots.workflow.runtime.endpoint.WebhookTestEndpoint;
@@ -40,8 +42,6 @@ import io.innospots.workflow.runtime.engine.ParallelStreamFlowEngine;
 import io.innospots.workflow.runtime.engine.StreamFlowEngine;
 import io.innospots.workflow.runtime.flow.FlowManager;
 import io.innospots.workflow.runtime.flow.FlowNodeSimpleDebugger;
-import io.innospots.workflow.runtime.response.DefaultResponseBuilder;
-import io.innospots.workflow.runtime.response.WorkflowResponseBuilder;
 import io.innospots.workflow.runtime.scheduled.NodeExecutionEventListener;
 import io.innospots.workflow.runtime.server.WorkflowWebhookServer;
 import io.innospots.workflow.runtime.starter.RuntimePrepareStarter;
@@ -127,13 +127,13 @@ public class WorkflowRuntimeConfiguration {
 
 
     @Bean
-    public WorkflowResponseBuilder responseBuilder() {
-        return new DefaultResponseBuilder();
+    public ScheduleRuntimeContainer scheduleRuntimeContainer(QuartzScheduleManager quartzScheduleManager) {
+        return new ScheduleRuntimeContainer(quartzScheduleManager);
     }
 
     @Bean
-    public ScheduleRuntimeContainer scheduleRuntimeContainer(QuartzScheduleManager quartzScheduleManager) {
-        return new ScheduleRuntimeContainer(quartzScheduleManager);
+    public DefaultResponseBuilder responseBuilder() {
+        return new DefaultResponseBuilder();
     }
 
     @Bean
@@ -158,7 +158,7 @@ public class WorkflowRuntimeConfiguration {
     @Bean
     public FlowNodeDebugger nodeDebugger(NodeExecutionReader nodeExecutionReader,
                                          IFlowExecutionOperator flowExecutionOperator,
-                                         WorkflowBuilderOperator workFlowBuilderOperator
+                                         IWorkflowCacheDraftOperator workFlowBuilderOperator
     ) {
         return new FlowNodeSimpleDebugger(workFlowBuilderOperator, nodeExecutionReader, flowExecutionOperator);
     }

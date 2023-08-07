@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-package io.innospots.libra.base.utils;
+package io.innospots.base.utils;
 
 import cn.hutool.core.img.ImgUtil;
 import io.innospots.base.enums.ImageType;

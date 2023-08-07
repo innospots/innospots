@@ -271,6 +271,10 @@ public class Flow extends WorkflowInstance {
         this.workflowBody = null;
     }
 
+    public int nodeSize(){
+        return this.nodeCache.size();
+    }
+
 
     WorkflowBody getWorkflowInstance() {
         return workflowBody;

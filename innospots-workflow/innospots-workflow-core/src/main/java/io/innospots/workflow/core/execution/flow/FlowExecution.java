@@ -78,6 +78,11 @@ public class FlowExecution extends FlowExecutionBase {
 
     private String contextDataPath;
 
+    /**
+     * the total node count in the flow
+     */
+    private int totalCount = 0;
+
     public FlowExecution() {
         this.startTime = LocalDateTime.now();
     }

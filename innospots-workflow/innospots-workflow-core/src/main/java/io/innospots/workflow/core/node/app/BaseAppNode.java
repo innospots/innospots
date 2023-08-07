@@ -21,6 +21,7 @@ package io.innospots.workflow.core.node.app;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import io.innospots.base.enums.ScriptType;
+import io.innospots.base.events.EventBusCenter;
 import io.innospots.base.exception.ConfigException;
 import io.innospots.base.exception.InnospotException;
 import io.innospots.base.exception.ScriptException;
@@ -32,6 +33,7 @@ import io.innospots.base.re.IExpressionEngine;
 import io.innospots.base.re.jit.MethodBody;
 import io.innospots.workflow.core.enums.BuildStatus;
 import io.innospots.workflow.core.execution.AsyncExecutors;
+import io.innospots.workflow.core.execution.ExecutionEvent;
 import io.innospots.workflow.core.execution.ExecutionInput;
 import io.innospots.workflow.core.execution.ExecutionStatus;
 import io.innospots.workflow.core.execution.flow.FlowExecution;
@@ -83,6 +85,10 @@ public abstract class BaseAppNode implements INodeBuilder, INodeExecutor {
 
     public String simpleInfo() {
         return ni.simpleInfo();
+    }
+
+    public String nodeCode(){
+        return ni.getCode();
     }
 
     public String nodeType() {
@@ -317,6 +323,7 @@ public abstract class BaseAppNode implements INodeBuilder, INodeExecutor {
             flowExecution.setStatus(ExecutionStatus.FAILED);
             flowExecution.setMessage(nodeExecution.getMessage());
         }
+        EventBusCenter.getInstance().asyncPost(ExecutionEvent.build(flowExecution,nodeExecution));
 //        flowExecution.addNodeExecution(nodeExecution);
     }
 

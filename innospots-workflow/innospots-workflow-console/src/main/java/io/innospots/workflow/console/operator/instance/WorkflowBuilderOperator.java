@@ -41,6 +41,7 @@ import io.innospots.workflow.core.engine.IFlowEngine;
 import io.innospots.workflow.core.flow.BuildProcessInfo;
 import io.innospots.workflow.core.flow.WorkflowBaseBody;
 import io.innospots.workflow.core.flow.WorkflowBody;
+import io.innospots.workflow.core.flow.instance.IWorkflowCacheDraftOperator;
 import io.innospots.workflow.core.node.instance.Edge;
 import io.innospots.workflow.core.node.instance.NodeInstance;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,7 @@ import java.util.stream.Collectors;
  * @date 2021/3/16
  */
 @Slf4j
-public class WorkflowBuilderOperator {
+public class WorkflowBuilderOperator implements IWorkflowCacheDraftOperator {
 
     public static final String CACHE_NAME = "CACHE_FLOW_INSTANCE";
 
@@ -96,6 +97,7 @@ public class WorkflowBuilderOperator {
      * @param workflowBaseBody
      * @return
      */
+    @Override
     public boolean saveFlowInstanceToCache(WorkflowBaseBody workflowBaseBody) {
         WorkflowInstanceCacheEntity cacheEntity = workflowInstanceCacheDao.selectById(workflowBaseBody.getWorkflowInstanceId());
 
@@ -120,6 +122,7 @@ public class WorkflowBuilderOperator {
      * @param flowInstanceId
      * @return
      */
+    @Override
     public WorkflowBaseBody getFlowInstanceDraftOrCache(Long flowInstanceId) {
         WorkflowInstanceCacheEntity cacheEntity = workflowInstanceCacheDao.selectById(flowInstanceId);
         WorkflowBaseBody flow;
@@ -131,6 +134,7 @@ public class WorkflowBuilderOperator {
         return flow;
     }
 
+    @Override
     @Transactional(rollbackFor = {Exception.class})
     public void saveCacheToDraft(Long flowInstanceId) {
         WorkflowInstanceCacheEntity cacheEntity = workflowInstanceCacheDao.selectById(flowInstanceId);
@@ -239,7 +243,7 @@ public class WorkflowBuilderOperator {
      * @param includeNodes
      * @return
      */
-    //TODO add Cacheable
+    @Override
     @Cacheable(cacheNames = CACHE_NAME, key = "#workflowInstanceId + '-' + #revision", condition = "!#includeNodes")
     public WorkflowBody getWorkflowBody(Long workflowInstanceId, Integer revision, Boolean includeNodes) {
         WorkflowInstanceEntity entity = workflowInstanceOperator.getWorkflowInstanceEntity(workflowInstanceId);
@@ -285,6 +289,7 @@ public class WorkflowBuilderOperator {
      * @param includeNodes
      * @return
      */
+    @Override
     public WorkflowBaseBody getWorkflowBodyByKey(String flowKey, Integer revision, Boolean includeNodes) {
         WorkflowInstanceEntity entity = workflowInstanceOperator.getWorkflowInstanceEntity(flowKey);
         if (entity == null) {
@@ -321,6 +326,7 @@ public class WorkflowBuilderOperator {
      * @param workflowBaseBody
      * @return
      */
+    @Override
     @Transactional(rollbackFor = {Exception.class})
     public WorkflowBaseBody saveDraft(WorkflowBaseBody workflowBaseBody) {
         //验证节点无循环依赖
