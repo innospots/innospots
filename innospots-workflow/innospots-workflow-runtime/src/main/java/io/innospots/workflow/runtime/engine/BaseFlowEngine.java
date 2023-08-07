@@ -20,11 +20,13 @@ package io.innospots.workflow.runtime.engine;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import io.innospots.base.events.EventBusCenter;
 import io.innospots.base.exception.ResourceException;
 import io.innospots.workflow.core.engine.IFlowEngine;
 import io.innospots.workflow.core.enums.FlowStatus;
 import io.innospots.workflow.core.exception.FlowPrepareException;
 import io.innospots.workflow.core.execution.ExecutionStatus;
+import io.innospots.workflow.core.execution.FlowExecutionTaskEvent;
 import io.innospots.workflow.core.execution.flow.FlowExecution;
 import io.innospots.workflow.core.execution.listener.IFlowExecutionListener;
 import io.innospots.workflow.core.execution.node.NodeExecution;
@@ -165,7 +167,7 @@ public abstract class BaseFlowEngine implements IFlowEngine {
         }
 
         flowExecutionCache.put(flowExecution.getFlowExecutionId(), flowExecution);
-
+        EventBusCenter.async(FlowExecutionTaskEvent.build(flowExecution));
     }
 
     private void completeFlow(FlowExecution flowExecution, boolean isUpdate) {

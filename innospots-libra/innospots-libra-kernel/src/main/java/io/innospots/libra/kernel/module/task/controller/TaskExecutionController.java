@@ -13,7 +13,7 @@ import static io.innospots.libra.base.controller.BaseController.PATH_ROOT_ADMIN;
  */
 @RestController
 @RequestMapping(PATH_ROOT_ADMIN + "task-execution")
-@ModuleMenu(menuKey = "libra-task")
+@ModuleMenu(menuKey = "libra-task-execution")
 @Tag(name = "TaskExecution")
 public class TaskExecutionController {
 

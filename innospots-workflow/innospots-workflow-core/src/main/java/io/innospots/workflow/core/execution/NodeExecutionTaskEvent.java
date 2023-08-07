@@ -8,15 +8,15 @@ import io.innospots.workflow.core.execution.node.NodeExecution;
  * @author Smars
  * @date 2023/8/7
  */
-public class ExecutionEvent extends EventBody {
+public class NodeExecutionTaskEvent extends EventBody {
 
     private FlowExecution flowExecution;
 
-    public static ExecutionEvent build(FlowExecution flowExecution,NodeExecution nodeExecution){
-        return new ExecutionEvent(nodeExecution,flowExecution);
+    public static NodeExecutionTaskEvent build(FlowExecution flowExecution, NodeExecution nodeExecution){
+        return new NodeExecutionTaskEvent(nodeExecution,flowExecution);
     }
 
-    public ExecutionEvent(Object body, FlowExecution flowExecution) {
+    public NodeExecutionTaskEvent(Object body, FlowExecution flowExecution) {
         super(body);
         this.flowExecution = flowExecution;
     }

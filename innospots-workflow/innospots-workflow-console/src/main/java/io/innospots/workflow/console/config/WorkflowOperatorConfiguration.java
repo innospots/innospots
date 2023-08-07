@@ -59,6 +59,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -70,6 +71,7 @@ import java.io.File;
  * @date 2021/3/16
  */
 @Configuration
+@ComponentScan(basePackages = {"io.innospots.workflow.console.listener","io.innospots.workflow.console.task"})
 @EnableCaching
 @EnableConfigurationProperties({InnospotConfigProperties.class, InnospotWorkflowProperties.class})
 @Import({DatasourceConfiguration.class, LibraBaseConfiguration.class})

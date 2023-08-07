@@ -20,7 +20,6 @@ package io.innospots.workflow.core.node.app;
 
 
 import cn.hutool.core.exceptions.ExceptionUtil;
-import io.innospots.base.enums.ScriptType;
 import io.innospots.base.events.EventBusCenter;
 import io.innospots.base.exception.ConfigException;
 import io.innospots.base.exception.InnospotException;
@@ -32,10 +31,7 @@ import io.innospots.base.re.IExpression;
 import io.innospots.base.re.IExpressionEngine;
 import io.innospots.base.re.jit.MethodBody;
 import io.innospots.workflow.core.enums.BuildStatus;
-import io.innospots.workflow.core.execution.AsyncExecutors;
-import io.innospots.workflow.core.execution.ExecutionEvent;
-import io.innospots.workflow.core.execution.ExecutionInput;
-import io.innospots.workflow.core.execution.ExecutionStatus;
+import io.innospots.workflow.core.execution.*;
 import io.innospots.workflow.core.execution.flow.FlowExecution;
 import io.innospots.workflow.core.execution.listener.INodeExecutionListener;
 import io.innospots.workflow.core.execution.node.NodeExecution;
@@ -44,7 +40,6 @@ import io.innospots.workflow.core.executor.INodeExecutor;
 import io.innospots.workflow.core.node.builder.INodeBuilder;
 import io.innospots.workflow.core.node.instance.NodeInstance;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -323,7 +318,7 @@ public abstract class BaseAppNode implements INodeBuilder, INodeExecutor {
             flowExecution.setStatus(ExecutionStatus.FAILED);
             flowExecution.setMessage(nodeExecution.getMessage());
         }
-        EventBusCenter.getInstance().asyncPost(ExecutionEvent.build(flowExecution,nodeExecution));
+        EventBusCenter.getInstance().asyncPost(NodeExecutionTaskEvent.build(flowExecution,nodeExecution));
 //        flowExecution.addNodeExecution(nodeExecution);
     }
 

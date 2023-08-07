@@ -58,4 +58,11 @@ public class TaskExecutionEntity extends BaseEntity {
 
     @Column
     private LocalDateTime endTime;
+
+    @Column(columnDefinition = "TEXT")
+    private String paramContext;
+
+    @Column(columnDefinition = "TEXT")
+    private String message;
+
 }

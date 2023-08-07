@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @author Smars
@@ -35,5 +36,9 @@ public class TaskExecution {
     private LocalDateTime endTime;
 
     private String detailUrl;
+
+    private Map<String,Object> paramContext;
+
+    private String message;
 
 }

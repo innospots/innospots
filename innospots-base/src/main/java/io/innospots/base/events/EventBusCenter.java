@@ -85,4 +85,8 @@ public class EventBusCenter {
         }
     }
 
+    public static void async(EventBody event) {
+        getInstance().asyncPost(event);
+    }
+
 }
