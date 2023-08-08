@@ -34,6 +34,8 @@ import io.innospots.libra.base.configuration.AuthProperties;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
+
 /**
  * @author Smars
  * @version 1.2.0
@@ -93,11 +95,14 @@ public class ConnectionCredentialReader implements IConnectionCredentialReader {
         if (appCredentialInfo == null) {
             return null;
         }
-        if (StringUtils.isBlank(appCredentialInfo.getEncryptFormValues())) {
-            return null;
-        }
+
         ConnectionCredential connectionCredential =
                 CredentialConvertMapper.INSTANCE.credentialToConnection(appCredentialInfo);
+
+        if (StringUtils.isBlank(appCredentialInfo.getEncryptFormValues())) {
+            connectionCredential.setConfig(new HashMap<>());
+            return connectionCredential;
+        }
         try {
             String formValuesStr = encryptor.decode(appCredentialInfo.getEncryptFormValues());
             connectionCredential.setConfig(JSONUtils.toMap(formValuesStr));

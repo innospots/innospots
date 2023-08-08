@@ -26,6 +26,7 @@ import io.innospots.base.json.JSONUtils;
 import io.innospots.base.store.CacheStoreManager;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -70,7 +71,10 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
 
         String code = connectionCredential.v(CODE);
 
-        String redirectUrl = redirectAddress != null ? redirectAddress + OAUTH_CALLBACK + connectionCredential.getAppNodeCode() : null;
+        String redirectUrl = connectionCredential.v(REDIRECT_URL);
+        if (StringUtils.isBlank(redirectUrl)) {
+            redirectUrl = redirectAddress != null ? redirectAddress + OAUTH_CALLBACK + connectionCredential.getAppNodeCode() : null;
+        }
 
         Map<String, Object> resp = null;
 
@@ -81,7 +85,7 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
         }
 
         if (code != null && redirectUrl != null) {
-            resp = fetchAccessToken(accessTokenUrl, clientId, clientSecret, code, redirectUrl, state);
+            resp = fetchAccessToken(accessTokenUrl, clientId, clientSecret, code, redirectUrl, connectionCredential.getAppNodeCode());
             //TODO 判断
             return true;
         }
@@ -98,7 +102,7 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
 
         //2. 如果accessToken为空，refreshToken为空，则返回重定向URL地址
         if (refreshToken == null || accessToken == null) {
-            return openAuthorize(authorityUrl, clientId, clientSecret, redirectUrl, scopes);
+            return openAuthorize(accessTokenUrl, authorityUrl, clientId, clientSecret, redirectUrl, scopes);
         }
 
         //3. 如果accessToken不为空，也没有过期，则返回true
@@ -130,7 +134,8 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
         cacheToken(holder, clientId, appCode);
     }
 
-    private Map<String, Object> openAuthorize(String authorityUrl,
+    private Map<String, Object> openAuthorize(String accessTokenUrl,
+                                              String authorityUrl,
                                               String clientId,
                                               String clientSecret,
                                               String redirectUrl, String scopes) {
@@ -140,6 +145,7 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
         resp.put(CLIENT_SECRET, clientSecret);
         resp.put(CLIENT_ID, clientId);
         resp.put(REDIRECT_URL, redirectUrl);
+        resp.put(TOKEN_ADDRESS,accessTokenUrl);
 
         UrlBuilder rb = UrlBuilder.of(authorityUrl).addQuery(CLIENT_ID, clientId)
                 .addQuery("response_type", "code")

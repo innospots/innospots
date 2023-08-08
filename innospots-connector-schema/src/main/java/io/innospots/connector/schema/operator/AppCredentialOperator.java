@@ -229,13 +229,13 @@ public class AppCredentialOperator extends ServiceImpl<AppCredentialDao, AppCred
 
 
     private void authedValuesProcess(AppCredentialInfo credential) {
-        if (!"oauth2-api".equals(credential.getConfigCode())) {
+        if (!"oauth2-auth-api".equals(credential.getConfigCode())) {
             return;
         }
-
-        if (MapUtils.isEmpty(credential.getFormValues())) {
-            return;
-        }
+//
+//        if (MapUtils.isEmpty(credential.getFormValues())) {
+//            return;
+//        }
 
         this.decryptFormValues(credential);
         String clientId = String.valueOf(credential.getFormValues().get("client_id"));

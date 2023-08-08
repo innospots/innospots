@@ -38,6 +38,10 @@ public class Oauth2CallbackService {
         appCredentialInfo.setConnectorName("Http");
         appCredentialInfo.setAppNodeCode(appCode);
         String json = CacheStoreManager.get(state);
+        if (StringUtils.isBlank(json)) {
+            log.warn("oauth2 credential callback state invalid");
+            return false;
+        }
         Map<String,Object> formValues = null;
         ConnectionCredential connectionCredential = connectionCredentialReader.fillCredential(appCredentialInfo);
         connectionCredential.config("code",code);

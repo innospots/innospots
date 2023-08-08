@@ -11,9 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.noear.snack.ONode;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Smars
@@ -163,25 +163,55 @@ public class TokenHolder {
         if (httpData.getBody() instanceof Map) {
             jsonNode = ONode.load(httpData.getBody());
         } else if (httpData.getBody() instanceof String) {
-            jsonNode = ONode.load(JSONUtils.toMap((String) httpData.getBody()));
+            String body = ((String) httpData.getBody());
+            // url param format
+            if (body.contains("&")) {
+                Map<String, String> bodyMap = urlParamSplit(body);
+                jsonNode = ONode.load(bodyMap);
+            } else {
+                // json str format
+                jsonNode = ONode.load(JSONUtils.toMap(body));
+            }
         } else {
             throw AuthenticationException.buildTokenInvalidException(this.getClass(), "access token is fail", httpData.getBody(), httpData.getMessage());
         }
         if (jsonNode != null) {
-            accessToken = jsonNode.select(this.tokenPath).toObject();
+            ONode tokenONode = jsonNode.select(this.tokenPath);
+            accessToken = tokenONode.isNull() ? null : tokenONode.toObject();
             fillExpires(jsonNode);
             if (refreshPath != null) {
-                refreshToken = jsonNode.select(this.refreshPath).toObject();
+                ONode refreshONode = jsonNode.select(this.refreshPath);
+                refreshToken = refreshONode.isNull() ? null : refreshONode.toObject();
             }
         }
     }
 
+    private Map<String, String> urlParamSplit(String param) {
+        Map<String, String> mapRequest = new HashMap<>();
+        String[] arrSplit = null;
+        arrSplit = param.split("[&]");
+        for (String strSplit : arrSplit) {
+            String[] arrSplitEqual = null;
+            arrSplitEqual = strSplit.split("[=]");
+            if (arrSplitEqual.length > 1) {
+                mapRequest.put(arrSplitEqual[0], arrSplitEqual[1]);
+            } else {
+                if (!Objects.equals(arrSplitEqual[0], "")) {
+                    mapRequest.put(arrSplitEqual[0], "");
+                }
+            }
+        }
+        return mapRequest;
+    }
+
     private void fillExpires(ONode jsonNode) {
-        Object ct = jsonNode.select(this.expiresPath);
+        ONode expiresONode = jsonNode.select(this.expiresPath);
+        Object ct = expiresONode.isNull() ? null : expiresONode;
         if (ct != null) {
             this.expiresIn = Integer.parseInt(ct.toString());
         } else {
-            ct = jsonNode.select("$.expires");
+            expiresONode = jsonNode.select("$.expires");
+            ct = expiresONode.isNull() ? null : expiresONode;
             if (ct != null) {
                 this.expiresIn = Integer.parseInt(ct.toString());
             }

@@ -51,7 +51,10 @@ public class SystemTempCacheOperator extends ServiceImpl<SystemTempCacheDao, Sys
 
     @Override
     public void save(String key, String value) {
-
+        SystemTempCacheEntity entity = new SystemTempCacheEntity();
+        entity.setCacheKey(key);
+        entity.setCacheValue(value);
+        super.save(entity);
     }
 
     public String get(String cacheKey) {
@@ -61,6 +64,7 @@ public class SystemTempCacheOperator extends ServiceImpl<SystemTempCacheDao, Sys
 
     @Override
     public boolean remove(String key) {
+        // TODO
         return false;
     }
 
