@@ -60,7 +60,6 @@ public class AppCredentialOperator extends ServiceImpl<AppCredentialDao, AppCred
 
     public AppCredentialOperator(
             AuthProperties authProperties,
-            SystemTempCacheOperator systemTempCacheOperator,
             SchemaRegistryOperator schemaRegistryOperator
     ) {
         this.encryptor = EncryptorBuilder.build(EncryptType.BLOWFISH, authProperties.getSecretKey());

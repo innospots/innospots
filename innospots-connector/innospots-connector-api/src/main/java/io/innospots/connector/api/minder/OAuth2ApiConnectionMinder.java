@@ -25,6 +25,7 @@ import io.innospots.base.data.schema.ConnectionCredential;
 import io.innospots.base.json.JSONUtils;
 import io.innospots.base.store.CacheStoreManager;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -86,8 +87,10 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
 
         if (code != null && redirectUrl != null) {
             resp = fetchAccessToken(accessTokenUrl, clientId, clientSecret, code, redirectUrl, connectionCredential.getAppNodeCode());
-            //TODO 判断
-            return true;
+            if (ObjectUtils.allNotNull(resp.get(TOKEN_TS),resp.get(EXPIRES_IN))) {
+                return resp;
+            }
+            return false;
         }
 
         //1. 判断refreshToken是否为空，不为空 ,如果过期或者expiresIn，则调用刷新TOKEN获取
