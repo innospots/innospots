@@ -26,6 +26,7 @@ import io.innospots.libra.base.dao.SystemTempCacheDao;
 import io.innospots.libra.base.entity.SystemTempCacheEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -58,14 +59,19 @@ public class SystemTempCacheOperator extends ServiceImpl<SystemTempCacheDao, Sys
     }
 
     public String get(String cacheKey) {
+        if (StringUtils.isBlank(cacheKey)) {
+            return null;
+        }
         SystemTempCacheEntity cache = getByCacheKey(cacheKey);
         return cache == null ? null : cache.getCacheValue();
     }
 
     @Override
     public boolean remove(String key) {
-        // TODO
-        return false;
+        if (StringUtils.isBlank(key)) {
+            return false;
+        }
+        return super.remove(new QueryWrapper<SystemTempCacheEntity>().lambda().eq(SystemTempCacheEntity::getCacheKey,key));
     }
 
     public void delete(String cacheKey) {

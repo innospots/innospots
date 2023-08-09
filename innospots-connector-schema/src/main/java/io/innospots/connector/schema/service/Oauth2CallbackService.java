@@ -28,7 +28,7 @@ public class Oauth2CallbackService {
         this.connectionCredentialReader = connectionCredentialReader;
     }
 
-    public boolean authCallback(String appCode, String code, String state){
+    public boolean authCallback(String appCode, String code, String state) {
         if (StringUtils.isBlank(state)) {
             log.warn("oauth2 credential callback state can not be empty");
             throw ValidatorException.buildInvalidException("oauth2-credential", "oauth2 credential callback state can not be empty");
@@ -42,20 +42,20 @@ public class Oauth2CallbackService {
             log.warn("oauth2 credential callback state invalid");
             return false;
         }
-        Map<String,Object> formValues = null;
+        Map<String, Object> formValues = null;
         ConnectionCredential connectionCredential = connectionCredentialReader.fillCredential(appCredentialInfo);
-        connectionCredential.config("code",code);
-        connectionCredential.config("state",state);
-        if(json!=null){
+        connectionCredential.config("code", code);
+        connectionCredential.config("state", state);
+        if (json != null) {
             formValues = JSONUtils.toMap(json);
             connectionCredential.config(formValues);
             CacheStoreManager.remove(state);
         }
 
         Object result = DataConnectionMinderManager.testConnection(connectionCredential);
-        log.debug("oauth authenticate:{}",result);
+        log.debug("oauth authenticate:{}", result);
         boolean success = false;
-        if(result instanceof Map && MapUtils.isNotEmpty((Map<?, ?>) result)){
+        if (result instanceof Map && MapUtils.isNotEmpty((Map<?, ?>) result)) {
             success = true;
         }
 

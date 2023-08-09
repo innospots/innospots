@@ -57,10 +57,9 @@ public class AppConfiguration {
     @Bean
     public AppCredentialOperator appCredentialOperator(
             AuthProperties authProperties,
-            SystemTempCacheOperator systemTempCacheOperator,
             SchemaRegistryOperator schemaRegistryOperator
     ) {
-        return new AppCredentialOperator(authProperties, systemTempCacheOperator, schemaRegistryOperator);
+        return new AppCredentialOperator(authProperties, schemaRegistryOperator);
     }
 
     @Bean
