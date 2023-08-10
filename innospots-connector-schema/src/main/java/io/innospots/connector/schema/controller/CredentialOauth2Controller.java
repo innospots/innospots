@@ -52,7 +52,7 @@ public class CredentialOauth2Controller {
             @Parameter(name = "code") @RequestParam("code") String code,
             @Parameter(name = "state") @RequestParam("state") String state) {
         boolean success = authorizationCallbackService.authCallback(appCode, code, state);
-        return "forward:/#/oauth-result?state=" + state + "&appCode=" + appCode + "&success=" + success;
+        return "redirect:/#/oauth-result?state=" + state + "&appCode=" + appCode + "&success=" + success;
     }
 
 //    @Deprecated
