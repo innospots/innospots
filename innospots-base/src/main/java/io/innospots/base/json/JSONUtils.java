@@ -182,6 +182,10 @@ public class JSONUtils {
         return null;
     }
 
+    public static <T> T parseObject(Map<String,Object> map, Class<T> clazz) {
+        return parseObject(toJsonString(map),clazz);
+    }
+
     public static <T> T parseObject(String json, TypeReference<T> type) {
         if (StringUtils.isEmpty(json)) {
             return null;

@@ -143,7 +143,7 @@ public class ConditionNode extends BaseAppNode {
         try {
 
 
-            condition = JSONUtils.parseObject(JSONUtils.toJsonString(v), EmbedCondition.class);
+            condition = JSONUtils.parseObject((Map<String, Object>)v, EmbedCondition.class);
             if (condition == null) {
                 throw ConfigException.buildTypeException(this.getClass(), "condition json invalid format, nodeKey:" + nodeKey());
             }

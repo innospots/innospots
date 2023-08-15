@@ -30,6 +30,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Smars
@@ -39,7 +40,7 @@ import java.util.*;
 public class AggregationNode extends BaseAppNode {
 
 
-    private NodeParamField dimensionField;
+    private List<NodeParamField> dimensionFields;
     private NodeParamField listField;
 
     private List<AggregationComputeField> computeFields;
@@ -60,14 +61,14 @@ public class AggregationNode extends BaseAppNode {
         validFieldConfig(nodeInstance, FIELD_AGGREGATE);
         sourceFieldType = nodeInstance.valueString(FIELD_SOURCE_TYPE);
         if("payload".equals(sourceFieldType)){
-            Map<String, Object> field = (Map<String, Object>) nodeInstance.value(FIELD_DIMENSION_PAYLOAD);
-            if(field!=null){
-                dimensionField = BeanUtils.toBean(field, NodeParamField.class);
+            List<Map<String, Object>> fields = (List<Map<String, Object>>) nodeInstance.value(FIELD_DIMENSION_PAYLOAD);
+            if(fields!=null){
+                dimensionFields = BeanUtils.toBean(fields, NodeParamField.class);
             }
         }else if("list".equals(sourceFieldType)){
-            Map<String, Object> field = (Map<String, Object>) nodeInstance.value(FIELD_DIMENSION_LIST);
-            if(field!=null){
-                dimensionField = BeanUtils.toBean(field, NodeParamField.class);
+            List<Map<String, Object>> fields = (List<Map<String, Object>>) nodeInstance.value(FIELD_DIMENSION_LIST);
+            if(fields!=null){
+                dimensionFields = BeanUtils.toBean(fields, NodeParamField.class);
             }
             Map<String, Object> listFieldValue = (Map<String, Object>) nodeInstance.value(FIELD_PARENT_LIST);
             if(listFieldValue != null){
@@ -89,14 +90,19 @@ public class AggregationNode extends BaseAppNode {
         ArrayListValuedHashMap<String, Map<String, Object>> groupItems = new ArrayListValuedHashMap<>();
         for (ExecutionInput executionInput : nodeExecution.getInputs()) {
             for (Map<String, Object> item : executionInput.getData()) {
-                groupItems.put(String.valueOf(item.get(dimensionField.getCode())), item);
+                String key = dimensionFields.stream().map(f-> String.valueOf(item.get(f.getCode()))).collect(Collectors.joining("~"));
+                groupItems.put(key, item);
             }//end for item
         }//end for execution input
         for (Map.Entry<String, Collection<Map<String, Object>>> entry : groupItems.asMap().entrySet()) {
             Map<String, Object> item = new HashMap<>();
-            item.put(dimensionField.getCode(), entry.getKey());
+            //item.put(dimensionField.getCode(), entry.getKey());
             for (AggregationComputeField computeField : computeFields) {
                 item.put(computeField.getCode(), computeField.compute(entry.getValue()));
+            }
+            String[] dims = entry.getKey().split("~");
+            for (int i = 0; i < dims.length; i++) {
+                item.put(dimensionFields.get(i).getCode(),dims[i]);
             }
             items.add(item);
         }
@@ -112,7 +118,7 @@ public class AggregationNode extends BaseAppNode {
             return computeFields;
         }
         for (Map<String, Object> fieldMap : fieldMaps) {
-            AggregationComputeField cf = BeanUtils.toBean(fieldMap, AggregationComputeField.class);
+            AggregationComputeField cf = AggregationComputeField.build(fieldMap);
             cf.initialize();
             computeFields.add(cf);
         }

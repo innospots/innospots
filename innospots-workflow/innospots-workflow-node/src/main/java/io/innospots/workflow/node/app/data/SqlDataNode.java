@@ -37,6 +37,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +63,7 @@ public class SqlDataNode extends DataNode {
     public static final String FIELD_TABLE_NAME = "table_name";
     public static final String FIELD_OPERATION = "data_operation";
     public static final String KEY_COLUMN = "key_column";
+    public static final String COLUMN_UPDATE_TIME = "updated_time";
 
     /**
      * sql中参数的开始和结束字符
@@ -79,6 +81,7 @@ public class SqlDataNode extends DataNode {
     protected String tableName;
 
     protected String keyColumn;
+    protected String updateTimeColumn;
 
     /**
      * where clause, when update operation
@@ -111,6 +114,8 @@ public class SqlDataNode extends DataNode {
         }
 
         keyColumn = nodeInstance.valueString(KEY_COLUMN);
+
+        updateTimeColumn = nodeInstance.valueString(COLUMN_UPDATE_TIME);
 
         List<Map<String, Object>> updateConditionFields = (List<Map<String, Object>>) nodeInstance.value(FIELD_UPDATE_CONDITION);
         if (operation == DataOperation.UPDATE) {
@@ -208,6 +213,9 @@ public class SqlDataNode extends DataNode {
                 for (Factor columnField : this.columnFields) {
                     insertData.put(columnField.getCode(), columnField.value(item));
                 }
+                if(this.updateTimeColumn!=null && !insertData.containsKey(this.updateTimeColumn)){
+                    insertData.put(this.updateTimeColumn,LocalDateTime.now());
+                }
                 insertList.add(insertData);
                 fillOutput(nodeOutput, item);
             }// end for item
@@ -228,6 +236,9 @@ public class SqlDataNode extends DataNode {
                 Map<String, Object> upData = new HashMap<>();
                 for (Factor columnField : this.columnFields) {
                     upData.put(columnField.getCode(), columnField.value(item));
+                }
+                if(this.updateTimeColumn!=null && !upData.containsKey(this.updateTimeColumn)){
+                    upData.put(this.updateTimeColumn,LocalDateTime.now());
                 }
                 List<Factor> conditions = conditionValues(item, this.updateConditions);
                 UpdateItem updateItem = new UpdateItem();
@@ -309,6 +320,9 @@ public class SqlDataNode extends DataNode {
                 Map<String, Object> insertData = new HashMap<>();
                 for (Factor columnField : this.columnFields) {
                     insertData.put(columnField.getCode(), columnField.value(item));
+                }
+                if(this.updateTimeColumn!=null && !insertData.containsKey(this.updateTimeColumn)){
+                    insertData.put(this.updateTimeColumn,LocalDateTime.now());
                 }
                 insertList.add(insertData);
                 fillOutput(nodeOutput, item);

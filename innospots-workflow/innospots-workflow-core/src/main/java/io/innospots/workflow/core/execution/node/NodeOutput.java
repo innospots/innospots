@@ -22,8 +22,10 @@ import io.innospots.workflow.core.execution.ExecutionResource;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * node execute output for each branch
@@ -123,5 +125,22 @@ public class NodeOutput {
         nodeOutput.name = name;
         nodeOutput.nextNodeKeys = nextNodeKeys;
         return nodeOutput;
+    }
+
+    public Map<String,Object> log(){
+        Map<String,Object> logs = new LinkedHashMap<>();
+        logs.put("size",results.size());
+        if(results.size()>0){
+            logs.put("columns",results.get(0).keySet().size());
+        }
+        if(MapUtils.isNotEmpty(resources)){
+            List<Map<String,Object>> metas = new ArrayList<>();
+            for (List<ExecutionResource> executionResources : resources.values()) {
+                metas.addAll(executionResources.stream().map(ExecutionResource::toMetaInfo).collect(Collectors.toList()));
+            }
+            logs.put("resources",metas);
+        }
+
+        return logs;
     }
 }

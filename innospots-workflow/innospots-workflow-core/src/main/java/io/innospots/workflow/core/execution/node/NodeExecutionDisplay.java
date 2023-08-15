@@ -18,6 +18,7 @@
 
 package io.innospots.workflow.core.execution.node;
 
+import io.innospots.base.json.JSONUtils;
 import io.innospots.base.model.field.ParamField;
 import io.innospots.workflow.core.execution.ExecutionInput;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -76,8 +77,8 @@ public class NodeExecutionDisplay {
         executionDisplay.logs.put("startTime", nodeExecution.getStartTime());
         executionDisplay.logs.put("endTime", nodeExecution.getEndTime());
         executionDisplay.logs.put("sequence", nodeExecution.getSequenceNumber());
+        executionDisplay.logs.put("output_table", JSONUtils.toJsonString(nodeExecution.outputLog()));
         executionDisplay.logs.put("message", nodeExecution.getMessage());
-        executionDisplay.logs.putAll(nodeExecution.getLogs());
         executionDisplay.outputs = nodeExecution.getOutputs();
         executionDisplay.buildOutputField();
 

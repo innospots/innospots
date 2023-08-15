@@ -71,6 +71,7 @@ public class ScriptFactorStatement implements IFactorStatement {
             case LESS_EQUAL:
             case NULL:
             case NOTNULL:
+            case HASVAL:
             case GREATER_EQUAL:
                 stmt.append(factor.getCode()).append(factor.getOpt().symbol(mode));
                 stmt.append(value(factor));
@@ -119,7 +120,7 @@ public class ScriptFactorStatement implements IFactorStatement {
     }
 
     private Object value(Factor factor) {
-        if (factor.getValueType().isNumber() && factor.getValue() == null) {
+        if (factor.getValueType()!=null && factor.getValueType().isNumber() && factor.getValue() == null) {
             return 0;
         } else if (factor.getValue() == null || "null".equalsIgnoreCase(String.valueOf(factor.getValue()))) {
             return "nil";

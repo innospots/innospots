@@ -143,6 +143,19 @@ public class NodeExecution extends NodeExecutionBase {
         outputs.add(nodeOutput);
     }
 
+    public Map<String, Object> outputLog() {
+        Map<String, Object> logs = new LinkedHashMap<>();
+        for (int i = 0; i < this.outputs.size(); i++) {
+            NodeOutput nodeOutput = outputs.get(i);
+            if (nodeOutput.getName() != null) {
+                logs.put(nodeOutput.getName(), nodeOutput.log());
+            } else {
+                logs.put("output_" + i, nodeOutput.log());
+            }
+        }
+        return logs;
+    }
+
     public void addLog(String key, Object value) {
         this.logs.put(key, value);
     }

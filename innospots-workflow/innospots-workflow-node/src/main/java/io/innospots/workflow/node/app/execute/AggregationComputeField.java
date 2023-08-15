@@ -20,10 +20,13 @@ package io.innospots.workflow.node.app.execute;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.innospots.base.condition.EmbedCondition;
+import io.innospots.base.json.JSONUtils;
 import io.innospots.base.model.field.BaseField;
+import io.innospots.base.model.field.FieldValueType;
 import io.innospots.base.re.IExpression;
 import io.innospots.base.re.aviator.AviatorExpression;
 import io.innospots.base.re.function.aggregation.AggregationFunctionType;
+import io.innospots.base.utils.BeanUtils;
 import io.innospots.base.utils.Initializer;
 import io.innospots.workflow.core.node.NodeParamField;
 import lombok.Getter;
@@ -59,6 +62,27 @@ public class AggregationComputeField extends BaseField implements Initializer {
     private AggregationFunctionType functionType;
 
     private String expr;
+
+    public static AggregationComputeField build(Map<String,Object> fieldMap){
+        AggregationComputeField computeField = new AggregationComputeField();
+        computeField.name = (String) fieldMap.get("name");
+        computeField.comment = (String) fieldMap.get("comment");
+        computeField.code = (String) fieldMap.get("code");
+        if(fieldMap.containsKey("valueType")){
+            computeField.valueType = FieldValueType.valueOf((String) fieldMap.get("valueType"));
+        }
+        computeField.functionType = AggregationFunctionType.valueOf((String) fieldMap.get("functionType"));
+        Map<String,Object> sf = (Map<String, Object>) fieldMap.get("summaryField");
+        if(sf != null){
+            computeField.summaryField = BeanUtils.toBean(sf,NodeParamField.class);
+        }
+        Map<String,Object> ct = (Map<String, Object>) fieldMap.get("condition");
+        if(ct!=null){
+            computeField.condition = JSONUtils.parseObject(ct, EmbedCondition.class);
+        }
+
+        return computeField;
+    }
 
 
     @Override
