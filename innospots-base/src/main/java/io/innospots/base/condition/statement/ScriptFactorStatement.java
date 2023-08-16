@@ -62,7 +62,9 @@ public class ScriptFactorStatement implements IFactorStatement {
     @Override
     public String statement(Factor factor) {
         StringBuilder stmt = new StringBuilder();
-
+        if(factor.getOpt() == null){
+            return stmt.toString();
+        }
         switch (factor.getOpt()) {
             case EQUAL:
             case LESS:

@@ -32,6 +32,7 @@ import io.innospots.workflow.core.node.NodeParamField;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -90,7 +91,9 @@ public class AggregationComputeField extends BaseField implements Initializer {
         if (condition != null) {
             condition.initialize();
             expr = condition.getStatement();
-            conditionExpression = new AviatorExpression(expr, null);
+            if(StringUtils.isNotEmpty(expr)){
+                conditionExpression = new AviatorExpression(expr, null);
+            }
         }
         log.debug("field,{},{} expression:{},", code, name, expr);
     }
@@ -279,11 +282,17 @@ public class AggregationComputeField extends BaseField implements Initializer {
     }
 
     private Double value(Map<String, Object> item) {
-        Object v = item.getOrDefault(summaryField.getCode(), 0d);
-        if (v instanceof Double) {
-            return (double) v;
-        } else {
-            return Double.parseDouble(v.toString());
+        try {
+            Object v = item.getOrDefault(summaryField.getCode(), 0d);
+            if (v instanceof Double) {
+                return (double) v;
+            } else if(v !=null && v.toString().matches("[\\d]+[.]*[\\d]+")){
+                return Double.parseDouble(v.toString());
+            }else{
+                return 0d;
+            }
+        }catch (Exception e){
+            return 0d;
         }
     }
 
