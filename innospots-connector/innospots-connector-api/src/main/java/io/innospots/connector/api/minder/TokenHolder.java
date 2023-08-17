@@ -24,6 +24,7 @@ import java.util.Objects;
 public class TokenHolder {
 
     public static final String TOKEN_ADDRESS = "access_token_url";
+    public static final String ACCESS_TOKEN_URL_REQUEST_METHOD = "access_token_url_request_method";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String ACCESS_TOKEN = "access_token";
     public static final String TOKEN_TS = "token_ts";
@@ -157,7 +158,13 @@ public class TokenHolder {
 
     private void extractToken(HttpData httpData) {
         if (httpData.getStatus() != HttpStatus.HTTP_OK) {
-            throw AuthenticationException.buildTokenInvalidException(this.getClass(), "access token is fail ", httpData.getMessage());
+            throw AuthenticationException.buildTokenInvalidException(
+                    this.getClass(),
+                    "access token is fail ",
+                    httpData.getMessage(),
+                    httpData.getBody(),
+                    httpData.getStatus()
+            );
         }
         ONode jsonNode = null;
         if (httpData.getBody() instanceof Map) {

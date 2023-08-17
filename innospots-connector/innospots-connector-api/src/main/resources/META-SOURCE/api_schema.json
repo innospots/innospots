@@ -195,6 +195,26 @@
           "options": []
         },
         {
+          "label": "AccessToken请求方法",
+          "name": "access_token_url_request_method",
+          "placeholder": "",
+          "required": true,
+          "labelGrid": 4,
+          "tips": "GET POST",
+          "type": "SELECT",
+          "value": "POST",
+          "defaultValue": "POST",
+          "expression": "",
+          "gridSize": 4,
+          "options": [{
+            "name": "GET",
+            "value": "GET"
+          },{
+            "name": "POST",
+            "value": "POST"
+          }]
+        },
+        {
           "label": "Oauth Scope",
           "name": "oauth_scopes",
           "placeholder": "scopes",
