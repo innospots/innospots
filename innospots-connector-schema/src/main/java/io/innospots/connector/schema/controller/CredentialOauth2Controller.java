@@ -45,10 +45,10 @@ public class CredentialOauth2Controller {
         this.authorizationCallbackService = authorizationCallbackService;
     }
 
-    @GetMapping("callback")
+    @GetMapping("callback/{appCode}")
     @Operation(summary = "oauth2 credential callback")
     public String callback(
-            @Parameter(name = "appCode") @RequestParam("appCode") String appCode,
+            @Parameter(name = "appCode") @PathVariable String appCode,
             @Parameter(name = "code") @RequestParam("code") String code,
             @Parameter(name = "state") @RequestParam("state") String state) {
         boolean success = authorizationCallbackService.authCallback(appCode, code, state);

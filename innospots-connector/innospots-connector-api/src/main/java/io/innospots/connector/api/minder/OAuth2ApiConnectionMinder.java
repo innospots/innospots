@@ -56,7 +56,8 @@ public class OAuth2ApiConnectionMinder extends OAuth2ClientConnectionMinder {
     protected final String STATE = "state";
     protected final String GRANT_TYPE = "grant_type";
 
-    private final String OAUTH_CALLBACK = PathConstant.ROOT_PATH + "oauth2/callback?appCode=";
+//    private final String OAUTH_CALLBACK = PathConstant.ROOT_PATH + "oauth2/callback?appCode=";
+    private final String OAUTH_CALLBACK = PathConstant.ROOT_PATH + "oauth2/callback/";
 
 
     @Override
