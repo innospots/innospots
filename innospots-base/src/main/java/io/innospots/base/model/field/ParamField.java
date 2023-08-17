@@ -55,6 +55,11 @@ public class ParamField {
      */
     protected String parentCode;
 
+    /**
+     * value format
+     */
+    protected String format;
+
 
     public ParamField() {
     }
