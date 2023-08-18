@@ -216,7 +216,7 @@
         },
         {
           "label": "Oauth Scope",
-          "name": "oauth_scopes",
+          "name": "scope",
           "placeholder": "scopes",
           "required": false,
           "labelGrid": 4,
