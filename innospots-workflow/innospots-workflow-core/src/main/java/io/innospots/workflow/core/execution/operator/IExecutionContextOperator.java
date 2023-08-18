@@ -119,22 +119,30 @@ public interface IExecutionContextOperator {
             if (targetNodeKey != null && !output.containNextNodeKey(targetNodeKey)) {
                 continue;
             }
-
+            if(page>0){
+                page--;
+            }
             try (BufferedReader br = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(outFile)), StandardCharsets.UTF_8))) {
                 String line = null;
                 int count = 0;
                 int start = page * size;
-                int total = (page + 1) * size;
-                while ((line = br.readLine()) != null && start < total) {
+                int end = (page + 1) * size;
+                int total = 0;
+                while ((line = br.readLine()) != null) {
+                    total++;
                     if (count < start) {
                         count++;
+                        continue;
+                    }
+                    if(start >= end){
                         continue;
                     }
                     Map<String, Object> item = JSONUtils.toMap(line);
                     start++;
                     count++;
                     output.addResult(item);
-                }
+                }//end while
+                output.setTotal(total);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }

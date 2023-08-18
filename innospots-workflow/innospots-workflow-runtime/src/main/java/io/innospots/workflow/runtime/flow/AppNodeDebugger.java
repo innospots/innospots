@@ -115,6 +115,6 @@ public class AppNodeDebugger {
         nodeExecution.setInputs(inputs);
         appNode.innerExecute(nodeExecution,flowExecution);
         ExpressionEngineFactory.clear(identifier);
-        return NodeExecutionDisplay.build(nodeExecution);
+        return NodeExecutionDisplay.build(nodeExecution,ni);
     }
 }

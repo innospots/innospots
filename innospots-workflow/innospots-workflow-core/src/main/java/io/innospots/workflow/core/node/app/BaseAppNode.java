@@ -245,6 +245,7 @@ public abstract class BaseAppNode implements INodeBuilder, INodeExecutor {
     }
 
     protected void after(NodeExecution nodeExecution) {
+        nodeExecution.fillTotal();
         if (nodeExecutionListeners != null) {
             for (INodeExecutionListener nodeExecutionListener : nodeExecutionListeners) {
                 if (nodeExecution.getStatus() == ExecutionStatus.COMPLETE) {
@@ -284,7 +285,6 @@ public abstract class BaseAppNode implements INodeBuilder, INodeExecutor {
                 Object result = expression.execute();
                 processOutput(result, nodeOutput);
             }
-
             nodeExecution.addOutput(nodeOutput);
         } else {//end if
             nodeOutput.addNextKey(ni.getNextNodeKeys());

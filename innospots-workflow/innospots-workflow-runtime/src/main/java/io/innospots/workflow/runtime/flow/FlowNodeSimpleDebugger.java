@@ -136,8 +136,8 @@ public class FlowNodeSimpleDebugger implements FlowNodeDebugger {
         nodeExecutions.sort(Comparator.comparingInt(NodeExecutionBase::getSequenceNumber));
         LinkedHashMap<String, String> outMap = new LinkedHashMap<>();
         for (NodeExecution nodeExecution : nodeExecutions) {
-            NodeExecutionDisplay executionDisplay = NodeExecutionDisplay.build(nodeExecution);
             NodeInstance nodeInstance = nodeCache.get(nodeExecution.getNodeKey());
+            NodeExecutionDisplay executionDisplay = NodeExecutionDisplay.build(nodeExecution,nodeInstance);
             result.put(nodeExecution.getNodeKey(), executionDisplay);
             outMap.put(nodeInstance.simpleInfo(), nodeExecution.getNodeExecutionId());
         }
@@ -149,7 +149,9 @@ public class FlowNodeSimpleDebugger implements FlowNodeDebugger {
         NodeInstance nodeInstance = nodeCache.get(nodeKey);
         NodeExecutionDisplay executionDisplay = result.get(nodeKey);
         if (executionDisplay != null && nodeInstance != null && flowExecution.getStatus() == ExecutionStatus.COMPLETE) {
-            nodeInstance.setOutputFields(executionDisplay.getOutputFields());
+            if(CollectionUtils.isEmpty(nodeInstance.getOutputFields())){
+                nodeInstance.setOutputFields(executionDisplay.getOutputFields());
+            }
             workflowCacheDraftOperator.saveFlowInstanceToCache(workflowBaseBody);
             workflowCacheDraftOperator.saveCacheToDraft(workflowInstanceId);
         }

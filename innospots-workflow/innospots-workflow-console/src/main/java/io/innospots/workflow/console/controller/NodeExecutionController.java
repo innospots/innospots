@@ -74,11 +74,9 @@ public class NodeExecutionController extends BaseController {
     @Operation(summary = "find the node executions using primary id, nodeExecutionId")
     public InnospotResponse<NodeExecutionDisplay> findNodeExecution(
             @Parameter(name = "nodeExecutionId") @PathVariable String nodeExecutionId,
-            @Parameter(name = "page") @RequestParam(required = false, defaultValue = "0") Integer page,
+            @Parameter(name = "page") @RequestParam(required = false, defaultValue = "1") Integer page,
             @Parameter(name = "size") @RequestParam(required = false, defaultValue = "50") Integer size
     ) {
-
-
         return InnospotResponse.success(nodeExecutionReader.findNodeExecution(nodeExecutionId, page, size));
     }
 

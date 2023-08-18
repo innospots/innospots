@@ -24,7 +24,7 @@ class ReadFilesNodeTest {
     @Test
     void testInstance(){
         NodeExecution nodeExecution = readExecution();
-        System.out.println(NodeExecutionDisplay.build(nodeExecution));
+        System.out.println(NodeExecutionDisplay.build(nodeExecution,null));
     }
 
     static NodeExecution readExecution() {

@@ -49,6 +49,8 @@ public class NodeOutput {
 
     private String name;
 
+    private long total;
+
     public NodeOutput() {
     }
 
@@ -72,6 +74,10 @@ public class NodeOutput {
 
     public void addResult(Collection<Map<String, Object>> items) {
         results.addAll(items);
+    }
+
+    public void fillTotal(){
+        total = results.size();
     }
 
     public List<ExecutionResource> itemResources(Integer position) {

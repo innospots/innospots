@@ -18,14 +18,18 @@
 
 package io.innospots.workflow.core.execution.node;
 
+import cn.hutool.core.collection.CollectionUtil;
 import io.innospots.base.json.JSONUtils;
 import io.innospots.base.model.field.ParamField;
 import io.innospots.workflow.core.execution.ExecutionInput;
+import io.innospots.workflow.core.node.instance.NodeInstance;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.innospots.base.model.field.FieldValueType.convertJavaTypeByValue;
 
@@ -52,24 +56,27 @@ public class NodeExecutionDisplay {
      * result table data
      */
     @Schema(title = "execution output results array")
-    private List<NodeOutput> outputs = new ArrayList<>();
+    private List<NodeOutputPage> outputs;
 
     @Schema(title = "output columns fields")
     protected List<ParamField> outputFields;
 
+    @Schema(title = "node instance columns fields, which be setup using output field or modified by console")
+    protected List<ParamField> schemaFields;
+
     @Schema(title = "execution output")
     private Map<String, Object> logs = new LinkedHashMap<>();
 
-    public static NodeExecutionDisplay build(NodeExecution nodeExecution) {
+    public static NodeExecutionDisplay build(NodeExecution nodeExecution, NodeInstance nodeInstance,int page,int size) {
         if (nodeExecution == null) {
             return null;
         }
         NodeExecutionDisplay executionDisplay = new NodeExecutionDisplay();
         executionDisplay.flowExecutionId = nodeExecution.getFlowExecutionId();
-        nodeExecution.setNodeKey(nodeExecution.getNodeKey());
-        nodeExecution.setNodeExecutionId(nodeExecution.getNodeExecutionId());
 //        executionDisplay.inputs = nodeExecution.flatInput();
         executionDisplay.inputs = nodeExecution.getInputs();
+        executionDisplay.nodeExecutionId = nodeExecution.getNodeExecutionId();
+        executionDisplay.nodeKey = nodeExecution.getNodeKey();
         executionDisplay.logs.put("nodeExecutionId", nodeExecution.getNodeExecutionId());
         executionDisplay.logs.put("nodeKey", executionDisplay.nodeKey);
         executionDisplay.logs.put("status", nodeExecution.getStatus());
@@ -79,11 +86,34 @@ public class NodeExecutionDisplay {
         executionDisplay.logs.put("sequence", nodeExecution.getSequenceNumber());
         executionDisplay.logs.put("output_table", JSONUtils.toJsonString(nodeExecution.outputLog()));
         executionDisplay.logs.put("message", nodeExecution.getMessage());
-        executionDisplay.outputs = nodeExecution.getOutputs();
-        executionDisplay.buildOutputField();
+        if(CollectionUtils.isNotEmpty(nodeExecution.getOutputs())){
+            executionDisplay.outputs = nodeExecution.getOutputs().stream()
+                    .map(nodeOutput -> new NodeOutputPage(nodeOutput,page,size))
+                    .collect(Collectors.toList());
+            executionDisplay.buildOutputField();
+        }
+        if(nodeInstance!=null){
+            executionDisplay.schemaFields = nodeInstance.getOutputFields();
+        }
 
         return executionDisplay;
     }
+
+    public static NodeExecutionDisplay build(NodeExecution nodeExecution,NodeInstance nodeInstance){
+        int size = 50;
+        for (NodeOutput output : nodeExecution.getOutputs()) {
+            if(CollectionUtils.isNotEmpty(output.getResults())){
+                output.setResults(CollectionUtil.sub(output.getResults(),0,size));
+            }
+        }//end for
+        return build(nodeExecution,nodeInstance,1,size);
+    }
+
+    public static NodeExecutionDisplay build(NodeExecution nodeExecution, int page, int size){
+        return build(nodeExecution,null,page,size);
+    }
+
+
 
 
     public void addLog(String key, Object value) {
@@ -95,7 +125,7 @@ public class NodeExecutionDisplay {
         outputFields = new ArrayList<>();
         //all output data have the save fields
         if (outputs != null && !outputs.isEmpty()) {
-            List<Map<String, Object>> listResult = outputs.get(0).getResults();
+            List<Map<String, Object>> listResult = outputs.get(0).getResults().getList();
             if (!listResult.isEmpty()) {
                 Map<String, Object> data = listResult.get(0);
                 for (String key : data.keySet()) {

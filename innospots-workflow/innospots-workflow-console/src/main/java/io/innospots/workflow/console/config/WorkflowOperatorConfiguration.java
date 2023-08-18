@@ -53,6 +53,7 @@ import io.innospots.workflow.core.execution.reader.FlowExecutionReader;
 import io.innospots.workflow.core.execution.reader.NodeExecutionReader;
 import io.innospots.workflow.core.execution.store.FlowExecutionStoreListener;
 import io.innospots.workflow.core.execution.store.NodeExecutionStoreListener;
+import io.innospots.workflow.core.flow.instance.IWorkflowCacheDraftOperator;
 import io.innospots.workflow.core.loader.IWorkflowLoader;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -184,10 +185,11 @@ public class WorkflowOperatorConfiguration {
 
     @Bean
     public NodeExecutionReader nodeExecutionDisplayReader(
+            IWorkflowCacheDraftOperator workflowCacheDraftOperator,
             INodeExecutionOperator nodeExecutionOperator,
             IFlowExecutionOperator flowExecutionOperator
     ) {
-        return new NodeExecutionReader(nodeExecutionOperator, flowExecutionOperator);
+        return new NodeExecutionReader(workflowCacheDraftOperator,nodeExecutionOperator, flowExecutionOperator);
     }
 
     @Bean

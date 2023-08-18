@@ -43,7 +43,7 @@ class WriteFilesNodeTest {
         nodeExecution.addInput(executionInput);
 
         appNode.invoke(nodeExecution);
-        System.out.println(NodeExecutionDisplay.build(nodeExecution));
+        System.out.println(NodeExecutionDisplay.build(nodeExecution,null));
     }
 
     @Test

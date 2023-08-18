@@ -184,6 +184,10 @@ public class NodeExecution extends NodeExecutionBase {
         return outputList;
     }
 
+    public void fillTotal(){
+        this.outputs.forEach(NodeOutput::fillTotal);
+    }
+
     /**
      public List<Map<String, Object>> flatInput() {
      List<Map<String, Object>> inputList = new ArrayList<>();
