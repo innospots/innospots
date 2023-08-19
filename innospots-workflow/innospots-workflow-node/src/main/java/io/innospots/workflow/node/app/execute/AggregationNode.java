@@ -25,6 +25,7 @@ import io.innospots.workflow.core.execution.node.NodeOutput;
 import io.innospots.workflow.core.node.NodeParamField;
 import io.innospots.workflow.core.node.app.BaseAppNode;
 import io.innospots.workflow.core.node.instance.NodeInstance;
+import io.innospots.workflow.node.app.utils.NodeInstanceUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -61,22 +62,13 @@ public class AggregationNode extends BaseAppNode {
         validFieldConfig(nodeInstance, FIELD_AGGREGATE);
         sourceFieldType = nodeInstance.valueString(FIELD_SOURCE_TYPE);
         if("payload".equals(sourceFieldType)){
-            List<Map<String, Object>> fields = (List<Map<String, Object>>) nodeInstance.value(FIELD_DIMENSION_PAYLOAD);
-            if(fields!=null){
-                dimensionFields = BeanUtils.toBean(fields, NodeParamField.class);
-            }
+            dimensionFields = NodeInstanceUtils.buildParamFields(nodeInstance,FIELD_DIMENSION_PAYLOAD);
         }else if("list".equals(sourceFieldType)){
-            List<Map<String, Object>> fields = (List<Map<String, Object>>) nodeInstance.value(FIELD_DIMENSION_LIST);
-            if(fields!=null){
-                dimensionFields = BeanUtils.toBean(fields, NodeParamField.class);
-            }
-            Map<String, Object> listFieldValue = (Map<String, Object>) nodeInstance.value(FIELD_PARENT_LIST);
-            if(listFieldValue != null){
-                listField = BeanUtils.toBean(listFieldValue, NodeParamField.class);
-            }
+            dimensionFields = NodeInstanceUtils.buildParamFields(nodeInstance,FIELD_DIMENSION_LIST);
+            listField = NodeInstanceUtils.buildParamField(nodeInstance,FIELD_PARENT_LIST);
         }
 
-        computeFields = buildFields(nodeInstance);
+        computeFields = NodeInstanceUtils.buildAggregationComputeFields(nodeInstance,FIELD_AGGREGATE);
 
     }
 
@@ -108,22 +100,5 @@ public class AggregationNode extends BaseAppNode {
         }
         nodeOutput.setResults(items);
     }
-
-
-    public static List<AggregationComputeField> buildFields(NodeInstance nodeInstance) {
-        List<Map<String, Object>> fieldMaps = (List<Map<String, Object>>) nodeInstance.value(FIELD_AGGREGATE);
-
-        List<AggregationComputeField> computeFields = new ArrayList<>();
-        if (CollectionUtils.isEmpty(fieldMaps)) {
-            return computeFields;
-        }
-        for (Map<String, Object> fieldMap : fieldMaps) {
-            AggregationComputeField cf = AggregationComputeField.build(fieldMap);
-            cf.initialize();
-            computeFields.add(cf);
-        }
-        return computeFields;
-    }
-
 
 }

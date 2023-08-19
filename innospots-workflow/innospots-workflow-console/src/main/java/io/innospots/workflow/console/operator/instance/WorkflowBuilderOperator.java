@@ -247,7 +247,6 @@ public class WorkflowBuilderOperator implements IWorkflowCacheDraftOperator {
     @Cacheable(cacheNames = CACHE_NAME, key = "#workflowInstanceId + '-' + #revision", condition = "!#includeNodes")
     public WorkflowBody getWorkflowBody(Long workflowInstanceId, Integer revision, Boolean includeNodes) {
         WorkflowInstanceEntity entity = workflowInstanceOperator.getWorkflowInstanceEntity(workflowInstanceId);
-
         if (entity == null) {
             throw ResourceException.buildAbandonException(this.getClass(), workflowInstanceId, revision);
         }

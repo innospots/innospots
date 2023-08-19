@@ -24,15 +24,13 @@ import io.innospots.workflow.core.execution.node.NodeExecution;
 import io.innospots.workflow.core.execution.node.NodeExecutionDisplay;
 import io.innospots.workflow.core.execution.operator.IFlowExecutionOperator;
 import io.innospots.workflow.core.execution.operator.INodeExecutionOperator;
+import io.innospots.workflow.core.flow.WorkflowBaseBody;
 import io.innospots.workflow.core.flow.WorkflowBody;
 import io.innospots.workflow.core.flow.instance.IWorkflowCacheDraftOperator;
 import io.innospots.workflow.core.node.instance.NodeInstance;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * the node execution display in the flow canvas
@@ -105,9 +103,18 @@ public class NodeExecutionReader {
         NodeExecution nodeExecution = nodeExecutionOperator.getNodeExecutionById(nodeExecutionId, true, page, size);
         NodeExecutionDisplay nodeExecutionDisplay = null;
         if(nodeExecution!=null){
-            WorkflowBody workflowBody = workflowCacheDraftOperator.getWorkflowBody(nodeExecution.getFlowInstanceId(),nodeExecution.getRevision(),true);
-            NodeInstance nodeInstance = workflowBody.findNode(nodeExecution.getNodeKey());
-            nodeExecutionDisplay = NodeExecutionDisplay.build(nodeExecution,nodeInstance,page,size);
+            if(nodeExecution.getRevision()==null || nodeExecution.getRevision() == 0){
+                WorkflowBaseBody workflowBaseBody = workflowCacheDraftOperator.getFlowInstanceDraftOrCache(nodeExecution.getFlowInstanceId());
+                if(workflowBaseBody!=null){
+                    NodeInstance nodeInstance = workflowBaseBody.getNodes().stream().filter(ni-> Objects.equals(ni.getNodeKey(),nodeExecution.getNodeKey())).findFirst().orElse(null);
+                    nodeExecutionDisplay = NodeExecutionDisplay.build(nodeExecution,nodeInstance,page,size);
+                }
+            }else{
+                WorkflowBody workflowBody =
+                        workflowCacheDraftOperator.getWorkflowBody(nodeExecution.getFlowInstanceId(),nodeExecution.getRevision(),true);
+                NodeInstance nodeInstance = workflowBody.findNode(nodeExecution.getNodeKey());
+                nodeExecutionDisplay = NodeExecutionDisplay.build(nodeExecution,nodeInstance,page,size);
+            }
         }
         return nodeExecutionDisplay;
     }
