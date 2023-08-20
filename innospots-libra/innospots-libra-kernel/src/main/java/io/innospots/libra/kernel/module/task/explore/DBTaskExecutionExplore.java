@@ -4,7 +4,6 @@ import io.innospots.base.utils.ApplicationContextUtils;
 import io.innospots.libra.base.task.ITaskExecutionExplore;
 import io.innospots.libra.base.task.TaskEvent;
 import io.innospots.libra.base.task.TaskExecution;
-import io.innospots.libra.base.task.TaskExecutionStatus;
 import io.innospots.libra.kernel.module.task.operator.TaskExecutionOperator;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DBTaskExecutionExplore implements ITaskExecutionExplore {
 
-    private TaskExecutionOperator taskExecutionOperator;
+    private final TaskExecutionOperator taskExecutionOperator;
 
     public DBTaskExecutionExplore(TaskExecutionOperator taskExecutionOperator) {
         this.taskExecutionOperator = taskExecutionOperator;
@@ -23,12 +22,12 @@ public class DBTaskExecutionExplore implements ITaskExecutionExplore {
 
     @Override
     public boolean saveTaskExecution(TaskExecution taskExecution) {
-        return false;
+        return taskExecutionOperator.createTaskExecution(taskExecution);
     }
 
     @Override
     public boolean updateTaskExecution(TaskExecution taskExecution) {
-        return false;
+        return taskExecutionOperator.updateTaskExecution(taskExecution);
     }
 
     @Override

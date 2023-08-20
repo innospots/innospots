@@ -71,7 +71,8 @@ public class LibraBaseConfiguration {
             "app_node_group_node",
             "sys_todo_task",
             "sys_todo_task_comment",
-            "sys_todo_task_tag"
+            "sys_todo_task_tag",
+            "sys_task_execution"
     );
 
     /**

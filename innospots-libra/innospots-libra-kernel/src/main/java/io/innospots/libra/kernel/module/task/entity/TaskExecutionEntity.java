@@ -36,6 +36,7 @@ public class TaskExecutionEntity extends BaseEntity {
     private String taskName;
 
     @Column(length = 16)
+    @Enumerated(value = EnumType.STRING)
     private TaskExecutionStatus executionStatus;
 
     @Column(length = 64)
