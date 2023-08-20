@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.base.CaseFormat;
 import io.innospots.base.model.PageBody;
+import io.innospots.base.utils.DateTimeUtils;
 import io.innospots.libra.base.task.TaskExecution;
 import io.innospots.libra.kernel.module.task.dao.TaskExecutionDao;
 import io.innospots.libra.kernel.module.task.entity.TaskExecutionEntity;
@@ -78,7 +79,20 @@ public class TaskExecutionOperator extends ServiceImpl<TaskExecutionDao, TaskExe
         pageBody.setPageSize(entityPage.getSize());
         pageBody.setTotal(entityPage.getTotal());
         pageBody.setTotalPage(entityPage.getPages());
-        pageBody.setList(entities.stream().map(TaskExecutionMapper.INSTANCE::entity2Model).collect(Collectors.toCollection(() -> new ArrayList<>(entities.size()))));
+        List<TaskExecution> taskExecutions = entities.stream().map(TaskExecutionMapper.INSTANCE::entity2Model).collect(Collectors.toCollection(() -> new ArrayList<>(entities.size())));
+        this.generateTaskExecutions(taskExecutions);
+        pageBody.setList(taskExecutions);
         return pageBody;
+    }
+
+    private void generateTaskExecutions(List<TaskExecution> taskExecutions) {
+        if (CollectionUtils.isEmpty(taskExecutions)) {
+            return;
+        }
+
+        for (TaskExecution taskExecution : taskExecutions) {
+            taskExecution.setTimeConsume(DateTimeUtils.getDiffDayStr(DateTimeUtils.asDate(taskExecution.getEndTime()), DateTimeUtils.asDate(taskExecution.getStartTime())));
+            taskExecution.setDetailUrl("/task-execution/" + taskExecution.getAppKey() + "/" + taskExecution.getTaskExecutionId());
+        }
     }
 }

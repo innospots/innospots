@@ -41,4 +41,7 @@ public class TaskExecution {
 
     private String message;
 
+    private String timeConsume;
+
+    private String createdBy;
 }

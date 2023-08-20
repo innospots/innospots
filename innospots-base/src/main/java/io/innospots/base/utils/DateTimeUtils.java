@@ -165,7 +165,8 @@ public class DateTimeUtils {
         long day = diff / 3600 / 24;
         long hour = (diff - (day * 3600 * 24)) / 3600;
         long minu = diff % 3600 / 60;
-        return (day == 0 ? "" : day + "天") + (hour == 0 ? "" : hour + "小时") + (minu == 0 ? "" : minu + "分");
+        long second = diff % 3600 % 60;
+        return (day == 0 ? "" : day + "天") + (hour == 0 ? "" : hour + "小时") + (minu == 0 ? "" : minu + "分钟") + (second == 0 ? "" : second + "秒");
     }
 
     public static int getDiffDay(Date day1, Date day2) {
@@ -178,6 +179,9 @@ public class DateTimeUtils {
     }
 
     public static Date asDate(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            localDateTime = LocalDateTime.now();
+        }
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 

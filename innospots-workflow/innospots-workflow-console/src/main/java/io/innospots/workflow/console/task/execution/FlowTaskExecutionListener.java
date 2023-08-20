@@ -78,6 +78,7 @@ public class FlowTaskExecutionListener implements IEventListener<FlowExecutionTa
             taskExecution.setExecutionStatus(TaskExecutionStatus.STOPPED);
         }
         taskExecution.setStartTime(execution.getStartTime());
+        taskExecution.setAppKey(execution.getSource());
         taskExecution.setAppName("工作流引擎");
         return taskExecution;
     }
