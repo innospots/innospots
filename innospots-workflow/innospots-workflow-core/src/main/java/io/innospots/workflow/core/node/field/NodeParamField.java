@@ -16,7 +16,7 @@
  *  limitations under the License.
  */
 
-package io.innospots.workflow.core.node;
+package io.innospots.workflow.core.node.field;
 
 import io.innospots.base.model.field.ParamField;
 import lombok.Getter;
@@ -31,5 +31,6 @@ import lombok.Setter;
 @Setter
 public class NodeParamField extends ParamField {
 
-    private String nodeKey;
+    protected String nodeKey;
+
 }

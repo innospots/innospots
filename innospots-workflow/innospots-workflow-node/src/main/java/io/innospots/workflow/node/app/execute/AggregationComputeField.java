@@ -28,7 +28,7 @@ import io.innospots.base.re.aviator.AviatorExpression;
 import io.innospots.base.re.function.aggregation.AggregationFunctionType;
 import io.innospots.base.utils.BeanUtils;
 import io.innospots.base.utils.Initializer;
-import io.innospots.workflow.core.node.NodeParamField;
+import io.innospots.workflow.core.node.field.NodeParamField;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

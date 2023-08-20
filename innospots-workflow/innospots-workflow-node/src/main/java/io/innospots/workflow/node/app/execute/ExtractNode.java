@@ -20,23 +20,18 @@ package io.innospots.workflow.node.app.execute;
 
 import cn.hutool.core.builder.CompareToBuilder;
 import cn.hutool.core.comparator.ComparatorChain;
-import cn.hutool.core.comparator.CompareUtil;
-import io.innospots.base.condition.EmbedCondition;
 import io.innospots.base.exception.ConfigException;
 import io.innospots.base.model.field.ParamField;
-import io.innospots.base.re.aviator.AviatorExpression;
 import io.innospots.base.utils.BeanUtils;
 import io.innospots.workflow.core.execution.ExecutionInput;
 import io.innospots.workflow.core.execution.node.NodeExecution;
 import io.innospots.workflow.core.execution.node.NodeOutput;
-import io.innospots.workflow.core.node.NodeParamField;
+import io.innospots.workflow.core.node.field.NodeParamField;
 import io.innospots.workflow.core.node.app.BaseAppNode;
 import io.innospots.workflow.core.node.instance.NodeInstance;
 import io.innospots.workflow.node.app.utils.NodeInstanceUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -88,13 +83,7 @@ public class ExtractNode extends BaseAppNode {
             List<Map<String, Object>> v = (List<Map<String, Object>>) nodeInstance.value(FIELD_EMBED_FIELDS);
             extractFields = BeanUtils.toBean(v, ParamField.class);
         }
-        EmbedCondition embedCondition = NodeInstanceUtils.buildCondition(nodeInstance,EXTRACT_CONDITION,this);
-        if(embedCondition!=null){
-            conditionExpression = embedCondition.getStatement();
-            if(StringUtils.isNotEmpty(conditionExpression)){
-                this.expression = new AviatorExpression(this.conditionExpression, null);
-            }
-        }
+        this.expression = NodeInstanceUtils.buildExpression(nodeInstance,EXTRACT_CONDITION,this);
         orderFields = NodeInstanceUtils.buildParamFields(nodeInstance,FIELD_ORDER);
         String oType = nodeInstance.valueString(ORDER_TYPE);
         if(orderFields!=null){
@@ -203,22 +192,21 @@ public class ExtractNode extends BaseAppNode {
         nodeOutput.setResults(items);
     }
 
-    private List<Map<String,Object>> sort(List<Map<String,Object>> items){
+    private void sort(List<Map<String,Object>> items){
         if(orderFields==null || CollectionUtils.isEmpty(orderFields)){
-            return items;
+            return;
         }
-        ComparatorChain comparatorChain = new ComparatorChain();
+        ComparatorChain<Map<String, Object>> comparatorChain = new ComparatorChain<>();
         for (NodeParamField orderField : orderFields) {
             Comparator<Map<String, Object>> comparator = (o1, o2) -> CompareToBuilder.reflectionCompare(o1.get(orderField.getCode()),o2.get(orderField.getCode()));
             comparatorChain.addComparator(comparator,orderType == OrderType.DESC);
         }
-        Collections.sort(items,comparatorChain);
-        return items;
+        items.sort(comparatorChain);
     }
 
     private void addItem(List<Map<String,Object>> items,Map<String,Object> item){
         if(this.expression==null || this.expression.executeBoolean(item)){
-            if(items.size() <= lineCount){
+            if(items.size() < lineCount){
                 items.add(item);
             }
         }

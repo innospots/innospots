@@ -4,12 +4,15 @@ import io.innospots.base.condition.EmbedCondition;
 import io.innospots.base.condition.Mode;
 import io.innospots.base.exception.ConfigException;
 import io.innospots.base.json.JSONUtils;
+import io.innospots.base.re.IExpression;
+import io.innospots.base.re.aviator.AviatorExpression;
 import io.innospots.base.utils.BeanUtils;
-import io.innospots.workflow.core.node.NodeParamField;
+import io.innospots.workflow.core.node.field.NodeParamField;
 import io.innospots.workflow.core.node.app.BaseAppNode;
 import io.innospots.workflow.core.node.instance.NodeInstance;
 import io.innospots.workflow.node.app.execute.AggregationComputeField;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,18 @@ public class NodeInstanceUtils {
             nodeParamFields = BeanUtils.toBean(fields, NodeParamField.class);
         }
         return nodeParamFields;
+    }
+
+    public static <T> IExpression<T> buildExpression(NodeInstance nodeInstance, String fieldName, BaseAppNode appNode){
+        EmbedCondition embedCondition = buildCondition(nodeInstance,fieldName,appNode);
+        IExpression expression = null;
+        if(embedCondition!=null){
+            String exp = embedCondition.getStatement();
+            if(StringUtils.isNotEmpty(exp)){
+                expression = new AviatorExpression(exp, null);
+            }
+        }
+        return expression;
     }
 
     public static EmbedCondition buildCondition(NodeInstance nodeInstance, String fieldName, BaseAppNode appNode) {
