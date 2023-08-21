@@ -173,4 +173,13 @@ public class AppManagementController extends BaseController {
     }
 
 
+    @GetMapping("icon/{appNodeCode}")
+    @Operation(summary = "app node icon")
+    public InnospotResponse<String> getAppNodeIcon(
+            @Parameter(name = "appNodeCode") @PathVariable String appNodeCode
+    ) {
+        return success(appService.getAppNodeIconByCode(appNodeCode));
+    }
+
+
 }

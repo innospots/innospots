@@ -18,12 +18,14 @@
 
 package io.innospots.workflow.console.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.innospots.base.enums.DataStatus;
 import io.innospots.base.enums.ImageType;
 import io.innospots.base.exception.ResourceException;
 import io.innospots.base.model.PageBody;
 import io.innospots.base.utils.ApplicationContextUtils;
 import io.innospots.libra.base.event.NewAvatarEvent;
+import io.innospots.workflow.console.entity.apps.AppNodeDefinitionEntity;
 import io.innospots.workflow.console.entity.apps.AppNodeGroupNodeEntity;
 import io.innospots.workflow.console.model.AppQueryRequest;
 import io.innospots.workflow.console.operator.apps.AppNodeDefinitionOperator;
@@ -97,7 +99,7 @@ public class AppService {
             List<Integer> nodeIds = new ArrayList<>();
             nodeIds.add(nodeId);
             appNodeGroupOperator.saveOrUpdateNodeGroupNode(1, appInfo.getNodeGroupId(), nodeIds);
-            if(StringUtils.isNotEmpty(appInfo.getIcon()) && appInfo.getIcon().startsWith(IMAGE_PREFIX)){
+            if (StringUtils.isNotEmpty(appInfo.getIcon()) && appInfo.getIcon().startsWith(IMAGE_PREFIX)) {
                 ApplicationContextUtils.sendAppEvent(new NewAvatarEvent(nodeId, ImageType.APP, null, appInfo.getIcon()));
             }
             // update app icon
@@ -116,7 +118,7 @@ public class AppService {
          */
         String icon = appInfo.getIcon();
         Integer nodeId = appInfo.getNodeId();
-        if(StringUtils.isNotEmpty(icon) && icon.startsWith(IMAGE_PREFIX)){
+        if (StringUtils.isNotEmpty(icon) && icon.startsWith(IMAGE_PREFIX)) {
             ApplicationContextUtils.sendAppEvent(new NewAvatarEvent(nodeId, ImageType.APP, null, icon));
         }
         appInfo = appNodeDefinitionOperator.updateAppInfo(appInfo);
@@ -156,5 +158,16 @@ public class AppService {
             appNodeDefinition.setNodeGroupId(entityList.get(0).getNodeGroupId());
         }
         return appNodeDefinition;
+    }
+
+    public String getAppNodeIconByCode(String code) {
+        List<AppNodeDefinitionEntity> entityList = appNodeDefinitionOperator.list(
+                new QueryWrapper<AppNodeDefinitionEntity>().lambda().eq(AppNodeDefinitionEntity::getCode, code)
+        );
+        String icon = null;
+        if (!CollectionUtils.isEmpty(entityList)) {
+            icon = entityList.get(0).getIcon();
+        }
+        return icon;
     }
 }
