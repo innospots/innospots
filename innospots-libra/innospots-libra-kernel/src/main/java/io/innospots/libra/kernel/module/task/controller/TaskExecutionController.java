@@ -52,4 +52,12 @@ public class TaskExecutionController {
         }
         return success(taskCodes);
     }
+
+    @GetMapping("apps")
+    @Operation(summary = "get apps")
+    public InnospotResponse<List<String>> getApps() {
+        List<String> apps = new ArrayList<>();
+        apps.add("工作流引擎");
+        return success(apps);
+    }
 }
