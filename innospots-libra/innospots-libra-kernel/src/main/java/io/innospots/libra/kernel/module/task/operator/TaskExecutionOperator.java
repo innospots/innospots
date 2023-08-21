@@ -61,10 +61,10 @@ public class TaskExecutionOperator extends ServiceImpl<TaskExecutionDao, TaskExe
             query.in("EXECUTION_STATUS", request.getTaskCodes());
         }
         if (StringUtils.isNotBlank(request.getStartDate())) {
-            query.ge("START_TIME", request.getStartDate());
+            query.ge("START_TIME", request.getStartDate() + " 00:00:00");
         }
         if (StringUtils.isNotBlank(request.getEndDate())) {
-            query.le("END_TIME", request.getEndDate());
+            query.le("END_TIME", request.getEndDate() + " 23:59:59");
         }
         if (StringUtils.isNotBlank(request.getSort())) {
             query.orderBy(true, request.getAsc(), CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, request.getSort()));
