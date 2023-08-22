@@ -62,8 +62,14 @@ public enum AggregationFunctionType {
 
     private String descCn;
 
+    private Class<IAggregationFunction> functionClass;
+
     AggregationFunctionType(String desc, String descCn) {
         this.desc = desc;
         this.descCn = descCn;
+    }
+
+    public Class<IAggregationFunction> functionClass(){
+        return functionClass;
     }
 }
