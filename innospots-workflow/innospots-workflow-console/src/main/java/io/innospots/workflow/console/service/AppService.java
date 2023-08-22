@@ -41,10 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static io.innospots.workflow.console.operator.apps.AppNodeDefinitionOperator.IMAGE_PREFIX;
@@ -160,14 +157,15 @@ public class AppService {
         return appNodeDefinition;
     }
 
-    public String getAppNodeIconByCode(String code) {
+    public Map<String, String> getAppNodeIcons() {
         List<AppNodeDefinitionEntity> entityList = appNodeDefinitionOperator.list(
-                new QueryWrapper<AppNodeDefinitionEntity>().lambda().eq(AppNodeDefinitionEntity::getCode, code)
+                new QueryWrapper<AppNodeDefinitionEntity>().lambda().eq(AppNodeDefinitionEntity::getStatus, DataStatus.ONLINE)
         );
-        String icon = null;
-        if (!CollectionUtils.isEmpty(entityList)) {
-            icon = entityList.get(0).getIcon();
+
+        Map<String, String> iconMap = new HashMap<>();
+        for (AppNodeDefinitionEntity appNodeDefinitionEntity : entityList) {
+            iconMap.put(appNodeDefinitionEntity.getCode(), appNodeDefinitionEntity.getIcon());
         }
-        return icon;
+        return iconMap;
     }
 }
