@@ -8,8 +8,10 @@ import io.innospots.libra.base.task.TaskExecutionStatus;
 import io.innospots.libra.kernel.module.task.model.TaskExecutionRequest;
 import io.innospots.libra.kernel.module.task.operator.TaskExecutionOperator;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,6 +43,14 @@ public class TaskExecutionController {
 
         PageBody<TaskExecution> pageModel = taskExecutionOperator.pageTaskExecutions(request);
         return success(pageModel);
+    }
+
+    @GetMapping("{taskExecutionId}")
+    @Operation(summary = "view task executions")
+    public InnospotResponse<TaskExecution> getTaskExecution(@Parameter(name = "taskExecutionId", required = true) @PathVariable String taskExecutionId) {
+
+        TaskExecution taskExecution = taskExecutionOperator.getTaskExecutionById(taskExecutionId);
+        return success(taskExecution);
     }
 
     @GetMapping("task-code")

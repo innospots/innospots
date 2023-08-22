@@ -49,6 +49,12 @@ public class TaskExecutionOperator extends ServiceImpl<TaskExecutionDao, TaskExe
         return TaskExecutionMapper.INSTANCE.entity2Model(entity);
     }
 
+    public TaskExecution getTaskExecutionById(String taskExecutionId) {
+        TaskExecution taskExecution = this.getTaskExecution(taskExecutionId);
+        taskExecution.setTimeConsume(DateTimeUtils.getDiffDayStr(DateTimeUtils.asDate(taskExecution.getEndTime()), DateTimeUtils.asDate(taskExecution.getStartTime())));
+        return taskExecution;
+    }
+
     public PageBody<TaskExecution> pageTaskExecutions(TaskExecutionRequest request) {
         QueryWrapper<TaskExecutionEntity> query = new QueryWrapper<>();
         if (StringUtils.isNotBlank(request.getQueryInput())) {
