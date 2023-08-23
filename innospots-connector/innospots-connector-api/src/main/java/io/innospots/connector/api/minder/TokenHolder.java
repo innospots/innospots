@@ -114,6 +114,9 @@ public class TokenHolder {
         }
         if (response != null && response.getBody() instanceof Map) {
             body.putAll((Map<? extends String, ?>) response.getBody());
+            if (this.tokenLoc == TokenLocation.PARAM) {
+                body.remove(TOKEN_TYPE);
+            }
         }
         return body;
     }
